@@ -1,0 +1,1 @@
+{"name":"tw2k-tactical","version":"0.1.0-alpha","type":"module","scripts":{"build":"vite build"},"devDependencies":{"typescript":"^5","vite":"^6"}}

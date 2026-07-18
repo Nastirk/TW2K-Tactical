@@ -1,1 +1,3 @@
-# TW2K-Tactical
+# TW2K Tactical
+
+Foundation project.

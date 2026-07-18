@@ -1,0 +1,1 @@
+export const calculateDamage=(b:number,m:number)=>Math.max(0,b+m);

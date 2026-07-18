@@ -1,0 +1,1 @@
+export enum HitLocation{HEAD="head",TORSO="torso",LEFT_ARM="left-arm",RIGHT_ARM="right-arm",LEFT_LEG="left-leg",RIGHT_LEG="right-leg"}

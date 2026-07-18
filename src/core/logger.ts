@@ -1,0 +1,1 @@
+import {MODULE_ID} from "./constants"; export class Logger{static info(m:string){console.log(`[${MODULE_ID}] ${m}`)}}

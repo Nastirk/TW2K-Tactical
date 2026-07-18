@@ -1,0 +1,1 @@
+export function resolveAttack(){return {success:false,damage:0};}

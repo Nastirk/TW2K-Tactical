@@ -1,0 +1,1 @@
+export interface AttackResult{success:boolean;damage:number;}
