@@ -1,36 +1,72 @@
-import { describe, expect, it } from "vitest";
+import {
+  describe,
+  expect,
+  it,
+} from "vitest";
+
 import {
   HitLocationResolver,
-  type HitLocationTable,
 } from "../../src/combat/hit-location-resolver";
 
-describe("HitLocationResolver", () => {
-  it("uses the injected roll and table", async () => {
-    const table: HitLocationTable = {
-      resolve: (roll) =>
-        roll === 3 ? "torso" : "head",
-    };
+describe(
+  "HitLocationResolver",
+  () => {
+    it.each([
+      [1, "legs"],
+      [2, "torso"],
+      [3, "torso"],
+      [4, "torso"],
+      [5, "arm"],
+      [6, "head"],
+    ] as const)(
+      "maps D6 roll %s to %s",
+      async (roll, expected) => {
+        const resolver =
+          new HitLocationResolver({
+            rollD6: async () => roll,
+          });
 
-    const resolver = new HitLocationResolver(
-      { roll: async () => 3 },
-      table,
+        await expect(
+          resolver.resolve(),
+        ).resolves.toBe(expected);
+      },
     );
 
-    await expect(resolver.resolve()).resolves.toBe(
-      "torso",
-    );
-  });
+    it(
+      "uses a chosen location without rolling",
+      async () => {
+        let rolled = false;
 
-  it("rejects invalid rolls", async () => {
-    const resolver = new HitLocationResolver(
-      { roll: async () => 0 },
-      { resolve: () => "torso" },
+        const resolver =
+          new HitLocationResolver({
+            rollD6: async () => {
+              rolled = true;
+              return 1;
+            },
+          });
+
+        await expect(
+          resolver.resolve("head"),
+        ).resolves.toBe("head");
+
+        expect(rolled).toBe(false);
+      },
     );
 
-    await expect(
-      resolver.resolve(),
-    ).rejects.toThrow(
-      "Hit-location roll must be a positive integer.",
+    it(
+      "rejects invalid D6 results",
+      async () => {
+        const resolver =
+          new HitLocationResolver({
+            rollD6: async () => 7,
+          });
+
+        await expect(
+          resolver.resolve(),
+        ).rejects.toThrow(
+          "Hit-location roll must be an integer from 1 to 6.",
+        );
+      },
     );
-  });
-});
+  },
+);

@@ -1,61 +1,145 @@
-import type { HitLocation } from "./hit-location-resolver";
-
-export interface ArmorProtection {
-  location: HitLocation;
-  rating: number;
-}
-
 export interface ArmorResolutionRequest {
-  location: HitLocation;
+  /** Weapon's printed base damage rating. */
+  weaponBaseDamage: number;
+
+  /** Damage after adding extra successes, before armor/cover. */
   incomingDamage: number;
-  armor?: ArmorProtection;
-  armorPiercing?: number;
+
+  /** Weapon armor modifier, e.g. -1, 0, +1. */
+  weaponArmorModifier: number;
+
+  /**
+   * Armor levels of body-armor layers that actually protect the hit location.
+   * Only the highest layer counts.
+   */
+  bodyArmorLevels?: number[];
+
+  /**
+   * One additional armor source such as cover or vehicle armor.
+   * This is added to the effective body-armor layer.
+   */
+  externalArmorLevel?: number;
 }
 
 export interface ArmorResolutionResult {
-  location: HitLocation;
   incomingDamage: number;
-  armorRating: number;
-  armorPiercing: number;
-  effectiveArmor: number;
+  bodyArmorLevel: number;
+  externalArmorLevel: number;
+  combinedArmorLevel: number;
+  weaponArmorModifier: number;
+  modifiedArmorLevel: number;
+  fullyDeflectedByPenetrationLimit: boolean;
+  penetrated: boolean;
   damageAfterArmor: number;
+  ablationCheckRequired: boolean;
 }
 
 export class ArmorResolver {
   resolve(
     request: ArmorResolutionRequest,
   ): ArmorResolutionResult {
-    if (request.incomingDamage < 0) {
-      throw new Error("Incoming damage cannot be negative.");
+    this.assertNonNegativeInteger(
+      request.weaponBaseDamage,
+      "weaponBaseDamage",
+    );
+    this.assertNonNegativeInteger(
+      request.incomingDamage,
+      "incomingDamage",
+    );
+
+    if (
+      !Number.isInteger(
+        request.weaponArmorModifier,
+      )
+    ) {
+      throw new Error(
+        "weaponArmorModifier must be an integer.",
+      );
     }
 
-    const armorRating =
-      request.armor?.location === request.location
-        ? request.armor.rating
+    const bodyArmorLevels =
+      request.bodyArmorLevels ?? [];
+
+    for (
+      const level of bodyArmorLevels
+    ) {
+      this.assertNonNegativeInteger(
+        level,
+        "bodyArmorLevels",
+      );
+    }
+
+    const bodyArmorLevel =
+      bodyArmorLevels.length > 0
+        ? Math.max(...bodyArmorLevels)
         : 0;
 
-    const armorPiercing = Math.max(
-      0,
-      request.armorPiercing ?? 0,
+    const externalArmorLevel =
+      request.externalArmorLevel ?? 0;
+
+    this.assertNonNegativeInteger(
+      externalArmorLevel,
+      "externalArmorLevel",
     );
 
-    const effectiveArmor = Math.max(
-      0,
-      armorRating - armorPiercing,
-    );
+    const combinedArmorLevel =
+      bodyArmorLevel +
+      externalArmorLevel;
 
-    const damageAfterArmor = Math.max(
-      0,
-      request.incomingDamage - effectiveArmor,
-    );
+    const modifiedArmorLevel =
+      combinedArmorLevel > 0
+        ? Math.max(
+            0,
+            combinedArmorLevel +
+              request.weaponArmorModifier,
+          )
+        : 0;
+
+    const fullyDeflectedByPenetrationLimit =
+      modifiedArmorLevel >=
+      request.weaponBaseDamage + 2;
+
+    const damageAfterArmor =
+      fullyDeflectedByPenetrationLimit
+        ? 0
+        : Math.max(
+            0,
+            request.incomingDamage -
+              modifiedArmorLevel,
+          );
+
+    const penetrated =
+      combinedArmorLevel > 0 &&
+      damageAfterArmor > 0;
 
     return {
-      location: request.location,
-      incomingDamage: request.incomingDamage,
-      armorRating,
-      armorPiercing,
-      effectiveArmor,
+      incomingDamage:
+        request.incomingDamage,
+      bodyArmorLevel,
+      externalArmorLevel,
+      combinedArmorLevel,
+      weaponArmorModifier:
+        request.weaponArmorModifier,
+      modifiedArmorLevel,
+      fullyDeflectedByPenetrationLimit,
+      penetrated,
       damageAfterArmor,
+      ablationCheckRequired:
+        penetrated,
     };
+  }
+
+  private assertNonNegativeInteger(
+    value: number,
+    name: string,
+  ): void {
+    if (
+      !Number.isInteger(value) ||
+      value < 0
+    ) {
+      throw new Error(
+        `${name} must be a non-negative integer.`,
+      );
+    }
   }
 }
