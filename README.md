@@ -1,22 +1,23 @@
-# TW2K Tactical v0.10 – Death Saves & Critical Injury Treatment
+# TW2K Tactical v0.11 – Foundry Actor State Integration
 
-This milestone adds workflow logic for lethal critical injuries.
+This milestone connects the pure combat rules to an actor-state persistence layer
+without hard-coding Twilight: 2000 system document paths into the core rules.
 
 Implemented:
-- Death-save state model.
-- Death-save interval tracking: round, stretch, shift.
-- Immediate death-save trigger when a lethally injured character moves.
-- Medical Aid stabilization progression:
-  round -> stretch -> shift -> stabilized.
-- Failed stabilization attempt does not improve the time limit.
-- Instant-death critical injuries bypass death-save workflow.
-- Structured resolver results suitable for later Foundry automation.
+- Actor combat-state model.
+- ActorCombatStateRepository abstraction.
+- ActorStateService for applying:
+  - damage
+  - incapacitation
+  - critical injuries
+  - death-save state
+- FoundryActorCombatStateRepository adapter.
+- Configurable Foundry actor data paths.
+- Safe nested-path reading/writing.
+- Unit tests for state transitions and Foundry adapter behavior.
 
-Not yet included:
-- Actual STAMINA dice rolls for death saves.
-- Scheduling/automation timers in Foundry.
-- Applying character conditions or actor updates.
-- Full Medical Aid gear modifiers.
+The default Foundry data paths are intentionally configurable because exact actor
+schema paths can vary by Twilight: 2000 system version.
 
 Merge `src` and `tests` into the current project, then run:
 
