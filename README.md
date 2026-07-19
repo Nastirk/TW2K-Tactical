@@ -1,23 +1,31 @@
-# TW2K Tactical v0.11 – Foundry Actor State Integration
+# TW2K Tactical v0.12 – End-to-End Combat Workflow
 
-This milestone connects the pure combat rules to an actor-state persistence layer
-without hard-coding Twilight: 2000 system document paths into the core rules.
+This milestone connects the existing tested combat components into one orchestrated ranged attack flow:
+
+Ranged attack
+→ attack context
+→ modifiers
+→ modified dice pool
+→ dice roll
+→ hit / miss
+→ post-hit resolution
+→ critical injury table roll
+→ death-save state
+→ actor-state persistence
 
 Implemented:
-- Actor combat-state model.
-- ActorCombatStateRepository abstraction.
-- ActorStateService for applying:
-  - damage
-  - incapacitation
-  - critical injuries
-  - death-save state
-- FoundryActorCombatStateRepository adapter.
-- Configurable Foundry actor data paths.
-- Safe nested-path reading/writing.
-- Unit tests for state transitions and Foundry adapter behavior.
+- EndToEndRangedCombatWorkflow
+- Structured workflow result
+- Miss handling
+- Hit handling
+- Post-hit damage/armor integration
+- Critical injury roll integration
+- Actor damage persistence
+- Critical injury persistence
+- Death-save state persistence
+- Tests for miss, normal hit, critical hit, and actor-state updates
 
-The default Foundry data paths are intentionally configurable because exact actor
-schema paths can vary by Twilight: 2000 system version.
+This milestone still leaves UI/chat cards and real Twilight: 2000 Foundry data-path mapping for later milestones.
 
 Merge `src` and `tests` into the current project, then run:
 
