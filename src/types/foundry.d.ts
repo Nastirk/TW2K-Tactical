@@ -3,6 +3,11 @@ declare interface FoundryHooks {
     hook: string,
     callback: (...args: unknown[]) => void | Promise<void>,
   ): number;
+
+  on(
+    hook: string,
+    callback: (...args: unknown[]) => unknown,
+  ): number;
 }
 
 declare const Hooks: FoundryHooks;
