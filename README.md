@@ -1,23 +1,22 @@
-# TW2K Tactical v0.9 – Critical Injury Tables & Resolution
+# TW2K Tactical v0.10 – Death Saves & Critical Injury Treatment
 
-This milestone adds location-specific critical injury data and resolution.
+This milestone adds workflow logic for lethal critical injuries.
 
 Implemented:
-- D10 critical-injury tables for Head, Torso, Arms, and Legs.
-- Severe critical injuries roll multiple D10s and keep the highest.
-- Structured injury outcomes:
-  - injury name
-  - lethal flag
-  - death-save time limit
-  - effects
-  - healing time
-  - instant-death flag
-- Automatic arm-critical effect: drop held items.
-- Automatic leg-critical effect: fall down.
-- CriticalInjuryTableResolver for deterministic/testable table lookup.
-- CriticalInjuryRollResolver for rolling the correct number of D10s.
+- Death-save state model.
+- Death-save interval tracking: round, stretch, shift.
+- Immediate death-save trigger when a lethally injured character moves.
+- Medical Aid stabilization progression:
+  round -> stretch -> shift -> stabilized.
+- Failed stabilization attempt does not improve the time limit.
+- Instant-death critical injuries bypass death-save workflow.
+- Structured resolver results suitable for later Foundry automation.
 
-This milestone leaves death-save scheduling and Medical Aid stabilization for a later workflow layer.
+Not yet included:
+- Actual STAMINA dice rolls for death saves.
+- Scheduling/automation timers in Foundry.
+- Applying character conditions or actor updates.
+- Full Medical Aid gear modifiers.
 
 Merge `src` and `tests` into the current project, then run:
 
