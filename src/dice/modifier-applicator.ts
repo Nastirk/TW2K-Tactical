@@ -32,9 +32,11 @@ export class DiceModifierApplicator {
       dice = this.applyNegative(dice, Math.abs(modifier));
     }
 
+    const normalizedDice = [...dice].sort((a, b) => b - a);
+
     return DicePool.from({
-      attribute: dice[0],
-      skill: dice[1],
+      attribute: normalizedDice[0],
+      skill: normalizedDice[1],
     });
   }
 

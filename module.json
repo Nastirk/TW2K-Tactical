@@ -2,7 +2,7 @@
   "id": "tw2k-tactical",
   "title": "TW2K Tactical",
   "description": "Advanced combat automation for Twilight: 2000 4E.",
-  "version": "0.4.0-alpha",
+  "version": "0.5.1-alpha",
   "compatibility": {
     "minimum": "14",
     "verified": "14"

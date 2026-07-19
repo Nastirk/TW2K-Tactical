@@ -6,7 +6,10 @@ export interface RangeModifier {
   description: string;
 }
 
-export type RangeModifierValues = Record<Exclude<RangeBand, "out-of-range">, number>;
+export type RangeModifierValues = Record<
+  Exclude<RangeBand, "out-of-range">,
+  number
+>;
 
 export class RangeModifierProvider {
   constructor(
@@ -19,13 +22,20 @@ export class RangeModifierProvider {
   ) {}
 
   getModifiers(context: AttackContext): RangeModifier[] {
-    if (context.combatMode !== "ranged") return [];
-    if (!context.rangeBand || context.rangeBand === "out-of-range") return [];
+    if (context.combatMode !== "ranged") {
+      return [];
+    }
 
-    return [{
-      source: "range",
-      value: this.values[context.rangeBand],
-      description: `Range: ${context.rangeBand}`,
-    }];
+    if (!context.rangeBand || context.rangeBand === "out-of-range") {
+      return [];
+    }
+
+    return [
+      {
+        source: "range",
+        value: this.values[context.rangeBand],
+        description: `Range: ${context.rangeBand}`,
+      },
+    ];
   }
 }
