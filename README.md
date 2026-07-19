@@ -1,14 +1,14 @@
-import type { DiceRoll } from "./types";
+# TW2K Tactical v0.3 Dice Engine
 
-export interface DicePoolResult {
-  rolls: DiceRoll[];
-  successes: number;
-}
+This milestone adds a clean, testable dice-engine foundation.
 
-export function countSuccesses(rolls: DiceRoll[]): number {
-  return rolls.reduce((total, roll) => {
-    if (roll.value >= 10) return total + 2;
-    if (roll.value >= 6) return total + 1;
-    return total;
-  }, 0);
-}
+## Included
+- Dice pool types
+- Dice pool builder
+- Structured roll result
+- Injectable roller abstraction
+- Deterministic test roller
+- Initial unit tests
+
+## Merge
+Copy the `src/dice` and `tests/dice` folders into your existing TW2K Tactical repository.
