@@ -1,24 +1,15 @@
-# TW2K Tactical v0.6 – Ranged Attack Workflow
+# TW2K Tactical v0.7 – Damage, Armor & Hit Location
 
-This milestone adds an orchestration layer for ranged attacks.
+Milestone scaffold for post-hit resolution.
 
-It connects:
+Adds three isolated components:
+- HitLocationResolver
+- ArmorResolver
+- DamageResolver
 
-RangedAttackRequest
-→ AttackContextBuilder
-→ Modifier providers
-→ Net modifier
-→ DiceModifierApplicator
-→ DiceEngine
-→ RangedAttackResult
+This package is intentionally conservative: it establishes typed, testable orchestration without hard-coding unverified rulebook tables. Exact hit-location tables, armor behavior, ammunition effects, critical thresholds, and weapon-specific damage data should be supplied by the rules/data layer.
 
-This milestone does NOT yet apply:
-- damage
-- armor
-- hit location
-- critical injuries
-
-Merge `src` and `tests` into your clean v0.5.1 project, then run:
+Merge `src` and `tests` into the current clean project, then run:
 
 ```bash
 npx tsc --noEmit
