@@ -1,0 +1,58 @@
+.tw2k-tactical-card {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tw2k-tactical-card header h3,
+.tw2k-tactical-card h4 {
+  margin: 0;
+}
+
+.tw2k-tactical-card__modifiers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tw2k-tactical-card__modifiers li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tw2k-tactical-card__die {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 0.25rem;
+  margin-right: 0.2rem;
+}
+
+.tw2k-tactical-card__result {
+  padding: 0.4rem;
+  border: 1px solid currentColor;
+  text-align: center;
+  font-weight: 700;
+}
+
+.tw2k-tactical-card__damage dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.75rem;
+  margin: 0;
+}
+
+.tw2k-tactical-card__damage dd {
+  margin: 0;
+}
+
+.tw2k-tactical-card__warning {
+  border: 2px solid currentColor;
+  padding: 0.5rem;
+  font-weight: 700;
+}
+
+.tw2k-tactical-card__apply {
+  width: 100%;
+  cursor: pointer;
+}

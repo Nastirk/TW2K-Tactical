@@ -16,5 +16,8 @@
       "name": "English",
       "path": "lang/en.json"
     }
+  ],
+  "styles": [
+    "styles/tw2k-tactical.css"
   ]
 }
