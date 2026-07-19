@@ -1,3 +1,1 @@
-# TW2K Tactical
-
-Foundation project.
+# Rules Engine
