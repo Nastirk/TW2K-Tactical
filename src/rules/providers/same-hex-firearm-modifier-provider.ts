@@ -1,4 +1,5 @@
 import type { AttackContext } from "../../combat/attack-context";
+import type { RangedAttackModifierProvider } from "../../combat/ranged-attack-resolver";
 
 export type SameHexFirearmCategory =
   | "pistol"
@@ -7,8 +8,13 @@ export type SameHexFirearmCategory =
   | "other";
 
 export interface SameHexFirearmModifierSource {
-  getWeaponCategory(weaponId: string): SameHexFirearmCategory;
-  isTargetActiveAndAware(targetId: string): boolean;
+  getWeaponCategory(
+    weaponId: string,
+  ): SameHexFirearmCategory;
+
+  isTargetActiveAndAware(
+    targetId: string,
+  ): boolean;
 }
 
 export interface SameHexFirearmModifier {
@@ -17,20 +23,33 @@ export interface SameHexFirearmModifier {
   description: string;
 }
 
-export class SameHexFirearmModifierProvider {
-  constructor(private readonly source: SameHexFirearmModifierSource) {}
+export class SameHexFirearmModifierProvider
+  implements RangedAttackModifierProvider
+{
+  constructor(
+    private readonly source:
+      SameHexFirearmModifierSource,
+  ) {}
 
-  getModifiers(context: AttackContext): SameHexFirearmModifier[] {
+  getModifiers(
+    context: AttackContext,
+  ): SameHexFirearmModifier[] {
     if (
       context.combatMode !== "ranged" ||
       !context.sameHex ||
       !context.weaponId ||
-      !this.source.isTargetActiveAndAware(context.targetId)
+      !this.source.isTargetActiveAndAware(
+        context.targetId,
+      )
     ) {
       return [];
     }
 
-    const category = this.source.getWeaponCategory(context.weaponId);
+    const category =
+      this.source.getWeaponCategory(
+        context.weaponId,
+      );
+
     const value =
       category === "pistol" ||
       category === "carbine" ||
@@ -38,10 +57,13 @@ export class SameHexFirearmModifierProvider {
         ? -1
         : -2;
 
-    return [{
-      source: "same-hex-firearm",
-      value,
-      description: "Firing at active and aware target in same hex",
-    }];
+    return [
+      {
+        source: "same-hex-firearm",
+        value,
+        description:
+          "Firing at active and aware target in same hex",
+      },
+    ];
   }
 }

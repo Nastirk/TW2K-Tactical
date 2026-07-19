@@ -1,30 +1,27 @@
-# TW2K Tactical
+# TW2K Tactical v0.6 – Ranged Attack Workflow
 
-A Foundry VTT module foundation for rules-accurate Twilight: 2000 4th Edition tactical combat automation.
+This milestone adds an orchestration layer for ranged attacks.
 
-## Current milestone: v0.5.1 alpha
+It connects:
 
-Implemented foundations:
+RangedAttackRequest
+→ AttackContextBuilder
+→ Modifier providers
+→ Net modifier
+→ DiceModifierApplicator
+→ DiceEngine
+→ RangedAttackResult
 
-- TypeScript + Vite module build
-- Foundry module bootstrap and Roll adapter
-- Step-die pool and dice engine
-- TW2K dice modifier applicator
-- Attack request/context model
-- Combat mode separation (`ranged` / `close-combat`)
-- Weapon SHORT range measured in 10-meter hexes
-- Short / Medium / Long / Extreme / out-of-range calculation
-- Range modifiers
-- Same-hex firearm modifiers
-- Unit tests
+This milestone does NOT yet apply:
+- damage
+- armor
+- hit location
+- critical injuries
 
-## Development
+Merge `src` and `tests` into your clean v0.5.1 project, then run:
 
 ```bash
-npm install
 npx tsc --noEmit
 npm run build
 npm test
 ```
-
-Generated dependencies and build output are intentionally excluded from Git.

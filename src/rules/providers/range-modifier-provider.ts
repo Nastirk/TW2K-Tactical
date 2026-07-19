@@ -1,4 +1,5 @@
 import type { AttackContext, RangeBand } from "../../combat/attack-context";
+import type { RangedAttackModifierProvider } from "../../combat/ranged-attack-resolver";
 
 export interface RangeModifier {
   source: "range";
@@ -6,12 +7,12 @@ export interface RangeModifier {
   description: string;
 }
 
-export type RangeModifierValues = Record<
-  Exclude<RangeBand, "out-of-range">,
-  number
->;
+export type RangeModifierValues =
+  Record<Exclude<RangeBand, "out-of-range">, number>;
 
-export class RangeModifierProvider {
+export class RangeModifierProvider
+  implements RangedAttackModifierProvider
+{
   constructor(
     private readonly values: RangeModifierValues = {
       short: 0,
@@ -21,12 +22,18 @@ export class RangeModifierProvider {
     },
   ) {}
 
-  getModifiers(context: AttackContext): RangeModifier[] {
+  getModifiers(
+    context: AttackContext,
+  ): RangeModifier[] {
     if (context.combatMode !== "ranged") {
       return [];
     }
 
-    if (!context.rangeBand || context.rangeBand === "out-of-range") {
+    if (!context.rangeBand) {
+      return [];
+    }
+
+    if (context.rangeBand === "out-of-range") {
       return [];
     }
 
