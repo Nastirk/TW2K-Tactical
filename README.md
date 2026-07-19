@@ -1,42 +1,26 @@
-# TW2K Tactical v0.14 – Foundry Combat UI & Chat Cards
+# TW2K Tactical v0.15 – Interactive Foundry Combat Actions
 
-This milestone adds the first player-facing Foundry presentation layer for the
-combat engine.
+This milestone makes combat chat cards interactive.
 
 Implemented:
-- Structured combat chat-card view model.
-- HTML chat-card renderer.
-- Foundry ChatMessage adapter.
-- CombatChatService for publishing end-to-end attack results.
-- Modifier breakdown.
-- Base and final dice display.
-- Hit/miss status.
-- Damage, hit location, armor, and critical injury display.
-- Death-save warning display.
-- Optional "Apply Result" action metadata for later interactive automation.
-- Basic module CSS.
+- Chat-card action controller.
+- "Apply Result" click handling.
+- Foundry chat-log listener registration.
+- Target actor lookup from card metadata.
+- Idempotency guard to prevent double application.
+- Permission hook for later GM/user authorization rules.
+- Actor-state application service.
+- Chat-card button state update after successful application.
+- Structured error handling.
 - Unit tests.
 
-The adapter deliberately wraps Foundry ChatMessage creation behind a small
-interface so the combat engine remains independently testable and future
-Foundry API changes stay isolated.
+Important:
+The existing v0.12 end-to-end workflow currently persists actor state immediately.
+For interactive application, v0.15 introduces a separate staged-result application path
+intended for UI-driven use. The next integration step should switch the in-Foundry UI flow
+to produce a staged combat result first, then apply it only when the chat-card button is clicked.
 
-Foundry v14 still exposes ChatMessage documents and ChatMessage.create-style
-document creation patterns; module-owned metadata is stored under flags.
-
-## Install
-
-Merge `src`, `tests`, and `styles` into the current project.
-
-Ensure `module.json` loads:
-
-```json
-"styles": [
-  "styles/tw2k-tactical.css"
-]
-```
-
-Then run:
+Merge `src` and `tests` into the current project, then run:
 
 ```bash
 npx tsc --noEmit
