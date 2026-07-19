@@ -1,18 +1,18 @@
-import type { DicePoolInput, StepDiePool } from "./types";
+import type { DicePoolInput, StepDie } from "./types";
 
 export class DicePool {
   private constructor(
-    public readonly attribute?: StepDiePool["attribute"],
-    public readonly skill?: StepDiePool["skill"],
+    public readonly attribute?: StepDie,
+    public readonly skill?: StepDie,
   ) {}
 
   static from(input: DicePoolInput): DicePool {
     return new DicePool(input.attribute, input.skill);
   }
 
-  get dice(): number[] {
+  get dice(): StepDie[] {
     return [this.attribute, this.skill].filter(
-      (die): die is NonNullable<typeof die> => die !== undefined,
+      (die): die is StepDie => die !== undefined,
     );
   }
 
