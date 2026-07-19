@@ -1,47 +1,28 @@
-# TW2K Tactical v0.17 – Additional Ranged Combat Modifiers
+# TW2K Tactical v0.18 – Modifier-Aware Staged Attack Flow
 
-This milestone expands rules-accurate ranged combat modifiers from the Twilight: 2000 4E Player's Manual.
+This milestone wires the v0.17 ranged-combat modifier rules into the staged attack pipeline.
+
+Flow:
+
+Foundry/UI combat facts
+→ resolve additional ranged modifiers
+→ reject impossible shots
+→ inject modifiers into RangedAttackResolver
+→ resolve staged attack
+→ publish/review/apply through the existing v0.16 flow
 
 Implemented:
-- Quick shot:
-  - pistols/carbines/SMGs: -1
-  - other ranged weapons: -2
-- Fast aim: no modifier
-- Telescopic slow aim:
-  - +1 normally
-  - +2 from a stable platform
-- Target prone outside same hex: -1
-- Full cover with known approximate position: -3
-- Called shot: -2
-- Moving target: -1
-- Firing from a moving vehicle: -2
-- Large target: +2
-- Small target: -2
-- Elevated firing position: +1
-- Target-hex terrain modifier: 0 to -2
-- Dim light: -1
-- Darkness: -2
-- Heavy rain / fog / strong wind: configurable, typically -1
-- Dense smoke with known target hex: -3
-- Total darkness and unknown targets in dense smoke can block the attack
-- Night vision can negate darkness
-- Thermal optics can negate darkness, weather, and smoke
-- Machine-gun carried-fire penalties
-- One-handed firearm penalties and rifle/assault-rifle short-range restriction
-- Full modifier breakdown and attack-allowed result
+- Static modifier provider adapter.
+- Modifier-aware staged ranged combat workflow.
+- Attack-blocked error with a rules reason.
+- Additional v0.17 modifiers are applied to the actual dice pool, not just displayed.
+- Existing range and same-hex providers can remain in the base provider list.
+- Tests for modifier injection, impossible shots, and modifier breakdown.
 
-Existing range-band and same-hex providers remain separate so their logic is not counted twice.
+The v0.17 modifier resolver deliberately does not duplicate range-band or same-hex firearm
+modifiers; those remain handled by the existing providers.
 
-Verified rules basis:
-- Player's Manual ranged-fire modifier table.
-- Aiming and telescopic sights.
-- Full/partial cover.
-- Moving targets and moving vehicles.
-- Target size and elevation.
-- Terrain, weather, darkness, and smoke.
-- Machine guns and one-handed shooting.
-
-Merge `src` and `tests` into the current project, then run:
+Merge `src` and `tests` into the project, then run:
 
 ```bash
 npx tsc --noEmit
