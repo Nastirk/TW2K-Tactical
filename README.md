@@ -1,24 +1,30 @@
-# TW2K Tactical v0.15 – Interactive Foundry Combat Actions
+# TW2K Tactical v0.16 – Staged Foundry Attack Flow
 
-This milestone makes combat chat cards interactive.
+This milestone aligns the combat engine, chat cards, and interactive Apply Result action
+into one consistent Foundry-facing workflow:
+
+Resolve attack
+→ Produce staged combat result
+→ Publish chat card
+→ Review result
+→ Click Apply Result
+→ Persist damage / critical injury / death-save state
 
 Implemented:
-- Chat-card action controller.
-- "Apply Result" click handling.
-- Foundry chat-log listener registration.
-- Target actor lookup from card metadata.
-- Idempotency guard to prevent double application.
-- Permission hook for later GM/user authorization rules.
-- Actor-state application service.
-- Chat-card button state update after successful application.
-- Structured error handling.
-- Unit tests.
+- StagedEndToEndRangedCombatWorkflow (no immediate actor mutation).
+- CombatResultPayloadFactory.
+- StagedFoundryRangedAttackService.
+- Chat payload now contains the complete staged actor-update data.
+- Interactive Apply Result path consumes the staged payload.
+- Immediate-mutation v0.12 workflow remains available for non-UI/internal use.
+- Unit tests for staged miss, staged hit, critical injury payload, and chat publication.
 
-Important:
-The existing v0.12 end-to-end workflow currently persists actor state immediately.
-For interactive application, v0.15 introduces a separate staged-result application path
-intended for UI-driven use. The next integration step should switch the in-Foundry UI flow
-to produce a staged combat result first, then apply it only when the chat-card button is clicked.
+This milestone intentionally separates:
+- rules resolution
+- presentation
+- persistence
+
+That separation prevents actor state from being updated twice.
 
 Merge `src` and `tests` into the current project, then run:
 

@@ -5,8 +5,7 @@ import type {
 export interface PublishCombatChatRequest {
   content: string;
   attackerActor?: unknown;
-  metadata?:
-    Record<string, unknown>;
+  metadata?: unknown;
 }
 
 export class FoundryChatMessagePublisher {
