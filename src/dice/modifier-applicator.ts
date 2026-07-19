@@ -10,7 +10,11 @@ function stepUp(die: StepDie): StepDie {
 
 function stepDown(die: StepDie): StepDie | undefined {
   const index = STEP_DICE.indexOf(die);
-  if (index <= 0) return undefined;
+
+  if (index <= 0) {
+    return undefined;
+  }
+
   return STEP_DICE[index - 1];
 }
 
@@ -34,54 +38,96 @@ export class DiceModifierApplicator {
     });
   }
 
-  private applyPositive(dice: StepDie[], steps: number): StepDie[] {
-    for (let i = 0; i < steps; i += 1) {
+  private applyPositive(
+    dice: StepDie[],
+    steps: number,
+  ): StepDie[] {
+    let remaining = steps;
+
+    while (remaining > 0) {
       if (dice.length === 0) {
         dice.push(6);
+        remaining -= 1;
         continue;
       }
 
-      if (dice.length === 1 && dice[0] === 12) {
+      if (dice.length === 1) {
         dice.push(6);
+        remaining -= 1;
         continue;
       }
 
       const candidates = dice
-        .map((die, index) => ({ die, index }))
+        .map((die, index) => ({
+          die,
+          index,
+        }))
         .filter(({ die }) => die < 12)
         .sort((a, b) => a.die - b.die);
 
       const candidate = candidates[0];
 
       if (!candidate) {
-        continue;
+        break;
       }
 
-      dice[candidate.index] = stepUp(candidate.die);
+      dice[candidate.index] =
+        stepUp(candidate.die);
+
+      remaining -= 1;
     }
 
     return dice;
   }
 
-  private applyNegative(dice: StepDie[], steps: number): StepDie[] {
-    for (let i = 0; i < steps; i += 1) {
-      if (dice.length === 0) break;
+  private applyNegative(
+    dice: StepDie[],
+    steps: number,
+  ): StepDie[] {
+    let remaining = steps;
+
+    while (remaining > 0) {
+      if (dice.length === 0) {
+        dice.push(6);
+        break;
+      }
+
+      if (
+        dice.length === 1 &&
+        dice[0] === 6
+      ) {
+        break;
+      }
 
       let highestIndex = 0;
 
-      for (let index = 1; index < dice.length; index += 1) {
-        if (dice[index]! > dice[highestIndex]!) {
+      for (
+        let index = 1;
+        index < dice.length;
+        index += 1
+      ) {
+        if (
+          dice[index]! >
+          dice[highestIndex]!
+        ) {
           highestIndex = index;
         }
       }
 
-      const stepped = stepDown(dice[highestIndex]!);
+      const stepped =
+        stepDown(dice[highestIndex]!);
 
       if (stepped === undefined) {
-        dice.splice(highestIndex, 1);
+        if (dice.length > 1) {
+          dice.splice(highestIndex, 1);
+        } else {
+          break;
+        }
       } else {
         dice[highestIndex] = stepped;
       }
+
+      remaining -= 1;
     }
 
     return dice;
