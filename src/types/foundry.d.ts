@@ -9,10 +9,6 @@ declare const Hooks: FoundryHooks;
 
 declare class Roll {
   constructor(formula: string);
-
   total: number | null;
-
-  evaluate(options?: {
-    async?: boolean;
-  }): Promise<Roll>;
+  evaluate(options?: { async?: boolean }): Promise<Roll>;
 }

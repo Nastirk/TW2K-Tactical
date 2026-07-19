@@ -1,5 +1,5 @@
 export interface AttackRequest {
   attackerId: string;
   targetId: string;
-  weaponId: string;
+  weaponId?: string;
 }

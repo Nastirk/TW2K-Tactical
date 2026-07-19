@@ -1,1 +1,20 @@
-{"id":"tw2k-tactical","title":"TW2K Tactical","version":"0.1.0-alpha","compatibility":{"minimum":"14","verified":"14"},"esmodules":["dist/tw2k-tactical.js"],"languages":[{"lang":"en","name":"English","path":"lang/en.json"}]}
+{
+  "id": "tw2k-tactical",
+  "title": "TW2K Tactical",
+  "description": "Advanced combat automation for Twilight: 2000 4E.",
+  "version": "0.4.0-alpha",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "esmodules": [
+    "dist/tw2k-tactical.js"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ]
+}

@@ -1,1 +1,13 @@
-import type {ModifierProvider} from "./provider"; export class ModifierRegistry{private p:ModifierProvider[]=[];register(x:ModifierProvider){this.p.push(x);}getProviders(){return [...this.p];}}
+import type { ModifierProvider } from "./provider";
+
+export class ModifierRegistry {
+  private readonly providers: ModifierProvider[] = [];
+
+  register(provider: ModifierProvider): void {
+    this.providers.push(provider);
+  }
+
+  getProviders(): ModifierProvider[] {
+    return [...this.providers];
+  }
+}

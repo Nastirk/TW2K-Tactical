@@ -1,1 +1,15 @@
-import {ModifierRegistry} from "./registry";import type {RuleContext} from "./context";export class RulesEngine{constructor(private r:ModifierRegistry){} evaluate(c:RuleContext){return {modifiers:this.r.getProviders().flatMap(p=>p.getModifiers(c))};}}
+import type { RuleContext } from "./context";
+import type { RuleResult } from "./result";
+import { ModifierRegistry } from "./registry";
+
+export class RulesEngine {
+  constructor(private readonly registry: ModifierRegistry) {}
+
+  evaluate(context: RuleContext): RuleResult {
+    return {
+      modifiers: this.registry
+        .getProviders()
+        .flatMap((provider) => provider.getModifiers(context)),
+    };
+  }
+}

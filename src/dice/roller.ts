@@ -30,9 +30,3 @@ export class DiceEngine {
     };
   }
 }
-
-export class MathRandomDieRoller implements DieRoller {
-  async rollDie(sides: StepDie): Promise<number> {
-    return Math.floor(Math.random() * sides) + 1;
-  }
-}

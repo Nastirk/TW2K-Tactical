@@ -1,15 +1,20 @@
 export type RangeBand =
-  | "close"
   | "short"
   | "medium"
   | "long"
-  | "extreme";
+  | "extreme"
+  | "out-of-range";
+
+export type CombatMode =
+  | "ranged"
+  | "close-combat";
 
 export interface AttackContext {
   attackerId: string;
   targetId: string;
-  weaponId: string;
-
-  distance: number;
-  rangeBand: RangeBand;
+  weaponId?: string;
+  distanceHexes: number;
+  combatMode: CombatMode;
+  rangeBand?: RangeBand;
+  sameHex: boolean;
 }

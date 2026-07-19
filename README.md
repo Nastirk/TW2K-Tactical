@@ -1,14 +1,12 @@
-# TW2K Tactical v0.3 Dice Engine
+# TW2K Tactical
 
-This milestone adds a clean, testable dice-engine foundation.
+Advanced combat automation foundation for Twilight: 2000 4E on Foundry VTT 14.
 
-## Included
-- Dice pool types
-- Dice pool builder
-- Structured roll result
-- Injectable roller abstraction
-- Deterministic test roller
-- Initial unit tests
+## Development
 
-## Merge
-Copy the `src/dice` and `tests/dice` folders into your existing TW2K Tactical repository.
+```bash
+npm install
+npx tsc --noEmit
+npm run build
+npm test
+```

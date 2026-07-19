@@ -1,1 +1,4 @@
-{"TW2K.Ready":"TW2K Tactical Ready"}
+{
+  "TW2K_TACTICAL.Ready": "TW2K Tactical Ready",
+  "TW2K_TACTICAL.Initializing": "TW2K Tactical initializing"
+}
