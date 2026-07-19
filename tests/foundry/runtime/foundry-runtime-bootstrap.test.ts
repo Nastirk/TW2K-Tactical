@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { bootstrapFoundryRuntime } from "../../../src/foundry/runtime/foundry-runtime-bootstrap";
 
 describe("bootstrapFoundryRuntime", () => {
-  it("registers the live attack and item-sheet hooks", () => {
+  it("registers live attack and both item-sheet hooks and exposes diagnostics", () => {
     const registered: string[] = [];
 
     class DialogStub {
@@ -12,7 +12,7 @@ describe("bootstrapFoundryRuntime", () => {
 
     const moduleRecord: Record<string, unknown> = {};
 
-    bootstrapFoundryRuntime({
+    const runtime = bootstrapFoundryRuntime({
       hooks: {
         on: vi.fn((name: string) => {
           registered.push(name);
@@ -24,6 +24,11 @@ describe("bootstrapFoundryRuntime", () => {
         create: vi.fn().mockResolvedValue(undefined),
       },
       getGame: () => ({
+        system: {
+          id: "t2k4e",
+          version: "14.0.1",
+        },
+        version: "14",
         modules: {
           get: () => moduleRecord,
         },
@@ -31,13 +36,25 @@ describe("bootstrapFoundryRuntime", () => {
           targets: new Set(),
         },
       }),
-      getCanvas: () => undefined,
+      getCanvas: () => ({
+        grid: {},
+        tokens: { controlled: [] },
+      }),
       getUi: () => undefined,
       getChatRoot: () => null,
     });
 
     expect(registered).toContain("tw2k-tactical.attack");
     expect(registered).toContain("renderItemSheet");
-    expect(moduleRecord.api).toBeDefined();
+    expect(registered).toContain("renderItemSheetV2");
+
+    const api = moduleRecord.api as {
+      attack?: unknown;
+      diagnostics?: () => { systemId?: string };
+    };
+
+    expect(typeof api.attack).toBe("function");
+    expect(api.diagnostics?.().systemId).toBe("t2k4e");
+    expect(runtime.diagnostics().ok).toBe(true);
   });
 });

@@ -8,6 +8,7 @@ import { FoundryAttackDialogService } from "../dialog/foundry-attack-dialog-serv
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
 import type { T2K4EActorLike, T2K4EItemLike } from "../t2k4e/t2k4e-types";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
+import type { FoundryAttackSelectionValidator } from "./foundry-t2k4e-compatibility";
 
 export interface CollectedFoundryAttackDialogInput extends FoundryAttackDialogInput {
   attack: ModifierAwareStagedRangedCombatRequest;
@@ -18,11 +19,14 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
     private readonly dialogService: FoundryAttackDialogService,
     private readonly combatRequestFactory: T2K4ECombatRequestFactory,
     private readonly initialFactory: FoundryAttackDialogInitialFactory,
+    private readonly selectionValidator?: FoundryAttackSelectionValidator,
   ) {}
 
   async collect(
     selection: FoundryLiveAttackSelection,
   ): Promise<CollectedFoundryAttackDialogInput | null> {
+    this.selectionValidator?.assertAttackSelection(selection);
+
     const combat = this.combatRequestFactory.createRangedAttack({
       attacker: selection.attackerActor as T2K4EActorLike,
       target: selection.targetActor as T2K4EActorLike,

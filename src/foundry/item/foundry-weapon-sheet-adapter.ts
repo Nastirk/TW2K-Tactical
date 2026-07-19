@@ -24,6 +24,15 @@ interface JQueryRootLike {
   find(selector: string): JQueryCollectionLike;
 }
 
+interface DomElementLike {
+  querySelector?(selector: string): DomElementLike | null;
+  insertAdjacentHTML?(position: string, text: string): void;
+  addEventListener?(
+    type: string,
+    handler: (event: unknown) => unknown,
+  ): void;
+}
+
 interface ItemLike {
   type?: unknown;
   parent?: unknown;
@@ -51,7 +60,14 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       app?.object ?? app?.item ?? app?.document,
     );
 
-    if (!weapon || weapon.type !== this.weaponItemType) {
+    const weaponType = typeof weapon?.type === "string"
+      ? weapon.type.toLowerCase()
+      : "";
+
+    if (
+      !weapon ||
+      weaponType !== this.weaponItemType.toLowerCase()
+    ) {
       return null;
     }
 
@@ -61,9 +77,10 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       return null;
     }
 
-    const root = this.asJQueryRoot(html);
+    const jqueryRoot = this.asJQueryRoot(html);
+    const domRoot = this.asDomRoot(html);
 
-    if (!root) {
+    if (!jqueryRoot && !domRoot) {
       return null;
     }
 
@@ -71,12 +88,19 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       attackerActor,
       weapon,
       addAttackAction: (callback) => {
-        this.addAttackAction(root, callback);
+        if (jqueryRoot) {
+          this.addJQueryAttackAction(jqueryRoot, callback);
+          return;
+        }
+
+        if (domRoot) {
+          this.addDomAttackAction(domRoot, callback);
+        }
       },
     };
   }
 
-  private addAttackAction(
+  private addJQueryAttackAction(
     root: JQueryRootLike,
     callback: () => void | Promise<void>,
   ): void {
@@ -87,31 +111,91 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       return;
     }
 
-    const header = root.find(this.headerSelector);
+    const header = this.findJQueryHeader(root);
 
-    if (header.length === 0) {
+    if (!header) {
       return;
     }
 
-    header.append(
-      '<button type="button" class="tw2k-tactical-weapon-attack" data-tw2k-tactical-action="attack">TW2K Tactical Attack</button>',
-    );
+    header.append(this.buttonHtml());
 
     root.find(buttonSelector).on(
       "click",
       async (event: unknown) => {
-        if (
-          event &&
-          typeof event === "object" &&
-          "preventDefault" in event &&
-          typeof (event as { preventDefault?: unknown }).preventDefault === "function"
-        ) {
-          (event as { preventDefault: () => void }).preventDefault();
-        }
-
+        this.preventDefault(event);
         await callback();
       },
     );
+  }
+
+  private addDomAttackAction(
+    root: DomElementLike,
+    callback: () => void | Promise<void>,
+  ): void {
+    const buttonSelector =
+      '[data-tw2k-tactical-action="attack"]';
+
+    if (root.querySelector?.(buttonSelector)) {
+      return;
+    }
+
+    const header = this.findDomHeader(root);
+
+    if (!header?.insertAdjacentHTML) {
+      return;
+    }
+
+    header.insertAdjacentHTML(
+      "beforeend",
+      this.buttonHtml(),
+    );
+
+    const button = root.querySelector?.(buttonSelector);
+
+    button?.addEventListener?.(
+      "click",
+      async (event: unknown) => {
+        this.preventDefault(event);
+        await callback();
+      },
+    );
+  }
+
+  private findJQueryHeader(
+    root: JQueryRootLike,
+  ): JQueryCollectionLike | null {
+    for (const selector of [this.headerSelector, "form"]) {
+      const element = root.find(selector);
+
+      if (element.length > 0) {
+        return element;
+      }
+    }
+
+    return null;
+  }
+
+  private findDomHeader(
+    root: DomElementLike,
+  ): DomElementLike | null {
+    return root.querySelector?.(this.headerSelector)
+      ?? root.querySelector?.("form")
+      ?? null;
+  }
+
+  private buttonHtml(): string {
+    return '<button type="button" class="tw2k-tactical-weapon-attack" data-tw2k-tactical-action="attack">TW2K Tactical Attack</button>';
+  }
+
+  private preventDefault(event: unknown): void {
+    if (
+      event &&
+      typeof event === "object" &&
+      "preventDefault" in event &&
+      typeof (event as { preventDefault?: unknown }).preventDefault === "function"
+    ) {
+      (event as { preventDefault: () => void }).preventDefault();
+    }
   }
 
   private asApplication(value: unknown): ApplicationLike | null {
@@ -137,5 +221,18 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
     }
 
     return value as JQueryRootLike;
+  }
+
+  private asDomRoot(value: unknown): DomElementLike | null {
+    if (
+      !value ||
+      typeof value !== "object" ||
+      !("querySelector" in value) ||
+      typeof (value as { querySelector?: unknown }).querySelector !== "function"
+    ) {
+      return null;
+    }
+
+    return value as DomElementLike;
   }
 }

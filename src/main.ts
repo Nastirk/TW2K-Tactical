@@ -56,6 +56,27 @@ Hooks.once("init", () => {
 Hooks.once("ready", () => {
   try {
     runtime?.registerReady();
+
+    const report = runtime?.diagnostics();
+
+    if (report) {
+      const system = report.systemId ?? "unknown";
+      const systemVersion = report.systemVersion ?? "unknown";
+      const foundryVersion = report.foundryVersion ?? "unknown";
+
+      Logger.info(
+        `Compatibility: system=${system} ${systemVersion}, Foundry=${foundryVersion}`,
+      );
+
+      for (const issue of report.issues) {
+        Logger.error(`Compatibility issue: ${issue}`);
+      }
+
+      for (const warning of report.warnings) {
+        Logger.warn(`Compatibility warning: ${warning}`);
+      }
+    }
+
     Logger.info("TW2K Tactical ready");
   } catch (error) {
     Logger.error(

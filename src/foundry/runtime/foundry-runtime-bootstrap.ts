@@ -32,6 +32,10 @@ import {
   DefaultFoundryLiveAttackExecutionContextFactory,
   FoundryModifierAwareLiveAttackExecutor,
 } from "./foundry-live-attack-executor";
+import {
+  FoundryT2K4ECompatibilityService,
+  type FoundryT2K4ECompatibilityReport,
+} from "./foundry-t2k4e-compatibility";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -54,6 +58,7 @@ export interface FoundryRuntimeEnvironment {
 
 export interface FoundryRuntimeHandle {
   attack(): Promise<boolean>;
+  diagnostics(): FoundryT2K4ECompatibilityReport;
   registerReady(): void;
 }
 
@@ -65,7 +70,10 @@ function asRecord(value: unknown): UnknownRecord | null {
 
 function installModuleApi(
   game: unknown,
-  attack: () => Promise<boolean>,
+  api: {
+    attack: () => Promise<boolean>;
+    diagnostics: () => FoundryT2K4ECompatibilityReport;
+  },
 ): void {
   const modules = asRecord(game)?.modules;
   const getModule = asRecord(modules)?.get;
@@ -81,15 +89,18 @@ function installModuleApi(
     return;
   }
 
-  moduleRecord.api = {
-    attack,
-  };
+  moduleRecord.api = api;
 }
 
 export function bootstrapFoundryRuntime(
   environment: FoundryRuntimeEnvironment,
 ): FoundryRuntimeHandle {
   const categoryResolver = new FoundryWeaponCategoryResolver();
+  const compatibility = new FoundryT2K4ECompatibilityService(
+    environment.getGame,
+    environment.getCanvas,
+  );
+
   const selectionSource = new FoundryWeaponAttackSelectionSource(
     new FoundryCanvasTargetActorSource(environment.getGame),
   );
@@ -109,6 +120,7 @@ export function bootstrapFoundryRuntime(
       environment.getCanvas,
       categoryResolver,
     ),
+    compatibility,
   );
 
   const executor = new FoundryModifierAwareLiveAttackExecutor(
@@ -142,16 +154,11 @@ export function bootstrapFoundryRuntime(
     weaponAttackAction,
   );
 
-  installModuleApi(
-    environment.getGame(),
-    () => controller.attack(),
-  );
-
   let readyRegistered = false;
 
-  return {
+  const handle: FoundryRuntimeHandle = {
     attack: () => controller.attack(),
-
+    diagnostics: () => compatibility.inspect(),
     registerReady: () => {
       if (readyRegistered) {
         return;
@@ -191,4 +198,14 @@ export function bootstrapFoundryRuntime(
       readyRegistered = true;
     },
   };
+
+  installModuleApi(
+    environment.getGame(),
+    {
+      attack: handle.attack,
+      diagnostics: handle.diagnostics,
+    },
+  );
+
+  return handle;
 }

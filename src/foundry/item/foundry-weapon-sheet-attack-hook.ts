@@ -16,26 +16,32 @@ export function registerFoundryWeaponSheetAttackHook(
   adapter: FoundryWeaponSheetAdapter,
   action: FoundryWeaponAttackAction,
 ): void {
-  hooks.on(
-    "renderItemSheet",
-    (application, html) => {
-      const context = adapter.resolve(
-        application,
-        html,
-      );
+  const onRender = (
+    application: unknown,
+    html: unknown,
+  ) => {
+    const context = adapter.resolve(
+      application,
+      html,
+    );
 
-      if (!context) {
-        return;
-      }
+    if (!context) {
+      return;
+    }
 
-      context.addAttackAction(
-        async () => {
-          await action.launch(
-            context.attackerActor,
-            context.weapon,
-          );
-        },
-      );
-    },
-  );
+    context.addAttackAction(
+      async () => {
+        await action.launch(
+          context.attackerActor,
+          context.weapon,
+        );
+      },
+    );
+  };
+
+  // Foundry V14 systems may render sheets through legacy Application
+  // hooks or ApplicationV2-style hooks. The adapter prevents duplicate
+  // buttons when both hooks fire for the same sheet.
+  hooks.on("renderItemSheet", onRender);
+  hooks.on("renderItemSheetV2", onRender);
 }

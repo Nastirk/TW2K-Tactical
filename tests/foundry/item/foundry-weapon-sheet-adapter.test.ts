@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { FoundryJQueryWeaponSheetAdapter } from "../../../src/foundry/item/foundry-weapon-sheet-adapter";
 
 describe("FoundryJQueryWeaponSheetAdapter", () => {
-  it("adds and wires a Tactical Attack button", async () => {
+  it("adds and wires a Tactical Attack button for legacy jQuery sheets", async () => {
     let buttonExists = false;
     let clickHandler:
       | ((event: unknown) => unknown)
@@ -84,6 +84,77 @@ describe("FoundryJQueryWeaponSheetAdapter", () => {
     await clickHandler?.({
       preventDefault,
     });
+
+    expect(preventDefault).toHaveBeenCalledOnce();
+    expect(callback).toHaveBeenCalledOnce();
+  });
+
+  it("adds and wires the attack button for DOM/ApplicationV2-style sheets", async () => {
+    let buttonExists = false;
+    let clickHandler:
+      | ((event: unknown) => unknown)
+      | undefined;
+
+    const button = {
+      addEventListener: vi.fn(
+        (
+          _type: string,
+          handler: (event: unknown) => unknown,
+        ) => {
+          clickHandler = handler;
+        },
+      ),
+    };
+
+    const header = {
+      insertAdjacentHTML: vi.fn(() => {
+        buttonExists = true;
+      }),
+    };
+
+    const root = {
+      querySelector: (selector: string) => {
+        if (selector === ".sheet-header") {
+          return header;
+        }
+
+        if (
+          selector ===
+          '[data-tw2k-tactical-action="attack"]'
+        ) {
+          return buttonExists ? button : null;
+        }
+
+        return null;
+      },
+    };
+
+    const callback =
+      vi.fn().mockResolvedValue(undefined);
+
+    const context =
+      new FoundryJQueryWeaponSheetAdapter().resolve(
+        {
+          document: {
+            type: "Weapon",
+            parent: { id: "actor" },
+          },
+        },
+        root,
+      );
+
+    expect(context).not.toBeNull();
+
+    context!.addAttackAction(callback);
+
+    expect(header.insertAdjacentHTML).toHaveBeenCalledOnce();
+    expect(button.addEventListener).toHaveBeenCalledWith(
+      "click",
+      expect.any(Function),
+    );
+
+    const preventDefault = vi.fn();
+    await clickHandler?.({ preventDefault });
 
     expect(preventDefault).toHaveBeenCalledOnce();
     expect(callback).toHaveBeenCalledOnce();

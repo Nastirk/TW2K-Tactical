@@ -18,26 +18,29 @@ export class FoundryLiveAttackController {
 
     if (!selection) {
       this.notifications.warn(
-        "Select an attacker, a target, and a ranged weapon before attacking.",
+        "Select an attacker, exactly one target, and a ranged weapon before attacking.",
       );
       return false;
     }
 
-    const dialogInput = await this.dialogCollector.collect(selection);
-
-    if (!dialogInput) {
-      return false;
-    }
-
     try {
+      const dialogInput = await this.dialogCollector.collect(selection);
+
+      if (!dialogInput) {
+        return false;
+      }
+
       await this.executor.execute({
         selection,
         dialogInput,
       });
+
       return true;
     } catch (error) {
       this.notifications.error?.(
-        error instanceof Error ? error.message : "TW2K Tactical attack failed.",
+        error instanceof Error
+          ? error.message
+          : "TW2K Tactical attack failed.",
       );
       throw error;
     }

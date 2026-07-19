@@ -6,7 +6,7 @@ import {
 } from "../../../src/foundry/runtime/foundry-runtime-adapters";
 
 describe("Foundry runtime adapters", () => {
-  it("resolves the first targeted token actor", () => {
+  it("resolves the single targeted token actor", () => {
     const actor = { id: "target" };
     const source = new FoundryCanvasTargetActorSource(() => ({
       user: {
@@ -17,6 +17,19 @@ describe("Foundry runtime adapters", () => {
     }));
 
     expect(source.getTargetActor()).toBe(actor);
+  });
+
+  it("rejects ambiguous multi-target attacks", () => {
+    const source = new FoundryCanvasTargetActorSource(() => ({
+      user: {
+        targets: new Set([
+          { actor: { id: "target-1" } },
+          { actor: { id: "target-2" } },
+        ]),
+      },
+    }));
+
+    expect(source.getTargetActor()).toBeNull();
   });
 
   it("infers common ranged weapon categories", () => {

@@ -64,4 +64,32 @@ describe("FoundryLiveAttackController", () => {
       dialogInput,
     });
   });
+
+  it("surfaces compatibility and dialog collection errors through notifications", async () => {
+    const error = vi.fn();
+
+    const controller = new FoundryLiveAttackController(
+      {
+        getSelection: () => ({
+          attackerActor: { id: "attacker" },
+          targetActor: { id: "target" },
+          weapon: { id: "weapon" },
+        }),
+      },
+      {
+        collect: vi.fn().mockRejectedValue(
+          new Error("T2K4E compatibility failed"),
+        ),
+      },
+      { execute: vi.fn() },
+      { warn: vi.fn(), error },
+    );
+
+    await expect(controller.attack()).rejects.toThrow(
+      "T2K4E compatibility failed",
+    );
+    expect(error).toHaveBeenCalledWith(
+      "T2K4E compatibility failed",
+    );
+  });
 });

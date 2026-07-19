@@ -106,18 +106,16 @@ export class FoundryCanvasTargetActorSource implements FoundryTargetActorSource 
       return null;
     }
 
-    const iterator = (
-      targets as Iterable<unknown>
-    )[Symbol.iterator]();
+    const targetList = Array.from(
+      targets as Iterable<unknown>,
+    );
 
-    const first = iterator.next();
-
-    if (first.done) {
+    if (targetList.length !== 1) {
       return null;
     }
 
-    return readPath(first.value, ["actor"])
-      ?? readPath(first.value, ["document", "actor"])
+    return readPath(targetList[0], ["actor"])
+      ?? readPath(targetList[0], ["document", "actor"])
       ?? null;
   }
 }

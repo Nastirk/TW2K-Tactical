@@ -2,10 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { registerFoundryWeaponSheetAttackHook } from "../../../src/foundry/item/foundry-weapon-sheet-attack-hook";
 
 describe("registerFoundryWeaponSheetAttackHook", () => {
-  it("registers and delegates a weapon-sheet attack action", async () => {
-    let renderHook:
-      | ((application: unknown, html: unknown) => unknown)
-      | undefined;
+  it("registers legacy and ApplicationV2 weapon-sheet hooks", async () => {
+    const callbacks = new Map<
+      string,
+      (application: unknown, html: unknown) => unknown
+    >();
 
     const hooks = {
       on: vi.fn(
@@ -16,8 +17,7 @@ describe("registerFoundryWeaponSheetAttackHook", () => {
             html: unknown,
           ) => unknown,
         ) => {
-          expect(name).toBe("renderItemSheet");
-          renderHook = callback;
+          callbacks.set(name, callback);
         },
       ),
     };
@@ -50,7 +50,10 @@ describe("registerFoundryWeaponSheetAttackHook", () => {
       { launch } as never,
     );
 
-    renderHook?.({}, {});
+    expect(callbacks.has("renderItemSheet")).toBe(true);
+    expect(callbacks.has("renderItemSheetV2")).toBe(true);
+
+    callbacks.get("renderItemSheetV2")?.({}, {});
     await attackCallback?.();
 
     expect(launch).toHaveBeenCalledWith(
