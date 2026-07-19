@@ -1,28 +1,43 @@
-# TW2K Tactical v0.18 – Modifier-Aware Staged Attack Flow
+# TW2K Tactical v0.19 – Foundry Attack Dialog & Input Collection
 
-This milestone wires the v0.17 ranged-combat modifier rules into the staged attack pipeline.
-
-Flow:
-
-Foundry/UI combat facts
-→ resolve additional ranged modifiers
-→ reject impossible shots
-→ inject modifiers into RangedAttackResolver
-→ resolve staged attack
-→ publish/review/apply through the existing v0.16 flow
+This milestone adds the first attack-input collection layer for the Foundry UI.
 
 Implemented:
-- Static modifier provider adapter.
-- Modifier-aware staged ranged combat workflow.
-- Attack-blocked error with a rules reason.
-- Additional v0.17 modifiers are applied to the actual dice pool, not just displayed.
-- Existing range and same-hex providers can remain in the base provider list.
-- Tests for modifier injection, impossible shots, and modifier breakdown.
+- Attack dialog input model.
+- HTML form renderer.
+- Form-data parser.
+- Validation for ranged-combat modifier inputs.
+- Translation from dialog input into v0.18 modifier-aware staged attack requests.
+- Foundry dialog abstraction.
+- Foundry attack dialog service.
+- Tests for rendering, parsing, validation, and request construction.
 
-The v0.17 modifier resolver deliberately does not duplicate range-band or same-hex firearm
-modifiers; those remain handled by the existing providers.
+Supported input fields:
+- Aim mode
+- Called shot
+- Target prone
+- Full cover / approximate target location known
+- Target moved
+- Firing from moving vehicle
+- Target size
+- Elevated firing position
+- Terrain modifier
+- Light level
+- Weather modifier
+- Dense smoke
+- Night vision
+- Thermal optics
+- Carried machine gun
+- One-handed shooting
+- Short-range flag
+- Telescopic sight
+- Stable platform
 
-Merge `src` and `tests` into the project, then run:
+This milestone deliberately separates form collection from rules resolution.
+The v0.18 modifier resolver remains the authority on whether the attack is legal
+and what modifier values apply.
+
+Merge `src` and `tests` into the current project, then run:
 
 ```bash
 npx tsc --noEmit
