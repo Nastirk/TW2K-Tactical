@@ -50,6 +50,7 @@ describe("AttackDialogRequestFactory", () => {
       targetProne: true,
       targetSize: "small",
       elevatedPosition: true,
+      targetTerrainModifier: -1,
     });
 
     expect(
@@ -61,5 +62,8 @@ describe("AttackDialogRequestFactory", () => {
     expect(
       request.modifiers.elevatedPosition,
     ).toBe(false);
+    expect(
+      request.modifiers.targetTerrainModifier,
+    ).toBe(0);
   });
 });

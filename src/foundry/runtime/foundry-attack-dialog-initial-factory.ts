@@ -1,3 +1,6 @@
+import {
+  getTerrainProfile,
+} from "../../combat/terrain";
 import type { AttackDialogInput } from "../../ui/attack-dialog-types";
 import type { FoundryLiveAttackSelection } from "../combat/foundry-live-attack-types";
 import {
@@ -18,6 +21,7 @@ export class FoundryAttackDialogInitialFactory {
       AttackDialogInput["targetSize"] =
         "normal";
     let elevatedPosition = false;
+    let targetTerrainModifier = 0;
 
     try {
       const source =
@@ -48,6 +52,19 @@ export class FoundryAttackDialogInitialFactory {
           source.getTargetSize(
             targetId,
           );
+
+        const targetTerrain =
+          source.getTargetTerrain(
+            targetId,
+          );
+
+        if (targetTerrain) {
+          targetTerrainModifier =
+            getTerrainProfile(
+              targetTerrain,
+            ).rangedAttackModifier ??
+            0;
+        }
       }
 
       if (
@@ -65,6 +82,7 @@ export class FoundryAttackDialogInitialFactory {
       targetProne = false;
       targetSize = "normal";
       elevatedPosition = false;
+      targetTerrainModifier = 0;
     }
 
     return {
@@ -78,7 +96,7 @@ export class FoundryAttackDialogInitialFactory {
       firingFromMovingVehicle: false,
       targetSize,
       elevatedPosition,
-      targetTerrainModifier: 0,
+      targetTerrainModifier,
       lightLevel: "normal",
       weatherModifier: 0,
       denseSmoke: false,

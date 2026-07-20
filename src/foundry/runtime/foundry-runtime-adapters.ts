@@ -1,5 +1,7 @@
 import type { AttackRequest } from "../../combat/attack-request";
 import type { RangeBand, TargetSizeCategory } from "../../combat/attack-context";
+import { parseTerrainType } from "../../combat/terrain";
+import type { TerrainType } from "../../combat/terrain";
 import { RangeBandCalculator } from "../../combat/range-band-calculator";
 import type { FoundryNotificationSink, FoundryLiveAttackSelection } from "../combat/foundry-live-attack-types";
 import type { FoundryAttackContextSource } from "../combat/foundry-attack-context-data-source";
@@ -148,6 +150,118 @@ function readTokenGridDimensions(
   }
 
   return null;
+}
+
+function readCollectionValues(
+  value: unknown,
+): unknown[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (
+    value &&
+    typeof value === "object" &&
+    Symbol.iterator in value
+  ) {
+    return Array.from(
+      value as Iterable<unknown>,
+    );
+  }
+
+  const contents = readPath(
+    value,
+    ["contents"],
+  );
+
+  return Array.isArray(contents)
+    ? contents
+    : [];
+}
+
+function readTerrainFlag(
+  value: unknown,
+): TerrainType | undefined {
+  const direct = parseTerrainType(
+    readPath(
+      value,
+      [
+        "flags",
+        "tw2k-tactical",
+        "terrainType",
+      ],
+    ),
+  );
+
+  if (direct) {
+    return direct;
+  }
+
+  const record = asRecord(value);
+  const getFlag = record?.getFlag;
+
+  if (typeof getFlag !== "function") {
+    return undefined;
+  }
+
+  return parseTerrainType(
+    getFlag.call(
+      value,
+      "tw2k-tactical",
+      "terrainType",
+    ),
+  );
+}
+
+function readTokenRegions(
+  token: unknown,
+  canvas: unknown,
+): unknown[] {
+  const tokenDocument =
+    readPath(token, ["document"]) ??
+    token;
+
+  const directRegions =
+    readCollectionValues(
+      readPath(
+        tokenDocument,
+        ["regions"],
+      ),
+    );
+
+  if (directRegions.length > 0) {
+    return directRegions;
+  }
+
+  const sceneRegions =
+    readCollectionValues(
+      readPath(
+        canvas,
+        ["scene", "regions"],
+      ) ??
+      readPath(
+        canvas,
+        ["regions"],
+      ),
+    );
+
+  return sceneRegions.filter(
+    (region) =>
+      readCollectionValues(
+        readPath(
+          region,
+          ["tokens"],
+        ),
+      ).some(
+        (regionToken) =>
+          regionToken ===
+            tokenDocument ||
+          readActorId(
+            regionToken,
+          ) ===
+            readActorId(token),
+      ),
+  );
 }
 
 function hasActorStatus(
@@ -493,6 +607,48 @@ export class FoundrySelectionAttackContextSource
       attackerToken,
     ) > readTokenElevation(
       targetToken,
+    );
+  }
+
+  getTargetTerrain(
+    targetId: string,
+  ): TerrainType | undefined {
+    const canvas = this.getCanvas();
+    const targetToken =
+      findTokenByActorId(
+        canvas,
+        targetId,
+      );
+
+    if (!targetToken) {
+      return undefined;
+    }
+
+    for (
+      const region of
+        readTokenRegions(
+          targetToken,
+          canvas,
+        )
+    ) {
+      const terrain =
+        readTerrainFlag(region);
+
+      if (terrain) {
+        return terrain;
+      }
+    }
+
+    return (
+      readTerrainFlag(
+        readPath(
+          targetToken,
+          ["document"],
+        ),
+      ) ??
+      readTerrainFlag(
+        targetToken,
+      )
     );
   }
 

@@ -16,6 +16,7 @@ import { RangeModifierProvider } from "../../rules/providers/range-modifier-prov
 import { SameHexFirearmModifierProvider } from "../../rules/providers/same-hex-firearm-modifier-provider";
 import { TargetProneModifierProvider } from "../../rules/providers/target-prone-modifier-provider";
 import { TargetSizeModifierProvider } from "../../rules/providers/target-size-modifier-provider";
+import { TerrainModifierProvider } from "../../rules/providers/terrain-modifier-provider";
 import { CombatChatCardRenderer } from "../../ui/combat-chat-card-renderer";
 import { CombatResultPayloadFactory } from "../chat/combat-result-payload-factory";
 import { FoundryChatMessagePublisher } from "../chat/foundry-chat-message-publisher";
@@ -102,6 +103,7 @@ export class DefaultFoundryLiveAttackExecutionContextFactory
         new TargetProneModifierProvider(),
         new TargetSizeModifierProvider(),
         new ElevationModifierProvider(),
+        new TerrainModifierProvider(),
       ],
       new DiceModifierApplicator(),
       new DiceEngine(dieRoller),

@@ -241,6 +241,88 @@ describe("Foundry runtime adapters", () => {
     ).toBe(true);
   });
 
+
+  it("reads target terrain from a Foundry region flag", () => {
+    const targetActor = {
+      id: "target",
+    };
+
+    const forestRegion = {
+      flags: {
+        "tw2k-tactical": {
+          terrainType:
+            "Forest",
+        },
+      },
+    };
+
+    const source = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "attacker",
+          },
+          document: {
+            actorId: "attacker",
+            width: 1,
+            height: 1,
+          },
+        },
+        {
+          actor: targetActor,
+          document: {
+            actorId: "target",
+            width: 1,
+            height: 1,
+            regions:
+              new Set([
+                forestRegion,
+              ]),
+          },
+        },
+      ],
+    );
+
+    expect(
+      source.getTargetTerrain(
+        "target",
+      ),
+    ).toBe("forest");
+  });
+
+  it("falls back to a structured token terrain flag", () => {
+    const targetActor = {
+      id: "target",
+    };
+
+    const source = createContextSource(
+      targetActor,
+      [
+        {
+          actor: targetActor,
+          document: {
+            actorId: "target",
+            width: 1,
+            height: 1,
+            flags: {
+              "tw2k-tactical": {
+                terrainType:
+                  "foliage",
+              },
+            },
+          },
+        },
+      ],
+    );
+
+    expect(
+      source.getTargetTerrain(
+        "target",
+      ),
+    ).toBe("foliage");
+  });
+
   it("allows a GM to apply a staged result", () => {
     const permission = new FoundryOwnerOrGmCombatActionPermission(() => ({
       user: { isGM: true },

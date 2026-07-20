@@ -4,6 +4,12 @@ import type {
   RangeBand,
   TargetSizeCategory,
 } from "./attack-context";
+import {
+  getTerrainProfile,
+} from "./terrain";
+import type {
+  TerrainType,
+} from "./terrain";
 import type {
   AttackRequest,
 } from "./attack-request";
@@ -43,6 +49,10 @@ export interface AttackContextDataSource {
     attackerId: string,
     targetId: string,
   ): boolean;
+
+  getTargetTerrain?(
+    targetId: string,
+  ): TerrainType | undefined;
 }
 
 export class AttackContextBuilder {
@@ -108,6 +118,25 @@ export class AttackContextBuilder {
       ) ??
       false;
 
+    const targetTerrain =
+      this.dataSource.getTargetTerrain?.(
+        request.targetId,
+      );
+
+    const terrainProfile =
+      targetTerrain
+        ? getTerrainProfile(
+            targetTerrain,
+          )
+        : undefined;
+
+    const targetTerrainModifier =
+      request.contextOverrides
+        ?.targetTerrainModifier ??
+      terrainProfile
+        ?.rangedAttackModifier ??
+      undefined;
+
     return {
       attackerId:
         request.attackerId,
@@ -122,6 +151,32 @@ export class AttackContextBuilder {
       targetProne,
       targetSize,
       elevatedPosition,
+      ...(
+        targetTerrain
+          ? {
+              targetTerrain,
+              targetTerrainCoverArmorLevel:
+                terrainProfile
+                  ?.coverArmorLevel ??
+                null,
+              targetTerrainVisibilityHexes:
+                terrainProfile
+                  ?.visibilityHexes,
+              targetTerrainBlocking:
+                terrainProfile
+                  ?.blocking ??
+                false,
+            }
+          : {}
+      ),
+      ...(
+        targetTerrainModifier !==
+          undefined
+          ? {
+              targetTerrainModifier,
+            }
+          : {}
+      ),
     };
   }
 }

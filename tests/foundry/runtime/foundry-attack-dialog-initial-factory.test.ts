@@ -38,7 +38,7 @@ describe("FoundryAttackDialogInitialFactory", () => {
     expect(result.elevatedPosition).toBe(false);
   });
 
-  it("pre-fills automatic prone, target-size, and elevation facts", () => {
+  it("pre-fills automatic prone, target-size, elevation, and terrain facts", () => {
     const attackerActor = {
       id: "a",
     };
@@ -79,6 +79,15 @@ describe("FoundryAttackDialogInitialFactory", () => {
               width: 2,
               height: 2,
               elevation: 0,
+              regions: new Set([
+                {
+                  flags: {
+                    "tw2k-tactical": {
+                      terrainType: "forest",
+                    },
+                  },
+                },
+              ]),
             },
           },
         ],
@@ -99,5 +108,6 @@ describe("FoundryAttackDialogInitialFactory", () => {
     expect(result.targetProne).toBe(true);
     expect(result.targetSize).toBe("large");
     expect(result.elevatedPosition).toBe(true);
+    expect(result.targetTerrainModifier).toBe(-1);
   });
 });

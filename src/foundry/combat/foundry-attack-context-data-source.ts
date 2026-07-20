@@ -7,6 +7,9 @@ import type {
   TargetSizeCategory,
 } from "../../combat/attack-context";
 import type {
+  TerrainType,
+} from "../../combat/terrain";
+import type {
   AttackRequest,
 } from "../../combat/attack-request";
 
@@ -37,6 +40,10 @@ export interface FoundryAttackContextSource {
     attackerId: string,
     targetId: string,
   ): boolean;
+
+  getTargetTerrain?(
+    targetId: string,
+  ): TerrainType | undefined;
 }
 
 export class FoundryAttackContextDataSource
@@ -108,5 +115,14 @@ export class FoundryAttackContextDataSource
         attackerId,
         targetId,
       ) ?? false;
+  }
+
+  getTargetTerrain(
+    targetId: string,
+  ): TerrainType | undefined {
+    return this.source
+      .getTargetTerrain?.(
+        targetId,
+      );
   }
 }

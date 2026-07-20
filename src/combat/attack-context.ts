@@ -1,3 +1,8 @@
+import type {
+  TerrainType,
+  TerrainVisibility,
+} from "./terrain";
+
 export type RangeBand =
   | "short"
   | "medium"
@@ -18,6 +23,7 @@ export interface AttackContextOverrides {
   targetProne?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
+  targetTerrainModifier?: number;
 }
 
 export interface AttackContext {
@@ -40,4 +46,12 @@ export interface AttackContext {
   targetProne?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
+
+  targetTerrain?: TerrainType;
+  targetTerrainModifier?: number;
+  targetTerrainCoverArmorLevel?:
+    number | null;
+  targetTerrainVisibilityHexes?:
+    TerrainVisibility;
+  targetTerrainBlocking?: boolean;
 }

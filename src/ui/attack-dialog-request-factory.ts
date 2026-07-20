@@ -18,6 +18,8 @@ export class AttackDialogRequestFactory {
             input.targetSize,
           elevatedPosition:
             input.elevatedPosition,
+          targetTerrainModifier:
+            input.targetTerrainModifier,
         },
       },
       modifiers: {
@@ -38,7 +40,11 @@ export class AttackDialogRequestFactory {
         approximateTargetLocationKnown: input.approximateTargetLocationKnown,
         targetMoved: input.targetMoved,
         firingFromMovingVehicle: input.firingFromMovingVehicle,
-        targetTerrainModifier: input.targetTerrainModifier,
+        // Terrain is resolved by TerrainModifierProvider from
+        // automatic context, with the dialog value preserved
+        // above as an explicit override. Neutralize the legacy
+        // resolver field to avoid double-counting.
+        targetTerrainModifier: 0,
         lightLevel: input.lightLevel,
         weatherModifier: input.weatherModifier,
         denseSmoke: input.denseSmoke,

@@ -305,5 +305,94 @@ describe(
         ).toBe(false);
       },
     );
+
+    it(
+      "adds structured target terrain facts to the attack context",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 3,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "short",
+            getTargetTerrain:
+              () => "forest",
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "weapon-1",
+          });
+
+        expect(
+          result.targetTerrain,
+        ).toBe("forest");
+        expect(
+          result.targetTerrainModifier,
+        ).toBe(-1);
+        expect(
+          result.targetTerrainCoverArmorLevel,
+        ).toBe(2);
+        expect(
+          result.targetTerrainVisibilityHexes,
+        ).toBe(3);
+        expect(
+          result.targetTerrainBlocking,
+        ).toBe(false);
+      },
+    );
+
+    it(
+      "allows an explicit terrain modifier override while preserving detected terrain facts",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 3,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "short",
+            getTargetTerrain:
+              () => "foliage",
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "weapon-1",
+            contextOverrides: {
+              targetTerrainModifier:
+                -1,
+            },
+          });
+
+        expect(
+          result.targetTerrain,
+        ).toBe("foliage");
+        expect(
+          result.targetTerrainModifier,
+        ).toBe(-1);
+        expect(
+          result.targetTerrainVisibilityHexes,
+        ).toBe(1);
+      },
+    );
+
   },
 );
