@@ -2,9 +2,53 @@ import { describe, expect, it, vi } from "vitest";
 import {
   FoundryCanvasTargetActorSource,
   FoundryOwnerOrGmCombatActionPermission,
+  FoundrySelectionAttackContextSource,
   FoundryWeaponCategoryResolver,
   readFoundryUuid,
 } from "../../../src/foundry/runtime/foundry-runtime-adapters";
+
+function createWeapon() {
+  return {
+    id: "weapon-1",
+    name: "Test Rifle",
+    type: "weapon",
+    system: {
+      damage: 2,
+      crit: 3,
+      armorModifier: 0,
+      range: 5,
+    },
+  };
+}
+
+function createContextSource(
+  targetActor: unknown,
+  placeables: unknown[],
+) {
+  return new FoundrySelectionAttackContextSource(
+    {
+      attackerActor: {
+        id: "attacker",
+      },
+      targetActor,
+      weapon: createWeapon(),
+    },
+    () => ({
+      tokens: {
+        placeables,
+      },
+      grid: {
+        size: 100,
+      },
+      scene: {
+        grid: {
+          distance: 10,
+        },
+      },
+    }),
+    new FoundryWeaponCategoryResolver(),
+  );
+}
 
 describe("Foundry runtime adapters", () => {
   it("resolves the single targeted token actor", () => {
@@ -41,6 +85,162 @@ describe("Foundry runtime adapters", () => {
     expect(resolver.resolve({ name: "Service Pistol" })).toBe("pistol");
   });
 
+  it("detects the real T2K4E prone status", () => {
+    const targetActor = {
+      id: "target",
+      effects: [
+        {
+          getFlag: (
+            scope: string,
+            key: string,
+          ) =>
+            scope === "core" &&
+            key === "statusId"
+              ? "prone"
+              : undefined,
+        },
+      ],
+    };
+
+    const source = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "attacker",
+          },
+          document: {
+            elevation: 0,
+            width: 1,
+            height: 1,
+          },
+        },
+        {
+          actor: targetActor,
+          document: {
+            elevation: 0,
+            width: 1,
+            height: 1,
+          },
+        },
+      ],
+    );
+
+    expect(
+      source.isTargetProne(
+        "target",
+      ),
+    ).toBe(true);
+  });
+
+  it("classifies target size from Foundry token grid dimensions", () => {
+    const targetActor = {
+      id: "target",
+    };
+
+    const small = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "target",
+          },
+          document: {
+            width: 0.5,
+            height: 0.5,
+          },
+        },
+      ],
+    );
+
+    const normal = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "target",
+          },
+          document: {
+            width: 1,
+            height: 1,
+          },
+        },
+      ],
+    );
+
+    const large = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "target",
+          },
+          document: {
+            width: 2,
+            height: 1,
+          },
+        },
+      ],
+    );
+
+    expect(
+      small.getTargetSize(
+        "target",
+      ),
+    ).toBe("small");
+
+    expect(
+      normal.getTargetSize(
+        "target",
+      ),
+    ).toBe("normal");
+
+    expect(
+      large.getTargetSize(
+        "target",
+      ),
+    ).toBe("large");
+  });
+
+  it("detects an elevated attacker from Foundry token elevation", () => {
+    const targetActor = {
+      id: "target",
+    };
+
+    const source = createContextSource(
+      targetActor,
+      [
+        {
+          actor: {
+            id: "attacker",
+          },
+          document: {
+            elevation: 10,
+            width: 1,
+            height: 1,
+          },
+        },
+        {
+          actor: {
+            id: "target",
+          },
+          document: {
+            elevation: 0,
+            width: 1,
+            height: 1,
+          },
+        },
+      ],
+    );
+
+    expect(
+      source.isAttackerElevated(
+        "attacker",
+        "target",
+      ),
+    ).toBe(true);
+  });
+
   it("allows a GM to apply a staged result", () => {
     const permission = new FoundryOwnerOrGmCombatActionPermission(() => ({
       user: { isGM: true },
@@ -49,7 +249,6 @@ describe("Foundry runtime adapters", () => {
 
     expect(permission.canApplyResult("target")).toBe(true);
   });
-
 
   it("reads a synthetic actor UUID from the targeted actor", () => {
     expect(

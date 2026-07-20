@@ -1,5 +1,5 @@
 import type { AttackRequest } from "../../combat/attack-request";
-import type { RangeBand } from "../../combat/attack-context";
+import type { RangeBand, TargetSizeCategory } from "../../combat/attack-context";
 import { RangeBandCalculator } from "../../combat/range-band-calculator";
 import type { FoundryNotificationSink, FoundryLiveAttackSelection } from "../combat/foundry-live-attack-types";
 import type { FoundryAttackContextSource } from "../combat/foundry-attack-context-data-source";
@@ -88,6 +88,118 @@ function findTokenByActorId(canvas: unknown, actorId: string): unknown | null {
   return placeables.find(
     (token) => readActorId(token) === actorId,
   ) ?? null;
+}
+
+function readTokenElevation(token: unknown): number {
+  const candidates = [
+    readPath(token, ["document", "elevation"]),
+    readPath(token, ["elevation"]),
+  ];
+
+  for (const value of candidates) {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+  }
+
+  return 0;
+}
+
+function readTokenGridDimensions(
+  token: unknown,
+  canvas: unknown,
+): { width: number; height: number } | null {
+  const documentWidth = readPath(token, ["document", "width"]);
+  const documentHeight = readPath(token, ["document", "height"]);
+
+  if (
+    typeof documentWidth === "number" &&
+    Number.isFinite(documentWidth) &&
+    documentWidth > 0 &&
+    typeof documentHeight === "number" &&
+    Number.isFinite(documentHeight) &&
+    documentHeight > 0
+  ) {
+    return {
+      width: documentWidth,
+      height: documentHeight,
+    };
+  }
+
+  const pixelWidth = readPath(token, ["w"]);
+  const pixelHeight = readPath(token, ["h"]);
+  const gridSize = readPath(canvas, ["grid", "size"]);
+
+  if (
+    typeof pixelWidth === "number" &&
+    Number.isFinite(pixelWidth) &&
+    pixelWidth > 0 &&
+    typeof pixelHeight === "number" &&
+    Number.isFinite(pixelHeight) &&
+    pixelHeight > 0 &&
+    typeof gridSize === "number" &&
+    Number.isFinite(gridSize) &&
+    gridSize > 0
+  ) {
+    return {
+      width: pixelWidth / gridSize,
+      height: pixelHeight / gridSize,
+    };
+  }
+
+  return null;
+}
+
+function hasActorStatus(
+  actor: unknown,
+  statusId: string,
+): boolean {
+  const statuses = readPath(actor, ["statuses"]);
+
+  if (
+    statuses &&
+    typeof statuses === "object" &&
+    Symbol.iterator in statuses
+  ) {
+    for (const status of statuses as Iterable<unknown>) {
+      if (status === statusId) {
+        return true;
+      }
+    }
+  }
+
+  const effects = readPath(actor, ["effects"]);
+
+  if (
+    !effects ||
+    typeof effects !== "object" ||
+    !(Symbol.iterator in effects)
+  ) {
+    return false;
+  }
+
+  for (const effect of effects as Iterable<unknown>) {
+    const directStatusId = readPath(
+      effect,
+      ["flags", "core", "statusId"],
+    );
+
+    if (directStatusId === statusId) {
+      return true;
+    }
+
+    const effectRecord = asRecord(effect);
+    const getFlag = effectRecord?.getFlag;
+
+    if (
+      typeof getFlag === "function" &&
+      getFlag.call(effect, "core", "statusId") === statusId
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export class FoundryCanvasTargetActorSource implements FoundryTargetActorSource {
@@ -286,6 +398,102 @@ export class FoundrySelectionAttackContextSource
 
   isCloseCombatAttack(_request: AttackRequest): boolean {
     return false;
+  }
+
+  isTargetProne(targetId: string): boolean {
+    const selectedTargetId = readPath(
+      this.selection.targetActor,
+      ["id"],
+    );
+
+    if (
+      selectedTargetId === targetId &&
+      hasActorStatus(
+        this.selection.targetActor,
+        "prone",
+      )
+    ) {
+      return true;
+    }
+
+    const targetToken = findTokenByActorId(
+      this.getCanvas(),
+      targetId,
+    );
+
+    const targetActor =
+      readPath(targetToken, ["actor"]) ??
+      readPath(targetToken, ["document", "actor"]);
+
+    return hasActorStatus(
+      targetActor,
+      "prone",
+    );
+  }
+
+  getTargetSize(
+    targetId: string,
+  ): TargetSizeCategory {
+    const canvas = this.getCanvas();
+    const targetToken = findTokenByActorId(
+      canvas,
+      targetId,
+    );
+
+    if (!targetToken) {
+      return "normal";
+    }
+
+    const dimensions =
+      readTokenGridDimensions(
+        targetToken,
+        canvas,
+      );
+
+    if (!dimensions) {
+      return "normal";
+    }
+
+    if (
+      dimensions.width < 1 &&
+      dimensions.height < 1
+    ) {
+      return "small";
+    }
+
+    if (
+      dimensions.width > 1 ||
+      dimensions.height > 1
+    ) {
+      return "large";
+    }
+
+    return "normal";
+  }
+
+  isAttackerElevated(
+    attackerId: string,
+    targetId: string,
+  ): boolean {
+    const canvas = this.getCanvas();
+    const attackerToken = findTokenByActorId(
+      canvas,
+      attackerId,
+    );
+    const targetToken = findTokenByActorId(
+      canvas,
+      targetId,
+    );
+
+    if (!attackerToken || !targetToken) {
+      return false;
+    }
+
+    return readTokenElevation(
+      attackerToken,
+    ) > readTokenElevation(
+      targetToken,
+    );
   }
 
   getWeaponCategory(_weaponId: string): SameHexFirearmCategory {
