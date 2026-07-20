@@ -382,6 +382,7 @@ export class FoundryUiNotificationSink implements FoundryNotificationSink {
 export class FoundryWeaponCategoryResolver {
   resolve(weapon: unknown): RangedWeaponCategory {
     const candidates = [
+      readPath(weapon, ["system", "itemType"]),
       readPath(weapon, ["system", "weaponCategory"]),
       readPath(weapon, ["system", "category"]),
       readPath(weapon, ["system", "weaponType"]),
@@ -398,6 +399,7 @@ export class FoundryWeaponCategoryResolver {
     if (text.includes("hmg") || text.includes("heavy machine")) return "hmg";
     if (text.includes("lmg") || text.includes("light machine")) return "lmg";
     if (text.includes("smg") || text.includes("submachine")) return "smg";
+    if (text.includes("shotgun")) return "shotgun";
     if (text.includes("carbine")) return "carbine";
     if (text.includes("pistol") || text.includes("handgun") || text.includes("revolver")) return "pistol";
     if (text.includes("rifle")) return "rifle";
@@ -409,6 +411,7 @@ export class FoundryWeaponCategoryResolver {
     const booleanPaths = [
       ["system", "hasTelescopicSight"],
       ["system", "telescopicSight"],
+      ["system", "props", "scope"],
       ["system", "scope"],
       ["system", "optics", "telescopic"],
     ] as const;
@@ -650,6 +653,16 @@ export class FoundrySelectionAttackContextSource
         targetToken,
       )
     );
+  }
+
+  usesShotgunRangeRules(weaponId: string): boolean {
+    if (weaponId !== this.weaponProfile.weaponId) {
+      return false;
+    }
+
+    return this.categoryResolver.resolve(
+      this.selection.weapon,
+    ) === "shotgun";
   }
 
   getWeaponCategory(_weaponId: string): SameHexFirearmCategory {

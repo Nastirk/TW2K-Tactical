@@ -53,6 +53,10 @@ export interface AttackContextDataSource {
   getTargetTerrain?(
     targetId: string,
   ): TerrainType | undefined;
+
+  usesShotgunRangeRules?(
+    weaponId: string,
+  ): boolean;
 }
 
 export class AttackContextBuilder {
@@ -118,6 +122,14 @@ export class AttackContextBuilder {
       ) ??
       false;
 
+    const usesShotgunRangeRules =
+      request.weaponId
+        ? this.dataSource
+            .usesShotgunRangeRules?.(
+              request.weaponId,
+            ) ?? false
+        : false;
+
     const targetTerrain =
       this.dataSource.getTargetTerrain?.(
         request.targetId,
@@ -151,6 +163,13 @@ export class AttackContextBuilder {
       targetProne,
       targetSize,
       elevatedPosition,
+      ...(
+        usesShotgunRangeRules
+          ? {
+              usesShotgunRangeRules: true,
+            }
+          : {}
+      ),
       ...(
         targetTerrain
           ? {

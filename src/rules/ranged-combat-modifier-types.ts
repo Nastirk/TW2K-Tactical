@@ -6,6 +6,7 @@ export type RangedWeaponCategory =
   | "pistol"
   | "carbine"
   | "smg"
+  | "shotgun"
   | "rifle"
   | "assault-rifle"
   | "lmg"

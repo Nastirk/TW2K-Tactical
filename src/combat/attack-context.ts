@@ -47,6 +47,12 @@ export interface AttackContext {
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
 
+  /**
+   * True when the selected weapon follows the core shotgun rule:
+   * range does not penalize the attack roll, but reduces base damage.
+   */
+  usesShotgunRangeRules?: boolean;
+
   targetTerrain?: TerrainType;
   targetTerrainModifier?: number;
   targetTerrainCoverArmorLevel?:

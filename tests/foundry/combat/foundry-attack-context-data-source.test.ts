@@ -11,6 +11,7 @@ describe("FoundryAttackContextDataSource", () => {
       getWeaponRangeBand: () => "medium",
       isCloseCombatAttack: () => false,
       getTargetTerrain: () => "forest",
+      usesShotgunRangeRules: () => true,
     };
 
     const dataSource = new FoundryAttackContextDataSource(source);
@@ -26,6 +27,7 @@ describe("FoundryAttackContextDataSource", () => {
     expect(dataSource.getCombatMode(request, 5)).toBe("ranged");
     expect(dataSource.getRangeBand("weapon-1", 5)).toBe("medium");
     expect(dataSource.getTargetTerrain("target-1")).toBe("forest");
+    expect(dataSource.usesShotgunRangeRules("weapon-1")).toBe(true);
   });
 
   it("returns close-combat when the source identifies a close-combat attack", () => {

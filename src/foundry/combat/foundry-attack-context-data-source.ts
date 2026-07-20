@@ -44,6 +44,10 @@ export interface FoundryAttackContextSource {
   getTargetTerrain?(
     targetId: string,
   ): TerrainType | undefined;
+
+  usesShotgunRangeRules?(
+    weaponId: string,
+  ): boolean;
 }
 
 export class FoundryAttackContextDataSource
@@ -124,5 +128,14 @@ export class FoundryAttackContextDataSource
       .getTargetTerrain?.(
         targetId,
       );
+  }
+
+  usesShotgunRangeRules(
+    weaponId: string,
+  ): boolean {
+    return this.source
+      .usesShotgunRangeRules?.(
+        weaponId,
+      ) ?? false;
   }
 }

@@ -20,6 +20,9 @@ import {
 import type {
   DeathSaveState,
 } from "./death-save-state";
+import {
+  getShotgunRangeDamageReduction,
+} from "./shotgun-range";
 
 export interface StagedEndToEndRangedCombatRequest
   extends RangedAttackRequest {
@@ -100,10 +103,16 @@ export class StagedEndToEndRangedCombatWorkflow {
         attack.roll.successes - 1,
       );
 
+    const effectiveWeaponBaseDamage =
+      this.getEffectiveWeaponBaseDamage(
+        request.weaponBaseDamage,
+        attack.context,
+      );
+
     const postHit =
       await this.postHitResolver.resolve({
         weaponBaseDamage:
-          request.weaponBaseDamage,
+          effectiveWeaponBaseDamage,
         extraSuccesses,
         critThreshold:
           request.critThreshold,
@@ -159,5 +168,28 @@ export class StagedEndToEndRangedCombatWorkflow {
         request.targetActorId,
       targetUpdated: false,
     };
+  }
+
+  private getEffectiveWeaponBaseDamage(
+    weaponBaseDamage: number,
+    context: RangedAttackResult["context"],
+  ): number {
+    if (
+      !context.usesShotgunRangeRules ||
+      !context.rangeBand ||
+      context.rangeBand === "out-of-range"
+    ) {
+      return weaponBaseDamage;
+    }
+
+    const reduction =
+      getShotgunRangeDamageReduction(
+        context.rangeBand,
+      );
+
+    return Math.max(
+      0,
+      weaponBaseDamage - reduction,
+    );
   }
 }

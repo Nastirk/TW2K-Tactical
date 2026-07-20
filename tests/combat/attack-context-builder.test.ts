@@ -214,6 +214,40 @@ describe(
     );
 
     it(
+      "adds automatic shotgun range behavior to the attack context",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 3,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "medium",
+            usesShotgunRangeRules:
+              () => true,
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "shotgun-1",
+          });
+
+        expect(
+          result
+            .usesShotgunRangeRules,
+        ).toBe(true);
+      },
+    );
+
+    it(
       "uses neutral defaults when automatic context readers are unavailable",
       () => {
         const dataSource:

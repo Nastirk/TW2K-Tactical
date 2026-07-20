@@ -77,12 +77,68 @@ describe("Foundry runtime adapters", () => {
     expect(source.getTargetActor()).toBeNull();
   });
 
-  it("infers common ranged weapon categories", () => {
+  it("infers common ranged weapon categories including the real T2K4E itemType field", () => {
     const resolver = new FoundryWeaponCategoryResolver();
 
     expect(resolver.resolve({ name: "M16 Assault Rifle" })).toBe("assault-rifle");
     expect(resolver.resolve({ name: "9mm SMG" })).toBe("smg");
     expect(resolver.resolve({ name: "Service Pistol" })).toBe("pistol");
+    expect(
+      resolver.resolve({
+        name: "Model 12",
+        system: {
+          itemType: "Shotgun",
+        },
+      }),
+    ).toBe("shotgun");
+  });
+
+  it("reads the real T2K4E scope weapon property", () => {
+    const resolver = new FoundryWeaponCategoryResolver();
+
+    expect(
+      resolver.hasTelescopicSight({
+        system: {
+          props: {
+            scope: true,
+          },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it("marks T2K4E shotguns for shotgun range rules", () => {
+    const source =
+      new FoundrySelectionAttackContextSource(
+        {
+          attackerActor: {
+            id: "attacker",
+          },
+          targetActor: {
+            id: "target",
+          },
+          weapon: {
+            id: "shotgun-1",
+            name: "Model 12",
+            type: "weapon",
+            system: {
+              itemType: "Shotgun",
+              damage: 3,
+              crit: 3,
+              armorModifier: 0,
+              range: 2,
+            },
+          },
+        },
+        () => ({}),
+        new FoundryWeaponCategoryResolver(),
+      );
+
+    expect(
+      source.usesShotgunRangeRules(
+        "shotgun-1",
+      ),
+    ).toBe(true);
   });
 
   it("detects the real T2K4E prone status", () => {

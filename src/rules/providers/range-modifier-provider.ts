@@ -1,4 +1,5 @@
 import type { AttackContext, RangeBand } from "../../combat/attack-context";
+import { getShotgunRangeDamageReduction } from "../../combat/shotgun-range";
 import type { RangedAttackModifierProvider } from "../../combat/ranged-attack-resolver";
 
 export interface RangeModifier {
@@ -37,6 +38,26 @@ export class RangeModifierProvider
       return [];
     }
 
+    if (
+      context.usesShotgunRangeRules
+    ) {
+      const damageReduction =
+        getShotgunRangeDamageReduction(
+          context.rangeBand,
+        );
+
+      return [
+        {
+          source: "range",
+          value: 0,
+          description:
+            damageReduction > 0
+              ? `Shotgun range: ${context.rangeBand} (no hit penalty; base damage -${damageReduction})`
+              : `Shotgun range: ${context.rangeBand} (no hit penalty)`,
+        },
+      ];
+    }
+
     return [
       {
         source: "range",
@@ -45,4 +66,5 @@ export class RangeModifierProvider
       },
     ];
   }
+
 }
