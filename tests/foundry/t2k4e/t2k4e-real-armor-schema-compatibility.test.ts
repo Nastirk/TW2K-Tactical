@@ -50,6 +50,36 @@ function createArmor(
   };
 }
 
+function createOrdinaryGear(
+  name: string,
+) {
+  return {
+    id: name,
+    name,
+    type: "gear",
+    system: {
+      qty: 1,
+      itemType: "Field Gear",
+      weight: 0,
+      price: 20,
+      equipped: true,
+      backpack: false,
+      description: "",
+      rollModifiers: {},
+      reliability: {
+        value: null,
+        max: null,
+      },
+      props: {
+        twoHanded: false,
+        mounted: false,
+        disposable: false,
+      },
+      encumbrance: 0,
+    },
+  };
+}
+
 describe(
   "T2K4ECombatRequestFactory real T2K4E armor schema compatibility",
   () => {
@@ -192,6 +222,78 @@ describe(
           readArmorLevels(
             targetWithUnequippedHelmet,
             "head" as
+              HitLocation,
+          ),
+        ).toEqual([]);
+      },
+    );
+
+    it(
+      "ignores ordinary equipped gear while resolving real T2K4E armor",
+      () => {
+        const realFoundryInventoryTarget = {
+          id: "real-foundry-target",
+          items: [
+            createOrdinaryGear(
+              "Fatigues",
+            ),
+            createArmor(
+              "Flak Jacket",
+              1,
+              {
+                torso: true,
+              },
+            ),
+            createArmor(
+              "Soviet SSH-68",
+              1,
+              {
+                head: true,
+              },
+            ),
+            createArmor(
+              "Plate Vest",
+              2,
+              {
+                torso: true,
+              },
+            ),
+          ],
+        };
+
+        expect(
+          readArmorLevels(
+            realFoundryInventoryTarget,
+            "head" as
+              HitLocation,
+          ),
+        ).toEqual([
+          1,
+        ]);
+
+        expect(
+          readArmorLevels(
+            realFoundryInventoryTarget,
+            "torso" as
+              HitLocation,
+          ),
+        ).toEqual([
+          1,
+          2,
+        ]);
+
+        expect(
+          readArmorLevels(
+            realFoundryInventoryTarget,
+            "arm" as
+              HitLocation,
+          ),
+        ).toEqual([]);
+
+        expect(
+          readArmorLevels(
+            realFoundryInventoryTarget,
+            "legs" as
               HitLocation,
           ),
         ).toEqual([]);
