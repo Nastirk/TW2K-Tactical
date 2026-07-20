@@ -15,6 +15,7 @@ import { FoundryLiveAttackController } from "../combat/foundry-live-attack-contr
 import { registerFoundryLiveAttackHook, type FoundryHookBus } from "../combat/foundry-live-attack-hook";
 import { FoundryAttackDialogService } from "../dialog/foundry-attack-dialog-service";
 import type { FoundryDialogClassLike } from "../dialog/foundry-dialog-types";
+import { FoundryDieRoller } from "../dice/foundry-die-roller";
 import { FoundryWeaponAttackAction } from "../item/foundry-weapon-attack-action";
 import { FoundryWeaponAttackSelectionSource } from "../item/foundry-weapon-attack-selection-source";
 import { FoundryJQueryWeaponSheetAdapter } from "../item/foundry-weapon-sheet-adapter";
@@ -28,6 +29,7 @@ import {
   FoundryWeaponCategoryResolver,
 } from "./foundry-runtime-adapters";
 import { FoundryLiveAttackDialogCollector } from "./foundry-live-attack-dialog-collector";
+import { FoundryRandomHitLocationResolver } from "./foundry-random-hit-location-resolver";
 import {
   DefaultFoundryLiveAttackExecutionContextFactory,
   FoundryModifierAwareLiveAttackExecutor,
@@ -96,6 +98,7 @@ export function bootstrapFoundryRuntime(
   environment: FoundryRuntimeEnvironment,
 ): FoundryRuntimeHandle {
   const categoryResolver = new FoundryWeaponCategoryResolver();
+  const notifications = new FoundryUiNotificationSink(environment.getUi);
   const compatibility = new FoundryT2K4ECompatibilityService(
     environment.getGame,
     environment.getCanvas,
@@ -121,6 +124,9 @@ export function bootstrapFoundryRuntime(
       categoryResolver,
     ),
     compatibility,
+    new FoundryRandomHitLocationResolver(
+      new FoundryDieRoller(),
+    ),
   );
 
   const executor = new FoundryModifierAwareLiveAttackExecutor(
@@ -135,7 +141,7 @@ export function bootstrapFoundryRuntime(
     selectionSource,
     dialogCollector,
     executor,
-    new FoundryUiNotificationSink(environment.getUi),
+    notifications,
   );
 
   const weaponAttackAction = new FoundryWeaponAttackAction(
@@ -192,6 +198,7 @@ export function bootstrapFoundryRuntime(
         new FoundryCombatMessageResolver(
           messages as FoundryMessagesLike,
         ),
+        notifications,
       );
 
       listener.register(chatRoot);

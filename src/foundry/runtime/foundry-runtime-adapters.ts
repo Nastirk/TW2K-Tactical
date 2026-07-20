@@ -368,3 +368,10 @@ export function readFoundryName(value: unknown, fallback: string): string {
   const name = readPath(value, ["name"]);
   return typeof name === "string" && name.length > 0 ? name : fallback;
 }
+
+export function readFoundryUuid(value: unknown): string | undefined {
+  const uuid = readPath(value, ["uuid"]);
+  return typeof uuid === "string" && uuid.length > 0
+    ? uuid
+    : undefined;
+}

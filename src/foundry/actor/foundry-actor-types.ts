@@ -1,5 +1,6 @@
 export interface FoundryActorLike {
   id: string;
+  uuid?: string;
   system?: unknown;
   flags?: unknown;
 
@@ -16,3 +17,9 @@ export interface FoundryGameLike {
     ): FoundryActorLike | undefined;
   };
 }
+
+export type FoundryUuidResolver = (
+  uuid: string,
+) => Promise<
+  FoundryActorLike | null | undefined
+>;

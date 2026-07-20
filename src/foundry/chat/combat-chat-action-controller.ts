@@ -49,8 +49,8 @@ export class CombatChatActionController {
     } = request;
 
     if (
-      this.idempotency.hasApplied(
-        message.id,
+      this.hasAlreadyApplied(
+        message,
       )
     ) {
       throw new Error(
@@ -75,6 +75,7 @@ export class CombatChatActionController {
       );
     }
 
+    // Persistence must finish successfully before the result is marked applied.
     await this.applicationService
       .apply(payload);
 
@@ -87,6 +88,36 @@ export class CombatChatActionController {
       "flags.tw2k-tactical.applied":
         true,
     });
+  }
+
+  private hasAlreadyApplied(
+    message:
+      CombatChatMessageLike,
+  ): boolean {
+    if (
+      this.idempotency.hasApplied(
+        message.id,
+      )
+    ) {
+      return true;
+    }
+
+    const moduleFlags =
+      message.flags?.[
+        "tw2k-tactical"
+      ];
+
+    return Boolean(
+      moduleFlags &&
+      typeof moduleFlags ===
+        "object" &&
+      (
+        moduleFlags as Record<
+          string,
+          unknown
+        >
+      ).applied === true,
+    );
   }
 
   private readPayload(

@@ -27,6 +27,8 @@ export interface ModifierAwareStagedFoundryAttackRequest {
     CombatChatNames;
 
   attackerActor?: unknown;
+
+  targetActorUuid?: string;
 }
 
 export class ModifierAwareStagedFoundryRangedAttackService {
@@ -68,6 +70,7 @@ export class ModifierAwareStagedFoundryRangedAttackService {
     const payload =
       this.payloadFactory.create(
         result.combat,
+        request.targetActorUuid,
       );
 
     await this.publisher.publish({

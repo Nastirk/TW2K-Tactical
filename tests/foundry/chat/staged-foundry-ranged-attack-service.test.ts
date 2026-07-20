@@ -164,6 +164,8 @@ describe(
               weaponName:
                 "Rifle",
             },
+            targetActorUuid:
+              "Scene.scene-1.Token.token-1.Actor.target",
           });
 
         expect(
@@ -188,6 +190,8 @@ describe(
         ).toEqual({
           targetActorId:
             "target",
+          targetActorUuid:
+            "Scene.scene-1.Token.token-1.Actor.target",
           finalDamage: 2,
           criticalInjury:
             undefined,

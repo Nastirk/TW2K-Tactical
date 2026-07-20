@@ -108,29 +108,147 @@ export class T2K4ECombatRequestFactory {
           item.type ===
             "gear",
       )
-      .map(
-        (item) =>
-          new T2K4EArmorAdapter(
-            item,
-          ),
-      )
-      .filter(
-        (armor) =>
-          armor.isEquipped(),
-      )
-      .map(
-        (armor) =>
-          armor.toProfile(),
-      )
-      .filter(
-        (armor) =>
-          armor.locations.includes(
-            location,
-          ),
-      )
-      .map(
-        (armor) =>
-          armor.armorLevel,
+      .flatMap(
+        (item) => {
+          const realSchemaArmor =
+            this.readRealT2K4EArmorLevel(
+              item,
+              location,
+            );
+
+          // T2K4E 14.0.1 armor items use:
+          //   system.equipped
+          //   system.rating.value
+          //   system.location.{head,arms,torso,legs}
+          //
+          // When that schema is present, trust it instead of falling
+          // through to legacy adapter paths. `null` means the item is
+          // recognized but does not protect this location (or is not
+          // equipped); `undefined` means use the legacy adapter fallback.
+          if (
+            realSchemaArmor !==
+            undefined
+          ) {
+            return realSchemaArmor ===
+              null
+              ? []
+              : [realSchemaArmor];
+          }
+
+          const armor =
+            new T2K4EArmorAdapter(
+              item,
+            );
+
+          if (
+            !armor.isEquipped()
+          ) {
+            return [];
+          }
+
+          const profile =
+            armor.toProfile();
+
+          return profile.locations
+            .includes(
+              location,
+            )
+            ? [
+                profile
+                  .armorLevel,
+              ]
+            : [];
+        },
       );
+  }
+
+  private readRealT2K4EArmorLevel(
+    item:
+      T2K4EItemLike,
+    location:
+      HitLocation,
+  ): number | null | undefined {
+    const system =
+      this.asRecord(
+        (
+          item as {
+            system?: unknown;
+          }
+        ).system,
+      );
+
+    const rating =
+      this.asRecord(
+        system?.rating,
+      );
+
+    const coverage =
+      this.asRecord(
+        system?.location,
+      );
+
+    const armorLevel =
+      rating?.value;
+
+    // Not the observed T2K4E 14.0.1 armor schema:
+    // preserve the existing adapter behavior.
+    if (
+      !coverage ||
+      typeof armorLevel !==
+        "number" ||
+      !Number.isFinite(
+        armorLevel,
+      )
+    ) {
+      return undefined;
+    }
+
+    if (
+      system?.equipped !==
+      true
+    ) {
+      return null;
+    }
+
+    const coverageKey =
+      location ===
+      "arm"
+        ? "arms"
+        : location;
+
+    if (
+      coverage[
+        coverageKey
+      ] !== true
+    ) {
+      return null;
+    }
+
+    return Math.max(
+      0,
+      Math.trunc(
+        armorLevel,
+      ),
+    );
+  }
+
+  private asRecord(
+    value: unknown,
+  ): Record<
+    string,
+    unknown
+  > | undefined {
+    if (
+      !value ||
+      typeof value !==
+        "object"
+    ) {
+      return undefined;
+    }
+
+    return value as Record<
+      string,
+      unknown
+    >;
   }
 }

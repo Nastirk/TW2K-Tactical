@@ -94,5 +94,55 @@ describe(
         });
       },
     );
+
+
+    it(
+      "includes the targeted synthetic actor UUID when provided",
+      () => {
+        const payload =
+          new CombatResultPayloadFactory()
+            .create(
+              {
+                attack: {
+                  context: {
+                    attackerId: "a",
+                    targetId: "t",
+                    weaponId: "w",
+                    distanceHexes: 1,
+                    combatMode: "ranged",
+                    rangeBand: "short",
+                    sameHex: false,
+                  },
+                  basePool: {
+                    dice: [8, 8],
+                  } as never,
+                  modifiers: [],
+                  netModifier: 0,
+                  finalPool: {
+                    dice: [8, 8],
+                  } as never,
+                  roll: {
+                    rolls: [],
+                    successes: 1,
+                  },
+                },
+                hit: true,
+                postHit: undefined,
+                targetActorId: "target",
+                targetUpdated: false,
+              },
+              "Scene.scene-1.Token.token-1.Actor.target",
+            );
+
+        expect(payload)
+          .toEqual(
+            expect.objectContaining({
+              targetActorId: "target",
+              targetActorUuid:
+                "Scene.scene-1.Token.token-1.Actor.target",
+            }),
+          );
+      },
+    );
   },
 );

@@ -7,6 +7,14 @@ import type {
 
 export interface CombatResultPayload {
   targetActorId: string;
+
+  /**
+   * Full Foundry UUID for the actor instance that was actually targeted.
+   * Synthetic/unlinked token actors require this because their actor ID can
+   * also resolve to a different world actor.
+   */
+  targetActorUuid?: string;
+
   finalDamage: number;
   criticalInjury?: CriticalInjuryEntry;
   deathSaveState?: DeathSaveState;
@@ -31,6 +39,12 @@ export function isCombatResultPayload(
   return (
     typeof record.targetActorId ===
       "string" &&
+    (
+      record.targetActorUuid ===
+        undefined ||
+      typeof record.targetActorUuid ===
+        "string"
+    ) &&
     Number.isInteger(
       record.finalDamage,
     ) &&

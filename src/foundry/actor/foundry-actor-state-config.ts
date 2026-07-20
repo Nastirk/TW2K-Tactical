@@ -1,5 +1,17 @@
 export interface FoundryActorStateConfig {
-  damagePath: string;
+  /**
+   * Optional path for systems that persist accumulated damage directly.
+   * When currentHitPointsPath is configured, the repository derives damage
+   * from hit capacity minus current HP instead of reading this path.
+   */
+  damagePath?: string;
+
+  /**
+   * Optional path to the actor's current visible hit points.
+   * T2K4E 14.x uses system.health.value.
+   */
+  currentHitPointsPath?: string;
+
   hitCapacityPath: string;
   incapacitatedPath: string;
 
@@ -19,10 +31,10 @@ export interface FoundryActorStateConfig {
 
 export const DEFAULT_ACTOR_STATE_CONFIG:
   FoundryActorStateConfig = {
-    damagePath:
-      "system.health.damage",
+    currentHitPointsPath:
+      "system.health.value",
     hitCapacityPath:
-      "system.health.capacity",
+      "system.health.max",
     incapacitatedPath:
       "flags.tw2k-tactical.incapacitated",
     criticalInjuriesPath:

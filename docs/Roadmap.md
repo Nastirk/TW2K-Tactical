@@ -12,6 +12,9 @@
 - v0.21: Weapon-sheet attack integration.
 - v0.22: Runtime bootstrap, live service composition, Foundry dice, chat action registration, and production bundle wiring.
 - v0.23: Foundry V14 / T2K4E compatibility diagnostics and smoke-test hardening.
+- v0.23.1: Live T2K4E health persistence fix, persistent Apply Result duplicate protection, and friendlier action errors.
+- v0.23.2: Synthetic/unlinked token actor persistence using full Foundry actor UUIDs.
+- v0.23.3: Random hit-location pre-resolution for location-aware T2K4E armor selection, preventing normal random-hit attacks from bypassing body armor.
 
 ## Next combat milestones
 
@@ -31,6 +34,6 @@
 
 ## Release preparation
 
-- v0.34 — UX polish, accessibility, localization cleanup, and error messaging.
+- v0.34 — UX polish, accessibility, localization cleanup, Foundry ApplicationV2/dialog migration, renderChatMessageHTML migration, and error messaging.
 - v0.35 — Release candidate, packaging, manifest/update URLs, installation documentation, and final migration checks.
 - v1.0 — Stable release.

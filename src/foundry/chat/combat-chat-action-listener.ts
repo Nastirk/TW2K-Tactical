@@ -33,12 +33,19 @@ export interface CombatMessageResolver {
   ): CombatChatMessageLike | undefined;
 }
 
+export interface CombatChatActionNotificationSink {
+  warn(message: string): void;
+  error(message: string): void;
+}
+
 export class CombatChatActionListener {
   constructor(
     private readonly controller:
       CombatChatActionController,
     private readonly messageResolver:
       CombatMessageResolver,
+    private readonly notifications?:
+      CombatChatActionNotificationSink,
   ) {}
 
   register(
@@ -50,7 +57,9 @@ export class CombatChatActionListener {
       (event) => {
         void this.onClick(
           event,
-        );
+        ).catch((error) => {
+          this.reportError(error);
+        });
       },
     );
   }
@@ -107,5 +116,36 @@ export class CombatChatActionListener {
       .applyResult({
         message,
       });
+  }
+
+  private reportError(
+    error: unknown,
+  ): void {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Unable to apply combat result.";
+
+    if (
+      message ===
+      "Combat result has already been applied."
+    ) {
+      if (this.notifications) {
+        this.notifications.warn(message);
+      } else {
+        console.warn(
+          `[tw2k-tactical] ${message}`,
+        );
+      }
+      return;
+    }
+
+    if (this.notifications) {
+      this.notifications.error(message);
+    } else {
+      console.error(
+        `[tw2k-tactical] ${message}`,
+      );
+    }
   }
 }
