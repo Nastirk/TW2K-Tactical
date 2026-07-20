@@ -16,6 +16,7 @@ export class FoundryAttackDialogInitialFactory {
 
   create(selection: FoundryLiveAttackSelection): AttackDialogInput {
     let atShortRange = false;
+    let attackerProne = false;
     let targetProne = false;
     let targetSize:
       AttackDialogInput["targetSize"] =
@@ -42,6 +43,13 @@ export class FoundryAttackDialogInitialFactory {
 
       atShortRange =
         source.isAtShortRange();
+
+      if (attackerId) {
+        attackerProne =
+          source.isAttackerProne(
+            attackerId,
+          );
+      }
 
       if (targetId) {
         targetProne =
@@ -79,6 +87,7 @@ export class FoundryAttackDialogInitialFactory {
       }
     } catch {
       atShortRange = false;
+      attackerProne = false;
       targetProne = false;
       targetSize = "normal";
       elevatedPosition = false;
@@ -87,7 +96,10 @@ export class FoundryAttackDialogInitialFactory {
 
     return {
       weaponCategory: this.categoryResolver.resolve(selection.weapon),
-      aimMode: "fast",
+      // Until action-economy integration can prove an Aim action
+      // occurred, default to a quick shot rather than silently
+      // granting the benefit of fast aim. The player may override it.
+      aimMode: "quick",
       calledShot: false,
       targetProne,
       targetInFullCover: false,
@@ -105,7 +117,18 @@ export class FoundryAttackDialogInitialFactory {
       machineGunCarried: false,
       oneHanded: false,
       atShortRange,
-      hasTelescopicSight: this.categoryResolver.hasTelescopicSight(selection.weapon),
+      attackerProne,
+      hasTelescopicSight: this.categoryResolver.hasTelescopicSight(
+        selection.weapon,
+        selection.attackerActor,
+      ),
+      hasBipod: this.categoryResolver.hasBipod(
+        selection.weapon,
+        selection.attackerActor,
+      ),
+      bipodDeployed: false,
+      // This checkbox represents only an additional/manual stable platform.
+      // Automatic prone stability is carried separately via attackerProne.
       stablePlatform: false,
     };
   }

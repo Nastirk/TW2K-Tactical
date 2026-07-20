@@ -12,6 +12,18 @@ export class AttackDialogRequestFactory {
         ...combat,
         contextOverrides: {
           ...combat.contextOverrides,
+          aimMode:
+            input.aimMode,
+          hasTelescopicSight:
+            input.hasTelescopicSight,
+          bipodDeployed:
+            input.bipodDeployed,
+          // Only an explicit/manual stable platform overrides automatic
+          // context. Leaving this undefined allows AttackContextBuilder to
+          // derive stability from the attacker being prone or a deployed bipod.
+          stablePlatform: input.stablePlatform
+            ? true
+            : undefined,
           targetProne:
             input.targetProne,
           targetSize:
@@ -54,7 +66,10 @@ export class AttackDialogRequestFactory {
         oneHanded: input.oneHanded,
         atShortRange: input.atShortRange,
         hasTelescopicSight: input.hasTelescopicSight,
-        stablePlatform: input.stablePlatform,
+        stablePlatform:
+          (input.attackerProne ?? false) ||
+          input.stablePlatform ||
+          input.bipodDeployed,
       },
     };
   }

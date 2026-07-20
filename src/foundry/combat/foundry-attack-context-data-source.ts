@@ -28,6 +28,10 @@ export interface FoundryAttackContextSource {
     request: AttackRequest,
   ): boolean;
 
+  isAttackerProne?(
+    attackerId: string,
+  ): boolean;
+
   isTargetProne?(
     targetId: string,
   ): boolean;
@@ -44,6 +48,14 @@ export interface FoundryAttackContextSource {
   getTargetTerrain?(
     targetId: string,
   ): TerrainType | undefined;
+
+  hasTelescopicSight?(
+    weaponId: string,
+  ): boolean;
+
+  hasBipod?(
+    weaponId: string,
+  ): boolean;
 
   usesShotgunRangeRules?(
     weaponId: string,
@@ -92,6 +104,15 @@ export class FoundryAttackContextDataSource
       );
   }
 
+  isAttackerProne(
+    attackerId: string,
+  ): boolean {
+    return this.source
+      .isAttackerProne?.(
+        attackerId,
+      ) ?? false;
+  }
+
   isTargetProne(
     targetId: string,
   ): boolean {
@@ -128,6 +149,24 @@ export class FoundryAttackContextDataSource
       .getTargetTerrain?.(
         targetId,
       );
+  }
+
+  hasTelescopicSight(
+    weaponId: string,
+  ): boolean {
+    return this.source
+      .hasTelescopicSight?.(
+        weaponId,
+      ) ?? false;
+  }
+
+  hasBipod(
+    weaponId: string,
+  ): boolean {
+    return this.source
+      .hasBipod?.(
+        weaponId,
+      ) ?? false;
   }
 
   usesShotgunRangeRules(

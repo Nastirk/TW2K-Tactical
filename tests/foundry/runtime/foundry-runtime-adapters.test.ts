@@ -93,17 +93,150 @@ describe("Foundry runtime adapters", () => {
     ).toBe("shotgun");
   });
 
-  it("reads the real T2K4E scope weapon property", () => {
+  it("requires an equipped telescopic-sight gear item attached to the selected weapon", () => {
+    const resolver = new FoundryWeaponCategoryResolver();
+    const weapon = {
+      id: "weapon-1",
+      type: "weapon",
+      system: {
+        props: {
+          scope: true,
+        },
+      },
+    };
+
+    expect(
+      resolver.hasTelescopicSight(
+        weapon,
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Telescopic Sight (Scope)",
+              system: {
+                equipped: true,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-1",
+                },
+              },
+            },
+          ],
+        },
+      ),
+    ).toBe(true);
+
+    expect(
+      resolver.hasTelescopicSight(
+        weapon,
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Telescopic Sight (Scope)",
+              system: {
+                equipped: false,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-1",
+                },
+              },
+            },
+          ],
+        },
+      ),
+    ).toBe(false);
+
+    expect(
+      resolver.hasTelescopicSight(
+        weapon,
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Telescopic Sight (Scope)",
+              system: {
+                equipped: true,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-2",
+                },
+              },
+            },
+          ],
+        },
+      ),
+    ).toBe(false);
+
+    expect(
+      resolver.hasTelescopicSight(
+        {
+          ...weapon,
+          system: {
+            props: {
+              scope: false,
+            },
+          },
+        },
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Telescopic Sight (Scope)",
+              system: {
+                equipped: true,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-1",
+                },
+              },
+            },
+          ],
+        },
+      ),
+    ).toBe(false);
+  });
+
+  it("requires an equipped bipod gear item attached to the selected weapon", () => {
     const resolver = new FoundryWeaponCategoryResolver();
 
     expect(
-      resolver.hasTelescopicSight({
-        system: {
-          props: {
-            scope: true,
+      resolver.hasBipod(
+        {
+          id: "weapon-1",
+          type: "weapon",
+          system: {
+            props: {
+              bipod: true,
+            },
           },
         },
-      }),
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Bipod",
+              system: {
+                equipped: true,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-1",
+                },
+              },
+            },
+          ],
+        },
+      ),
     ).toBe(true);
   });
 
@@ -137,6 +270,37 @@ describe("Foundry runtime adapters", () => {
     expect(
       source.usesShotgunRangeRules(
         "shotgun-1",
+      ),
+    ).toBe(true);
+  });
+
+  it("detects a prone attacker for stable-platform context", () => {
+    const attackerActor = {
+      id: "attacker",
+      statuses: new Set(["prone"]),
+    };
+    const targetActor = { id: "target" };
+
+    const source = new FoundrySelectionAttackContextSource(
+      {
+        attackerActor,
+        targetActor,
+        weapon: createWeapon(),
+      },
+      () => ({
+        tokens: {
+          placeables: [
+            { actor: attackerActor },
+            { actor: targetActor },
+          ],
+        },
+      }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(
+      source.isAttackerProne(
+        "attacker",
       ),
     ).toBe(true);
   });

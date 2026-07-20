@@ -1,4 +1,7 @@
 import type {
+  AimMode,
+} from "../rules/ranged-combat-modifier-types";
+import type {
   TerrainType,
   TerrainVisibility,
 } from "./terrain";
@@ -20,6 +23,11 @@ export type TargetSizeCategory =
   | "large";
 
 export interface AttackContextOverrides {
+  aimMode?: AimMode;
+  hasTelescopicSight?: boolean;
+  bipodDeployed?: boolean;
+  stablePlatform?: boolean;
+
   targetProne?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
@@ -43,6 +51,13 @@ export interface AttackContext {
    * for backward compatibility. AttackContextBuilder supplies
    * neutral defaults when automatic readers are unavailable.
    */
+  attackerProne?: boolean;
+  aimMode?: AimMode;
+  hasTelescopicSight?: boolean;
+  hasBipod?: boolean;
+  bipodDeployed?: boolean;
+  stablePlatform?: boolean;
+
   targetProne?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;

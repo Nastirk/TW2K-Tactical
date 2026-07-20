@@ -11,6 +11,9 @@ describe("FoundryAttackContextDataSource", () => {
       getWeaponRangeBand: () => "medium",
       isCloseCombatAttack: () => false,
       getTargetTerrain: () => "forest",
+      isAttackerProne: () => true,
+      hasTelescopicSight: () => true,
+      hasBipod: () => true,
       usesShotgunRangeRules: () => true,
     };
 
@@ -27,6 +30,9 @@ describe("FoundryAttackContextDataSource", () => {
     expect(dataSource.getCombatMode(request, 5)).toBe("ranged");
     expect(dataSource.getRangeBand("weapon-1", 5)).toBe("medium");
     expect(dataSource.getTargetTerrain("target-1")).toBe("forest");
+    expect(dataSource.isAttackerProne("attacker-1")).toBe(true);
+    expect(dataSource.hasTelescopicSight("weapon-1")).toBe(true);
+    expect(dataSource.hasBipod("weapon-1")).toBe(true);
     expect(dataSource.usesShotgunRangeRules("weapon-1")).toBe(true);
   });
 

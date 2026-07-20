@@ -26,5 +26,9 @@ export interface AttackDialogInput {
   oneHanded: boolean;
   atShortRange: boolean;
   hasTelescopicSight: boolean;
+  /** Automatic shooter stance captured when the dialog opens. */
+  attackerProne?: boolean;
+  hasBipod: boolean;
+  bipodDeployed: boolean;
   stablePlatform: boolean;
 }

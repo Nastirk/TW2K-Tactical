@@ -22,6 +22,8 @@ const base = {
   oneHanded: false,
   atShortRange: true,
   hasTelescopicSight: false,
+  hasBipod: false,
+  bipodDeployed: false,
   stablePlatform: false,
 };
 

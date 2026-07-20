@@ -9,7 +9,9 @@ export class AttackDialogRenderer {
           <select name="aimMode">
             ${this.option("quick", "Quick shot", initial.aimMode)}
             ${this.option("fast", "Fast aim", initial.aimMode)}
-            ${this.option("slow", "Slow telescopic aim", initial.aimMode)}
+            ${initial.hasTelescopicSight
+              ? this.option("slow", "Slow telescopic aim", initial.aimMode)
+              : ""}
           </select>
         </div>
 
@@ -26,8 +28,13 @@ export class AttackDialogRenderer {
         ${this.checkbox("machineGunCarried", "Machine gun fired while carried", initial.machineGunCarried)}
         ${this.checkbox("oneHanded", "One-handed shooting", initial.oneHanded)}
         ${this.checkbox("atShortRange", "At short range", initial.atShortRange)}
-        ${this.checkbox("hasTelescopicSight", "Telescopic sight", initial.hasTelescopicSight)}
-        ${this.checkbox("stablePlatform", "Stable firing platform", initial.stablePlatform)}
+        <input type="hidden" name="hasTelescopicSight" value="${initial.hasTelescopicSight}" />
+        <input type="hidden" name="attackerProne" value="${initial.attackerProne ?? false}" />
+        <input type="hidden" name="hasBipod" value="${initial.hasBipod}" />
+        ${initial.hasBipod
+          ? this.checkbox("bipodDeployed", "Bipod deployed", initial.bipodDeployed)
+          : ""}
+        ${this.checkbox("stablePlatform", "Other stable firing platform", initial.stablePlatform)}
 
         <div class="form-group">
           <label>Target Size</label>

@@ -37,6 +37,10 @@ export interface AttackContextDataSource {
    * to work while automatic context detection is introduced
    * incrementally.
    */
+  isAttackerProne?(
+    attackerId: string,
+  ): boolean;
+
   isTargetProne?(
     targetId: string,
   ): boolean;
@@ -53,6 +57,14 @@ export interface AttackContextDataSource {
   getTargetTerrain?(
     targetId: string,
   ): TerrainType | undefined;
+
+  hasTelescopicSight?(
+    weaponId: string,
+  ): boolean;
+
+  hasBipod?(
+    weaponId: string,
+  ): boolean;
 
   usesShotgunRangeRules?(
     weaponId: string,
@@ -96,6 +108,47 @@ export class AttackContextBuilder {
           distanceHexes,
         );
     }
+
+    const attackerProne =
+      this.dataSource.isAttackerProne?.(
+        request.attackerId,
+      ) ??
+      false;
+
+    const aimMode =
+      request.contextOverrides
+        ?.aimMode ??
+      "quick";
+
+    const hasTelescopicSight =
+      request.contextOverrides
+        ?.hasTelescopicSight ??
+      (request.weaponId
+        ? this.dataSource
+            .hasTelescopicSight?.(
+              request.weaponId,
+            ) ?? false
+        : false);
+
+    const hasBipod =
+      request.weaponId
+        ? this.dataSource
+            .hasBipod?.(
+              request.weaponId,
+            ) ?? false
+        : false;
+
+    const bipodDeployed =
+      request.contextOverrides
+        ?.bipodDeployed ??
+      false;
+
+    const stablePlatform =
+      request.contextOverrides
+        ?.stablePlatform ??
+      (attackerProne ||
+        (hasBipod &&
+          bipodDeployed));
 
     const targetProne =
       request.contextOverrides
@@ -160,6 +213,12 @@ export class AttackContextBuilder {
       combatMode,
       rangeBand,
       sameHex,
+      attackerProne,
+      aimMode,
+      hasTelescopicSight,
+      hasBipod,
+      bipodDeployed,
+      stablePlatform,
       targetProne,
       targetSize,
       elevatedPosition,

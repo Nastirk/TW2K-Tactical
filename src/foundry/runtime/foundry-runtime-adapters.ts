@@ -14,6 +14,10 @@ import type { RangedWeaponCategory } from "../../rules/ranged-combat-modifier-ty
 import { T2K4EWeaponAdapter } from "../t2k4e/t2k4e-weapon-adapter";
 import type { T2K4EItemLike } from "../t2k4e/t2k4e-types";
 import type { CombatActionPermission } from "../chat/combat-action-permission";
+import {
+  readAttachedWeaponId,
+  readFoundryDocumentId,
+} from "../item/foundry-weapon-accessory-attachment";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -379,6 +383,8 @@ export class FoundryUiNotificationSink implements FoundryNotificationSink {
   }
 }
 
+type WeaponAccessoryKind = "scope" | "bipod";
+
 export class FoundryWeaponCategoryResolver {
   resolve(weapon: unknown): RangedWeaponCategory {
     const candidates = [
@@ -407,23 +413,141 @@ export class FoundryWeaponCategoryResolver {
     return "other";
   }
 
-  hasTelescopicSight(weapon: unknown): boolean {
-    const booleanPaths = [
-      ["system", "hasTelescopicSight"],
-      ["system", "telescopicSight"],
-      ["system", "props", "scope"],
-      ["system", "scope"],
-      ["system", "optics", "telescopic"],
-    ] as const;
+  /**
+   * A weapon accessory is active only when the selected weapon and
+   * the actor's gear state agree:
+   *
+   * 1. The weapon exposes the corresponding T2K4E property.
+   * 2. Matching gear is equipped and not stored in the backpack.
+   * 3. The gear's TW2K Tactical attachedWeaponId flag points to this
+   *    exact weapon document.
+   *
+   * This keeps one physical accessory from granting its benefit to
+   * every compatible weapon the actor owns.
+   */
+  hasTelescopicSight(
+    weapon: unknown,
+    attackerActor?: unknown,
+  ): boolean {
+    return this.hasMountedAccessory(
+      weapon,
+      attackerActor,
+      "scope",
+    );
+  }
 
+  hasBipod(
+    weapon: unknown,
+    attackerActor?: unknown,
+  ): boolean {
+    return this.hasMountedAccessory(
+      weapon,
+      attackerActor,
+      "bipod",
+    );
+  }
+
+  private hasMountedAccessory(
+    weapon: unknown,
+    attackerActor: unknown,
+    kind: WeaponAccessoryKind,
+  ): boolean {
     if (
-      booleanPaths.some((path) => readPath(weapon, path) === true)
+      readPath(
+        weapon,
+        ["system", "props", kind],
+      ) !== true
     ) {
-      return true;
+      return false;
     }
 
-    const name = readPath(weapon, ["name"]);
-    return typeof name === "string" && /scope|telescopic/i.test(name);
+    const weaponId = readFoundryDocumentId(
+      weapon,
+    );
+
+    if (!weaponId) {
+      return false;
+    }
+
+    return this.getActorItems(
+      attackerActor,
+    ).some(
+      (item) =>
+        this.isEquippedAccessory(
+          item,
+          kind,
+          weaponId,
+        ),
+    );
+  }
+
+  private getActorItems(
+    actor: unknown,
+  ): unknown[] {
+    return readCollectionValues(
+      readPath(actor, ["items"]),
+    );
+  }
+
+  private isEquippedAccessory(
+    item: unknown,
+    kind: WeaponAccessoryKind,
+    weaponId: string,
+  ): boolean {
+    const itemType =
+      readPath(item, ["type"]);
+
+    if (
+      typeof itemType === "string" &&
+      itemType.toLowerCase() !== "gear"
+    ) {
+      return false;
+    }
+
+    if (
+      readPath(
+        item,
+        ["system", "equipped"],
+      ) !== true ||
+      readPath(
+        item,
+        ["system", "backpack"],
+      ) === true
+    ) {
+      return false;
+    }
+
+    if (
+      readAttachedWeaponId(item) !==
+      weaponId
+    ) {
+      return false;
+    }
+
+    const description = [
+      readPath(item, ["name"]),
+      readPath(
+        item,
+        ["system", "itemType"],
+      ),
+    ]
+      .filter(
+        (value): value is string =>
+          typeof value === "string",
+      )
+      .join(" ")
+      .toLowerCase();
+
+    switch (kind) {
+      case "scope":
+        return /\btelescopic\b|\bscope\b/.test(
+          description,
+        );
+      case "bipod":
+        return /\bbipod\b/.test(
+          description,
+        );
+    }
   }
 }
 
@@ -515,6 +639,37 @@ export class FoundrySelectionAttackContextSource
 
   isCloseCombatAttack(_request: AttackRequest): boolean {
     return false;
+  }
+
+  isAttackerProne(attackerId: string): boolean {
+    const selectedAttackerId = readPath(
+      this.selection.attackerActor,
+      ["id"],
+    );
+
+    if (
+      selectedAttackerId === attackerId &&
+      hasActorStatus(
+        this.selection.attackerActor,
+        "prone",
+      )
+    ) {
+      return true;
+    }
+
+    const attackerToken = findTokenByActorId(
+      this.getCanvas(),
+      attackerId,
+    );
+
+    const attackerActor =
+      readPath(attackerToken, ["actor"]) ??
+      readPath(attackerToken, ["document", "actor"]);
+
+    return hasActorStatus(
+      attackerActor,
+      "prone",
+    );
   }
 
   isTargetProne(targetId: string): boolean {
@@ -653,6 +808,30 @@ export class FoundrySelectionAttackContextSource
         targetToken,
       )
     );
+  }
+
+  hasTelescopicSight(weaponId: string): boolean {
+    if (weaponId !== this.weaponProfile.weaponId) {
+      return false;
+    }
+
+    return this.categoryResolver
+      .hasTelescopicSight(
+        this.selection.weapon,
+        this.selection.attackerActor,
+      );
+  }
+
+  hasBipod(weaponId: string): boolean {
+    if (weaponId !== this.weaponProfile.weaponId) {
+      return false;
+    }
+
+    return this.categoryResolver
+      .hasBipod(
+        this.selection.weapon,
+        this.selection.attackerActor,
+      );
   }
 
   usesShotgunRangeRules(weaponId: string): boolean {

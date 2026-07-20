@@ -52,6 +52,12 @@ describe(
           rangeBand:
             "medium",
           sameHex: false,
+          attackerProne: false,
+          aimMode: "quick",
+          hasTelescopicSight: false,
+          hasBipod: false,
+          bipodDeployed: false,
+          stablePlatform: false,
           targetProne: false,
           targetSize:
             "normal",
@@ -157,6 +163,12 @@ describe(
           rangeBand:
             undefined,
           sameHex: true,
+          attackerProne: false,
+          aimMode: "quick",
+          hasTelescopicSight: false,
+          hasBipod: false,
+          bipodDeployed: false,
+          stablePlatform: false,
           targetProne: false,
           targetSize:
             "normal",
@@ -428,5 +440,95 @@ describe(
       },
     );
 
+
+    it(
+      "captures aim, scope, bipod, and prone stable-platform context",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 2,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "short",
+            isAttackerProne:
+              () => true,
+            hasTelescopicSight:
+              () => true,
+            hasBipod:
+              () => true,
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "weapon-1",
+          });
+
+        expect(result.aimMode)
+          .toBe("quick");
+        expect(result.attackerProne)
+          .toBe(true);
+        expect(result.hasTelescopicSight)
+          .toBe(true);
+        expect(result.hasBipod)
+          .toBe(true);
+        expect(result.bipodDeployed)
+          .toBe(false);
+        expect(result.stablePlatform)
+          .toBe(true);
+      },
+    );
+
+    it(
+      "uses explicit aim and bipod deployment overrides",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 2,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "short",
+            isAttackerProne:
+              () => false,
+            hasTelescopicSight:
+              () => true,
+            hasBipod:
+              () => true,
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "weapon-1",
+            contextOverrides: {
+              aimMode: "slow",
+              bipodDeployed: true,
+            },
+          });
+
+        expect(result.aimMode)
+          .toBe("slow");
+        expect(result.bipodDeployed)
+          .toBe(true);
+        expect(result.stablePlatform)
+          .toBe(true);
+      },
+    );
   },
 );

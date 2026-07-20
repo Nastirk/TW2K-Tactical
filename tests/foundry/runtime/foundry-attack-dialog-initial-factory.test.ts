@@ -30,12 +30,15 @@ describe("FoundryAttackDialogInitialFactory", () => {
     });
 
     expect(result.weaponCategory).toBe("pistol");
-    expect(result.aimMode).toBe("fast");
+    expect(result.aimMode).toBe("quick");
     expect(result.targetTerrainModifier).toBe(0);
     expect(result.weatherModifier).toBe(0);
     expect(result.targetProne).toBe(false);
     expect(result.targetSize).toBe("normal");
     expect(result.elevatedPosition).toBe(false);
+    expect(result.hasBipod).toBe(false);
+    expect(result.bipodDeployed).toBe(false);
+    expect(result.stablePlatform).toBe(false);
   });
 
   it("pre-fills automatic prone, target-size, elevation, and terrain facts", () => {
@@ -110,4 +113,84 @@ describe("FoundryAttackDialogInitialFactory", () => {
     expect(result.elevatedPosition).toBe(true);
     expect(result.targetTerrainModifier).toBe(-1);
   });
+
+  it("detects scope and bipod capability without assuming bipod deployment", () => {
+    const attackerActor = {
+      id: "a",
+      statuses: new Set(["prone"]),
+      items: [
+        {
+          type: "gear",
+          name: "Telescopic Sight (Scope)",
+          system: {
+            equipped: true,
+            backpack: false,
+          },
+          flags: {
+            "tw2k-tactical": {
+              attachedWeaponId: "w",
+            },
+          },
+        },
+        {
+          type: "gear",
+          name: "Bipod",
+          system: {
+            equipped: true,
+            backpack: false,
+          },
+          flags: {
+            "tw2k-tactical": {
+              attachedWeaponId: "w",
+            },
+          },
+        },
+      ],
+    };
+    const targetActor = { id: "t" };
+    const weapon = {
+      ...createWeapon(),
+      system: {
+        ...createWeapon().system,
+        props: {
+          scope: true,
+          bipod: true,
+        },
+      },
+    };
+
+    const canvas = {
+      grid: { size: 100 },
+      tokens: {
+        placeables: [
+          {
+            actor: attackerActor,
+            center: { x: 0, y: 0 },
+            document: { actorId: "a", width: 1, height: 1 },
+          },
+          {
+            actor: targetActor,
+            center: { x: 100, y: 0 },
+            document: { actorId: "t", width: 1, height: 1 },
+          },
+        ],
+      },
+    };
+
+    const result = new FoundryAttackDialogInitialFactory(
+      () => canvas,
+      new FoundryWeaponCategoryResolver(),
+    ).create({
+      attackerActor,
+      targetActor,
+      weapon,
+    });
+
+    expect(result.hasTelescopicSight).toBe(true);
+    expect(result.hasBipod).toBe(true);
+    expect(result.bipodDeployed).toBe(false);
+    expect(result.attackerProne).toBe(true);
+    expect(result.stablePlatform).toBe(false);
+  });
+
 });
