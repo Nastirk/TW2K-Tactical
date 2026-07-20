@@ -8,18 +8,36 @@ export class AttackDialogRequestFactory {
     input: AttackDialogInput,
   ): ModifierAwareStagedRangedCombatRequest {
     return {
-      combat,
+      combat: {
+        ...combat,
+        contextOverrides: {
+          ...combat.contextOverrides,
+          targetProne:
+            input.targetProne,
+          targetSize:
+            input.targetSize,
+          elevatedPosition:
+            input.elevatedPosition,
+        },
+      },
       modifiers: {
         weaponCategory: input.weaponCategory,
         aimMode: input.aimMode,
         calledShot: input.calledShot,
-        targetProne: input.targetProne,
+
+        // These three facts are now resolved by automatic
+        // AttackContext modifier providers. Neutralize the
+        // legacy monolithic resolver fields so they are not
+        // counted twice. The dialog values are preserved above
+        // as explicit context overrides.
+        targetProne: false,
+        targetSize: "normal",
+        elevatedPosition: false,
+
         targetInFullCover: input.targetInFullCover,
         approximateTargetLocationKnown: input.approximateTargetLocationKnown,
         targetMoved: input.targetMoved,
         firingFromMovingVehicle: input.firingFromMovingVehicle,
-        targetSize: input.targetSize,
-        elevatedPosition: input.elevatedPosition,
         targetTerrainModifier: input.targetTerrainModifier,
         lightLevel: input.lightLevel,
         weatherModifier: input.weatherModifier,

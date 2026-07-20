@@ -84,20 +84,29 @@ export class AttackContextBuilder {
     }
 
     const targetProne =
+      request.contextOverrides
+        ?.targetProne ??
       this.dataSource.isTargetProne?.(
         request.targetId,
-      ) ?? false;
+      ) ??
+      false;
 
     const targetSize =
+      request.contextOverrides
+        ?.targetSize ??
       this.dataSource.getTargetSize?.(
         request.targetId,
-      ) ?? "normal";
+      ) ??
+      "normal";
 
     const elevatedPosition =
+      request.contextOverrides
+        ?.elevatedPosition ??
       this.dataSource.isAttackerElevated?.(
         request.attackerId,
         request.targetId,
-      ) ?? false;
+      ) ??
+      false;
 
     return {
       attackerId:

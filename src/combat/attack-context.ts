@@ -14,6 +14,12 @@ export type TargetSizeCategory =
   | "normal"
   | "large";
 
+export interface AttackContextOverrides {
+  targetProne?: boolean;
+  targetSize?: TargetSizeCategory;
+  elevatedPosition?: boolean;
+}
+
 export interface AttackContext {
   attackerId: string;
   targetId: string;

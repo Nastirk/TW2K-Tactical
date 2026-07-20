@@ -19,13 +19,13 @@ describe("AttackDialogRequestFactory", () => {
         weaponCategory: "rifle",
         aimMode: "quick",
         calledShot: true,
-        targetProne: false,
+        targetProne: true,
         targetInFullCover: false,
         approximateTargetLocationKnown: false,
         targetMoved: true,
         firingFromMovingVehicle: false,
-        targetSize: "normal",
-        elevatedPosition: false,
+        targetSize: "small",
+        elevatedPosition: true,
         targetTerrainModifier: -1,
         lightLevel: "dim",
         weatherModifier: 0,
@@ -43,5 +43,23 @@ describe("AttackDialogRequestFactory", () => {
     expect(request.modifiers.aimMode).toBe("quick");
     expect(request.modifiers.calledShot).toBe(true);
     expect(request.modifiers.targetMoved).toBe(true);
+
+    expect(
+      request.combat.contextOverrides,
+    ).toEqual({
+      targetProne: true,
+      targetSize: "small",
+      elevatedPosition: true,
+    });
+
+    expect(
+      request.modifiers.targetProne,
+    ).toBe(false);
+    expect(
+      request.modifiers.targetSize,
+    ).toBe("normal");
+    expect(
+      request.modifiers.elevatedPosition,
+    ).toBe(false);
   });
 });

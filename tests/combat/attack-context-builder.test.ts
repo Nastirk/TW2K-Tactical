@@ -253,5 +253,57 @@ describe(
         ).toBe(false);
       },
     );
+
+    it(
+      "prefers explicit context overrides over automatically observed facts",
+      () => {
+        const dataSource:
+          AttackContextDataSource = {
+            getDistanceHexes:
+              () => 3,
+            getCombatMode:
+              () => "ranged",
+            getRangeBand:
+              () => "short",
+            isTargetProne:
+              () => true,
+            getTargetSize:
+              () => "large",
+            isAttackerElevated:
+              () => true,
+          };
+
+        const result =
+          new AttackContextBuilder(
+            dataSource,
+          ).build({
+            attackerId:
+              "attacker-1",
+            targetId:
+              "target-1",
+            weaponId:
+              "weapon-1",
+            contextOverrides: {
+              targetProne: false,
+              targetSize: "small",
+              elevatedPosition: false,
+            },
+          });
+
+        expect(
+          result.targetProne,
+        ).toBe(false);
+
+        expect(
+          result.targetSize,
+        ).toBe(
+          "small",
+        );
+
+        expect(
+          result.elevatedPosition,
+        ).toBe(false);
+      },
+    );
   },
 );
