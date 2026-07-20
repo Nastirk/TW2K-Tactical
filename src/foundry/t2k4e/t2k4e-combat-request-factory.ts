@@ -124,7 +124,7 @@ export class T2K4ECombatRequestFactory {
           // When that schema is present, trust it instead of falling
           // through to legacy adapter paths. `null` means the item is
           // recognized but does not protect this location (or is not
-          // equipped); `undefined` means use the legacy adapter fallback.
+          // equipped); `undefined` means consider the legacy adapter.
           if (
             realSchemaArmor !==
             undefined
@@ -133,6 +133,37 @@ export class T2K4ECombatRequestFactory {
               null
               ? []
               : [realSchemaArmor];
+          }
+
+          // Ordinary T2K4E gear items are not armor. Only use the
+          // legacy adapter when the item actually exposes a legacy
+          // armor field. This prevents normal gear such as Fatigues
+          // from being passed to T2K4EArmorAdapter and throwing.
+          const legacySystem =
+            this.asRecord(
+              (
+                item as {
+                  system?: unknown;
+                }
+              ).system,
+            );
+
+          const hasLegacyArmorField =
+            legacySystem !==
+              undefined &&
+            (
+              "armor" in
+                legacySystem ||
+              "armorLevel" in
+                legacySystem ||
+              "protection" in
+                legacySystem
+            );
+
+          if (
+            !hasLegacyArmorField
+          ) {
+            return [];
           }
 
           const armor =
@@ -191,7 +222,8 @@ export class T2K4ECombatRequestFactory {
       rating?.value;
 
     // Not the observed T2K4E 14.0.1 armor schema:
-    // preserve the existing adapter behavior.
+    // preserve legacy adapter compatibility when an actual
+    // legacy armor field is present.
     if (
       !coverage ||
       typeof armorLevel !==
