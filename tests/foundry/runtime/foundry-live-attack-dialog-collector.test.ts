@@ -9,7 +9,19 @@ describe("FoundryLiveAttackDialogCollector", () => {
     };
 
     const selection = {
-      attackerActor: { id: "a" },
+      attackerActor: {
+      id: "a",
+      system: {
+        attributes: {
+          agl: { value: 10 },
+          str: { value: 12 },
+        },
+        skills: {
+          rangedCombat: { value: 8 },
+          heavyWeapons: { value: 6 },
+        },
+      },
+    },
       targetActor: { id: "t" },
       weapon: { id: "w", type: "weapon" },
     };
@@ -64,7 +76,19 @@ describe("FoundryLiveAttackDialogCollector", () => {
 
     await expect(
       collector.collect({
-        attackerActor: {},
+        attackerActor: {
+      id: "a",
+      system: {
+        attributes: {
+          agl: { value: 10 },
+          str: { value: 12 },
+        },
+        skills: {
+          rangedCombat: { value: 8 },
+          heavyWeapons: { value: 6 },
+        },
+      },
+    },
         targetActor: {},
         weapon: {},
       }),
@@ -78,7 +102,19 @@ describe("FoundryLiveAttackDialogCollector", () => {
     };
 
     const selection = {
-      attackerActor: { id: "a" },
+      attackerActor: {
+      id: "a",
+      system: {
+        attributes: {
+          agl: { value: 10 },
+          str: { value: 12 },
+        },
+        skills: {
+          rangedCombat: { value: 8 },
+          heavyWeapons: { value: 6 },
+        },
+      },
+    },
       targetActor: { id: "t" },
       weapon: { id: "w", type: "weapon" },
     };
@@ -121,5 +157,71 @@ describe("FoundryLiveAttackDialogCollector", () => {
       chosenHitLocation: "torso",
     });
   });
+
+
+  it("switches machine-gun attacks to Heavy Weapons with the correct attribute", async () => {
+    const attack = {
+      combat: {
+        attackerId: "a",
+        baseAttributeDie: 10,
+        baseSkillDie: 8,
+      },
+      modifiers: {
+        weaponCategory: "gpmg",
+        tripodDeployed: true,
+      },
+    };
+
+    const attackerActor = {
+      id: "a",
+      system: {
+        attributes: {
+          str: { value: 12 },
+          agl: { value: 10 },
+        },
+        skills: {
+          rangedCombat: { value: 8 },
+          heavyWeapons: { value: 6 },
+        },
+      },
+    };
+
+    const dialogService = {
+      open: vi.fn((request: { onSubmit: (value: unknown) => void }) => {
+        request.onSubmit(attack);
+      }),
+    };
+
+    const collector = new FoundryLiveAttackDialogCollector(
+      dialogService as never,
+      {
+        createRangedAttack: vi.fn(() => ({
+          attackerId: "a",
+        })),
+      } as never,
+      {
+        create: vi.fn(() => ({
+          weaponCategory: "gpmg",
+        })),
+      } as never,
+    );
+
+    const result =
+      await collector.collect({
+        attackerActor,
+        targetActor: {},
+        weapon: {},
+      });
+
+    expect(
+      result?.attack.combat
+        .baseAttributeDie,
+    ).toBe(10);
+    expect(
+      result?.attack.combat
+        .baseSkillDie,
+    ).toBe(6);
+  });
+
 
 });

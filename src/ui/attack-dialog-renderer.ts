@@ -25,15 +25,20 @@ export class AttackDialogRenderer {
         ${this.checkbox("denseSmoke", "Dense smoke", initial.denseSmoke)}
         ${this.checkbox("hasNightVision", "Night vision", initial.hasNightVision)}
         ${this.checkbox("hasThermalOptics", "Thermal optics", initial.hasThermalOptics)}
-        ${this.checkbox("machineGunCarried", "Machine gun fired while carried", initial.machineGunCarried)}
-        ${this.checkbox("oneHanded", "One-handed shooting", initial.oneHanded)}
-        ${this.checkbox("atShortRange", "At short range", initial.atShortRange)}
+        ${this.oneHandedControl(initial)}
+        <input type="hidden" name="machineGunCarried" value="${initial.machineGunCarried}" />
+        <input type="hidden" name="atShortRange" value="${initial.atShortRange}" />
         <input type="hidden" name="hasTelescopicSight" value="${initial.hasTelescopicSight}" />
         <input type="hidden" name="attackerProne" value="${initial.attackerProne ?? false}" />
         <input type="hidden" name="hasBipod" value="${initial.hasBipod}" />
         ${initial.hasBipod
           ? this.checkbox("bipodDeployed", "Bipod deployed", initial.bipodDeployed)
           : ""}
+        <input type="hidden" name="hasTripod" value="${initial.hasTripod}" />
+        ${initial.hasTripod
+          ? this.checkbox("tripodDeployed", "Tripod deployed", initial.tripodDeployed)
+          : ""}
+        <input type="hidden" name="vehicleMounted" value="${initial.vehicleMounted}" />
         ${this.checkbox("stablePlatform", "Other stable firing platform", initial.stablePlatform)}
 
         <div class="form-group">
@@ -70,6 +75,23 @@ export class AttackDialogRenderer {
         </div>
       </form>
     `;
+  }
+
+  private oneHandedControl(initial: AttackDialogInput): string {
+    switch (initial.weaponCategory) {
+      case "pistol":
+      case "smg":
+      case "carbine":
+      case "rifle":
+      case "assault-rifle":
+        return this.checkbox(
+          "oneHanded",
+          "One-handed shooting",
+          initial.oneHanded,
+        );
+      default:
+        return '<input type="hidden" name="oneHanded" value="false" />';
+    }
   }
 
   private checkbox(name: string, label: string, checked: boolean): string {

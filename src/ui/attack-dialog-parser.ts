@@ -36,6 +36,9 @@ export class AttackDialogParser {
       attackerProne: this.readBoolean(form, "attackerProne"),
       hasBipod: this.readBoolean(form, "hasBipod"),
       bipodDeployed: this.readBoolean(form, "bipodDeployed"),
+      hasTripod: this.readBoolean(form, "hasTripod"),
+      tripodDeployed: this.readBoolean(form, "tripodDeployed"),
+      vehicleMounted: this.readBoolean(form, "vehicleMounted"),
       stablePlatform: this.readBoolean(form, "stablePlatform"),
     };
   }

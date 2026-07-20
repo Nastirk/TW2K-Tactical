@@ -327,5 +327,89 @@ describe(
         ).toBe(false);
       },
     );
+
+    it(
+      "automatically applies carried machine-gun penalties when no support is deployed",
+      () => {
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "lmg",
+            aimMode: "fast",
+          }).netModifier,
+        ).toBe(-2);
+
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "gpmg",
+            aimMode: "fast",
+          }).netModifier,
+        ).toBe(-3);
+      },
+    );
+
+    it(
+      "removes carried machine-gun penalties when supported",
+      () => {
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "lmg",
+            aimMode: "fast",
+            bipodDeployed: true,
+          }).netModifier,
+        ).toBe(0);
+
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "gpmg",
+            aimMode: "fast",
+            tripodDeployed: true,
+          }).netModifier,
+        ).toBe(0);
+
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "gpmg",
+            aimMode: "fast",
+            vehicleMounted: true,
+          }).netModifier,
+        ).toBe(0);
+      },
+    );
+
+    it(
+      "blocks unsupported HMG fire but allows tripod or vehicle mounting",
+      () => {
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "hmg",
+            aimMode: "fast",
+          }).attackAllowed,
+        ).toBe(false);
+
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "hmg",
+            aimMode: "fast",
+            tripodDeployed: true,
+          }).attackAllowed,
+        ).toBe(true);
+
+        expect(
+          resolver.resolve({
+            weaponCategory:
+              "hmg",
+            aimMode: "fast",
+            vehicleMounted: true,
+          }).attackAllowed,
+        ).toBe(true);
+      },
+    );
   },
 );

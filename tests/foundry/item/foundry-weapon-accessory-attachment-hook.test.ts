@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { registerFoundryWeaponAccessoryAttachmentHook } from "../../../src/foundry/item/foundry-weapon-accessory-attachment-hook";
 
 describe("registerFoundryWeaponAccessoryAttachmentHook", () => {
-  it("renders a compatible-weapon selector and persists the selected weapon", async () => {
+  it("renders all actor weapons and mirrors the selected attachment onto the weapon property", async () => {
     const callbacks = new Map<
       string,
       (application: unknown, html: unknown) => unknown
@@ -15,28 +15,32 @@ describe("registerFoundryWeaponAccessoryAttachmentHook", () => {
     };
 
     const setFlag = vi.fn().mockResolvedValue(undefined);
+    const m16Update = vi.fn().mockResolvedValue(undefined);
+    const m4Update = vi.fn().mockResolvedValue(undefined);
     const accessory = {
       id: "scope-1",
       type: "gear",
       name: "Telescopic Sight (Scope)",
       setFlag,
       parent: {
-        items: [
-          {
-            id: "m16",
-            type: "weapon",
-            name: "M16A1",
-            system: { props: { scope: true } },
-          },
-          {
-            id: "pistol",
-            type: "weapon",
-            name: "M1911A1",
-            system: { props: { scope: false } },
-          },
-        ],
+        items: [] as unknown[],
       },
     };
+    const m16 = {
+      id: "m16",
+      type: "weapon",
+      name: "M16A1",
+      system: { props: { scope: true } },
+      update: m16Update,
+    };
+    const m4 = {
+      id: "m4",
+      type: "weapon",
+      name: "M4",
+      system: { props: { scope: false } },
+      update: m4Update,
+    };
+    accessory.parent.items = [accessory, m16, m4];
 
     let appended = "";
     let changeHandler: ((event: unknown) => unknown) | undefined;
@@ -82,16 +86,19 @@ describe("registerFoundryWeaponAccessoryAttachmentHook", () => {
 
     expect(appended).toContain("TW2K Tactical — Attached to");
     expect(appended).toContain("M16A1");
-    expect(appended).not.toContain("M1911A1");
+    expect(appended).toContain("M4");
 
     await changeHandler?.({
-      currentTarget: { value: "m16" },
+      currentTarget: { value: "m4" },
     });
 
     expect(setFlag).toHaveBeenCalledWith(
       "tw2k-tactical",
       "attachedWeaponId",
-      "m16",
+      "m4",
     );
+    expect(m4Update).toHaveBeenCalledWith({
+      "system.props.scope": true,
+    });
   });
 });

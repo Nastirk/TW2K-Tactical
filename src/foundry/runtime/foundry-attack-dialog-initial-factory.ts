@@ -127,6 +127,14 @@ export class FoundryAttackDialogInitialFactory {
         selection.attackerActor,
       ),
       bipodDeployed: false,
+      hasTripod: this.categoryResolver.hasTripod(
+        selection.weapon,
+        selection.attackerActor,
+      ),
+      tripodDeployed: false,
+      vehicleMounted: this.categoryResolver.isVehicleMounted(
+        selection.weapon,
+      ),
       // This checkbox represents only an additional/manual stable platform.
       // Automatic prone stability is carried separately via attackerProne.
       stablePlatform: false,

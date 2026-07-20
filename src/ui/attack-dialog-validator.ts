@@ -20,5 +20,23 @@ export class AttackDialogValidator {
     if (input.aimMode === "slow" && !input.hasTelescopicSight) {
       throw new Error("Slow aim requires a telescopic sight.");
     }
+
+    if (
+      input.bipodDeployed &&
+      !input.hasBipod
+    ) {
+      throw new Error(
+        "Bipod deployment requires an equipped bipod attached to the selected weapon.",
+      );
+    }
+
+    if (
+      input.tripodDeployed &&
+      !input.hasTripod
+    ) {
+      throw new Error(
+        "Tripod deployment requires an equipped tripod attached to the selected weapon.",
+      );
+    }
   }
 }

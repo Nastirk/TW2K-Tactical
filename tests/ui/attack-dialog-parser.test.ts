@@ -14,6 +14,9 @@ describe("AttackDialogParser", () => {
       ["attackerProne", "true"],
       ["hasBipod", "true"],
       ["bipodDeployed", "on"],
+      ["hasTripod", "true"],
+      ["tripodDeployed", "on"],
+      ["vehicleMounted", "true"],
     ]);
 
     const result = new AttackDialogParser().parse(
@@ -33,5 +36,8 @@ describe("AttackDialogParser", () => {
     expect(result.attackerProne).toBe(true);
     expect(result.hasBipod).toBe(true);
     expect(result.bipodDeployed).toBe(true);
+    expect(result.hasTripod).toBe(true);
+    expect(result.tripodDeployed).toBe(true);
+    expect(result.vehicleMounted).toBe(true);
   });
 });

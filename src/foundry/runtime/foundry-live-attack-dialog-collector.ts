@@ -7,6 +7,7 @@ import type {
 } from "../combat/foundry-live-attack-types";
 import { FoundryAttackDialogService } from "../dialog/foundry-attack-dialog-service";
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
+import { T2K4ERangedDiceSelector } from "../t2k4e/t2k4e-ranged-dice-selector";
 import type { T2K4EActorLike, T2K4EItemLike } from "../t2k4e/t2k4e-types";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
 import type { FoundryAttackSelectionValidator } from "./foundry-t2k4e-compatibility";
@@ -66,7 +67,36 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
         combat,
         initial,
         onSubmit: (attack) => {
-          finish({ attack });
+          const category =
+            attack.modifiers
+              .weaponCategory;
+
+          const isMachineGun =
+            category === "lmg" ||
+            category === "gpmg" ||
+            category === "hmg";
+
+          if (!isMachineGun) {
+            finish({ attack });
+            return;
+          }
+
+          const dice =
+            new T2K4ERangedDiceSelector()
+              .select(
+                selection.attackerActor as T2K4EActorLike,
+                attack.modifiers,
+              );
+
+          finish({
+            attack: {
+              ...attack,
+              combat: {
+                ...attack.combat,
+                ...dice,
+              },
+            },
+          });
         },
         onCancel: () => {
           finish(null);

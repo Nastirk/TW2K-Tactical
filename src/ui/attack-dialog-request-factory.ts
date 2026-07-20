@@ -7,6 +7,17 @@ export class AttackDialogRequestFactory {
     combat: StagedEndToEndRangedCombatRequest,
     input: AttackDialogInput,
   ): ModifierAwareStagedRangedCombatRequest {
+    const isMachineGun =
+      input.weaponCategory === "lmg" ||
+      input.weaponCategory === "gpmg" ||
+      input.weaponCategory === "hmg";
+
+    const machineGunCarried =
+      isMachineGun &&
+      !input.bipodDeployed &&
+      !input.tripodDeployed &&
+      !input.vehicleMounted;
+
     return {
       combat: {
         ...combat,
@@ -62,14 +73,18 @@ export class AttackDialogRequestFactory {
         denseSmoke: input.denseSmoke,
         hasNightVision: input.hasNightVision,
         hasThermalOptics: input.hasThermalOptics,
-        machineGunCarried: input.machineGunCarried,
+        machineGunCarried,
+        bipodDeployed: input.bipodDeployed,
+        tripodDeployed: input.tripodDeployed,
+        vehicleMounted: input.vehicleMounted,
         oneHanded: input.oneHanded,
         atShortRange: input.atShortRange,
         hasTelescopicSight: input.hasTelescopicSight,
         stablePlatform:
           (input.attackerProne ?? false) ||
           input.stablePlatform ||
-          input.bipodDeployed,
+          input.bipodDeployed ||
+          input.tripodDeployed,
       },
     };
   }

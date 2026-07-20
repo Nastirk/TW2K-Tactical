@@ -24,6 +24,9 @@ const base = {
   hasTelescopicSight: false,
   hasBipod: false,
   bipodDeployed: false,
+  hasTripod: false,
+  tripodDeployed: false,
+  vehicleMounted: false,
   stablePlatform: false,
 };
 
@@ -51,4 +54,26 @@ describe("AttackDialogValidator", () => {
       }),
     ).toThrow("targetTerrainModifier must be 0, -1, or -2.");
   });
+
+  it("requires attached support gear before deployment", () => {
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        bipodDeployed: true,
+      }),
+    ).toThrow(
+      "Bipod deployment requires an equipped bipod attached to the selected weapon.",
+    );
+
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        tripodDeployed: true,
+      }),
+    ).toThrow(
+      "Tripod deployment requires an equipped tripod attached to the selected weapon.",
+    );
+  });
+
+
 });

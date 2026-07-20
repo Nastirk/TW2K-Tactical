@@ -30,5 +30,8 @@ export interface AttackDialogInput {
   attackerProne?: boolean;
   hasBipod: boolean;
   bipodDeployed: boolean;
+  hasTripod: boolean;
+  tripodDeployed: boolean;
+  vehicleMounted: boolean;
   stablePlatform: boolean;
 }

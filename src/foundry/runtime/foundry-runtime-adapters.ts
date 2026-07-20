@@ -383,7 +383,7 @@ export class FoundryUiNotificationSink implements FoundryNotificationSink {
   }
 }
 
-type WeaponAccessoryKind = "scope" | "bipod";
+type WeaponAccessoryKind = "scope" | "bipod" | "tripod";
 
 export class FoundryWeaponCategoryResolver {
   resolve(weapon: unknown): RangedWeaponCategory {
@@ -414,16 +414,14 @@ export class FoundryWeaponCategoryResolver {
   }
 
   /**
-   * A weapon accessory is active only when the selected weapon and
-   * the actor's gear state agree:
+   * TW2K Tactical attachment is the authoritative accessory link.
+   * An accessory is active when matching gear is equipped, not stored
+   * in the backpack, and attached to this exact weapon document.
    *
-   * 1. The weapon exposes the corresponding T2K4E property.
-   * 2. Matching gear is equipped and not stored in the backpack.
-   * 3. The gear's TW2K Tactical attachedWeaponId flag points to this
-   *    exact weapon document.
-   *
-   * This keeps one physical accessory from granting its benefit to
-   * every compatible weapon the actor owns.
+   * The native T2K4E weapon property is maintained as a UI mirror by
+   * the attachment service, rather than being a second prerequisite.
+   * This prevents a stale/manual checkbox from breaking an otherwise
+   * valid attachment.
    */
   hasTelescopicSight(
     weapon: unknown,
@@ -447,20 +445,31 @@ export class FoundryWeaponCategoryResolver {
     );
   }
 
+  hasTripod(
+    weapon: unknown,
+    attackerActor?: unknown,
+  ): boolean {
+    return this.hasMountedAccessory(
+      weapon,
+      attackerActor,
+      "tripod",
+    );
+  }
+
+  isVehicleMounted(
+    weapon: unknown,
+  ): boolean {
+    return readPath(
+      weapon,
+      ["system", "props", "mounted"],
+    ) === true;
+  }
+
   private hasMountedAccessory(
     weapon: unknown,
     attackerActor: unknown,
     kind: WeaponAccessoryKind,
   ): boolean {
-    if (
-      readPath(
-        weapon,
-        ["system", "props", kind],
-      ) !== true
-    ) {
-      return false;
-    }
-
     const weaponId = readFoundryDocumentId(
       weapon,
     );
@@ -545,6 +554,10 @@ export class FoundryWeaponCategoryResolver {
         );
       case "bipod":
         return /\bbipod\b/.test(
+          description,
+        );
+      case "tripod":
+        return /\btripod\b/.test(
           description,
         );
     }

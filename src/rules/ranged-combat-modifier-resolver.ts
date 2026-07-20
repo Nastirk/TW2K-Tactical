@@ -330,14 +330,16 @@ export class RangedCombatModifierResolver {
     modifiers: Modifier[],
   ): void {
     if (
-      input.machineGunCarried
+      this.isMachineGunCarried(
+        input,
+      )
     ) {
       if (
         input.weaponCategory ===
         "lmg"
       ) {
         modifiers.push({
-        category: "ranged-combat",
+          category: "ranged-combat",
           source:
             "carried-machine-gun",
           value: -2,
@@ -351,7 +353,7 @@ export class RangedCombatModifierResolver {
         "gpmg"
       ) {
         modifiers.push({
-        category: "ranged-combat",
+          category: "ranged-combat",
           source:
             "carried-machine-gun",
           value: -3,
@@ -439,7 +441,8 @@ export class RangedCombatModifierResolver {
     if (
       input.weaponCategory ===
         "hmg" &&
-      input.machineGunCarried
+      !input.tripodDeployed &&
+      !input.vehicleMounted
     ) {
       return (
         "HMGs can only be fired from a tripod or vehicle mount."
@@ -478,6 +481,33 @@ export class RangedCombatModifierResolver {
     }
 
     return undefined;
+  }
+
+  private isMachineGunCarried(
+    input:
+      RangedCombatModifierInput,
+  ): boolean {
+    const isMachineGun =
+      input.weaponCategory ===
+        "lmg" ||
+      input.weaponCategory ===
+        "gpmg" ||
+      input.weaponCategory ===
+        "hmg";
+
+    if (!isMachineGun) {
+      return false;
+    }
+
+    return (
+      input.machineGunCarried ===
+        true ||
+      (
+        !input.bipodDeployed &&
+        !input.tripodDeployed &&
+        !input.vehicleMounted
+      )
+    );
   }
 
   private assertPenalty(

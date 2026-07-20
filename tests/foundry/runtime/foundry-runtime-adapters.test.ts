@@ -202,7 +202,7 @@ describe("Foundry runtime adapters", () => {
           ],
         },
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it("requires an equipped bipod gear item attached to the selected weapon", () => {
@@ -215,7 +215,7 @@ describe("Foundry runtime adapters", () => {
           type: "weapon",
           system: {
             props: {
-              bipod: true,
+              bipod: false,
             },
           },
         },
@@ -238,6 +238,68 @@ describe("Foundry runtime adapters", () => {
         },
       ),
     ).toBe(true);
+  });
+
+
+  it("requires an equipped tripod gear item attached to the selected weapon", () => {
+    const resolver = new FoundryWeaponCategoryResolver();
+
+    expect(
+      resolver.hasTripod(
+        {
+          id: "weapon-1",
+          type: "weapon",
+          system: {
+            props: {
+              tripod: false,
+            },
+          },
+        },
+        {
+          items: [
+            {
+              type: "gear",
+              name: "Tripod",
+              system: {
+                equipped: true,
+                backpack: false,
+              },
+              flags: {
+                "tw2k-tactical": {
+                  attachedWeaponId: "weapon-1",
+                },
+              },
+            },
+          ],
+        },
+      ),
+    ).toBe(true);
+  });
+
+  it("reads the T2K4E mounted weapon state", () => {
+    const resolver = new FoundryWeaponCategoryResolver();
+
+    expect(
+      resolver.isVehicleMounted({
+        type: "weapon",
+        system: {
+          props: {
+            mounted: true,
+          },
+        },
+      }),
+    ).toBe(true);
+
+    expect(
+      resolver.isVehicleMounted({
+        type: "weapon",
+        system: {
+          props: {
+            mounted: false,
+          },
+        },
+      }),
+    ).toBe(false);
   });
 
   it("marks T2K4E shotguns for shotgun range rules", () => {

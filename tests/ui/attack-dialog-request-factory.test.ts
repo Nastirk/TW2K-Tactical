@@ -39,6 +39,9 @@ describe("AttackDialogRequestFactory", () => {
         attackerProne: true,
         hasBipod: true,
         bipodDeployed: true,
+        hasTripod: false,
+        tripodDeployed: false,
+        vehicleMounted: false,
         stablePlatform: false,
       },
     );
@@ -114,6 +117,9 @@ describe("AttackDialogRequestFactory", () => {
         attackerProne: true,
         hasBipod: false,
         bipodDeployed: false,
+        hasTripod: false,
+        tripodDeployed: false,
+        vehicleMounted: false,
         stablePlatform: false,
       },
     );
@@ -121,5 +127,83 @@ describe("AttackDialogRequestFactory", () => {
     expect(request.modifiers.stablePlatform).toBe(true);
     expect(request.combat.contextOverrides?.stablePlatform).toBeUndefined();
   });
+
+
+  it("derives machine-gun carried state from deployed support", () => {
+    const baseInput = {
+      weaponCategory: "gpmg" as const,
+      aimMode: "fast" as const,
+      calledShot: false,
+      targetProne: false,
+      targetInFullCover: false,
+      approximateTargetLocationKnown: false,
+      targetMoved: false,
+      firingFromMovingVehicle: false,
+      targetSize: "normal" as const,
+      elevatedPosition: false,
+      targetTerrainModifier: 0,
+      lightLevel: "normal" as const,
+      weatherModifier: 0,
+      denseSmoke: false,
+      hasNightVision: false,
+      hasThermalOptics: false,
+      machineGunCarried: false,
+      oneHanded: false,
+      atShortRange: true,
+      hasTelescopicSight: false,
+      attackerProne: false,
+      hasBipod: true,
+      bipodDeployed: false,
+      hasTripod: true,
+      tripodDeployed: false,
+      vehicleMounted: false,
+      stablePlatform: false,
+    };
+
+    const combat = {
+      attackerId: "a",
+      targetId: "t",
+      targetActorId: "target",
+      weaponId: "w",
+      baseAttributeDie: 10 as const,
+      baseSkillDie: 8 as const,
+      weaponBaseDamage: 2,
+      critThreshold: 3,
+      weaponArmorModifier: 0,
+    };
+
+    const carried =
+      new AttackDialogRequestFactory()
+        .create(
+          combat,
+          baseInput,
+        );
+
+    expect(
+      carried.modifiers
+        .machineGunCarried,
+    ).toBe(true);
+
+    const tripod =
+      new AttackDialogRequestFactory()
+        .create(
+          combat,
+          {
+            ...baseInput,
+            tripodDeployed:
+              true,
+          },
+        );
+
+    expect(
+      tripod.modifiers
+        .machineGunCarried,
+    ).toBe(false);
+    expect(
+      tripod.modifiers
+        .tripodDeployed,
+    ).toBe(true);
+  });
+
 
 });

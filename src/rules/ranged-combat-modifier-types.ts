@@ -71,6 +71,9 @@ export interface RangedCombatModifierInput {
   hasThermalOptics?: boolean;
 
   machineGunCarried?: boolean;
+  bipodDeployed?: boolean;
+  tripodDeployed?: boolean;
+  vehicleMounted?: boolean;
   oneHanded?: boolean;
 
   /**

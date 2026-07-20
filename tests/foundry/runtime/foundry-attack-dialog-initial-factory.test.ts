@@ -38,6 +38,9 @@ describe("FoundryAttackDialogInitialFactory", () => {
     expect(result.elevatedPosition).toBe(false);
     expect(result.hasBipod).toBe(false);
     expect(result.bipodDeployed).toBe(false);
+    expect(result.hasTripod).toBe(false);
+    expect(result.tripodDeployed).toBe(false);
+    expect(result.vehicleMounted).toBe(false);
     expect(result.stablePlatform).toBe(false);
   });
 
@@ -145,6 +148,19 @@ describe("FoundryAttackDialogInitialFactory", () => {
             },
           },
         },
+        {
+          type: "gear",
+          name: "Tripod",
+          system: {
+            equipped: true,
+            backpack: false,
+          },
+          flags: {
+            "tw2k-tactical": {
+              attachedWeaponId: "w",
+            },
+          },
+        },
       ],
     };
     const targetActor = { id: "t" };
@@ -155,6 +171,8 @@ describe("FoundryAttackDialogInitialFactory", () => {
         props: {
           scope: true,
           bipod: true,
+          tripod: true,
+          mounted: true,
         },
       },
     };
@@ -189,6 +207,9 @@ describe("FoundryAttackDialogInitialFactory", () => {
     expect(result.hasTelescopicSight).toBe(true);
     expect(result.hasBipod).toBe(true);
     expect(result.bipodDeployed).toBe(false);
+    expect(result.hasTripod).toBe(true);
+    expect(result.tripodDeployed).toBe(false);
+    expect(result.vehicleMounted).toBe(true);
     expect(result.attackerProne).toBe(true);
     expect(result.stablePlatform).toBe(false);
   });

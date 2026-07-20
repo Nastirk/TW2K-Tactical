@@ -1,6 +1,6 @@
 type UnknownRecord = Record<string, unknown>;
 
-export type FoundryWeaponAccessoryKind = "scope" | "bipod";
+export type FoundryWeaponAccessoryKind = "scope" | "bipod" | "tripod";
 
 const MODULE_ID = "tw2k-tactical";
 const ATTACHED_WEAPON_FLAG = "attachedWeaponId";
@@ -79,6 +79,10 @@ export function detectWeaponAccessoryKind(
     return "bipod";
   }
 
+  if (/\btripod\b/.test(description)) {
+    return "tripod";
+  }
+
   return undefined;
 }
 
@@ -111,30 +115,98 @@ export function readAttachedWeaponId(
     : undefined;
 }
 
+/**
+ * Attachment is the source of truth, so the selector must allow the player
+ * to choose a weapon even when the corresponding T2K4E property is not yet
+ * checked. Persisting the attachment mirrors the property onto the weapon.
+ */
 export function getCompatibleWeapons(
   actor: unknown,
-  kind: FoundryWeaponAccessoryKind,
+  _kind: FoundryWeaponAccessoryKind,
 ): unknown[] {
   return readCollectionValues(
     readPath(actor, ["items"]),
   ).filter((item) => {
     const type = readPath(item, ["type"]);
 
-    if (
-      typeof type !== "string" ||
-      type.toLowerCase() !== "weapon"
-    ) {
-      return false;
-    }
-
-    return readPath(
-      item,
-      ["system", "props", kind],
-    ) === true;
+    return (
+      typeof type === "string" &&
+      type.toLowerCase() === "weapon"
+    );
   });
 }
 
-export async function persistAttachedWeaponId(
+function findWeapon(
+  actor: unknown,
+  weaponId: string,
+): unknown | undefined {
+  return readCollectionValues(
+    readPath(actor, ["items"]),
+  ).find(
+    (item) =>
+      readPath(item, ["type"]) === "weapon" &&
+      readFoundryDocumentId(item) === weaponId,
+  );
+}
+
+function isSameDocument(
+  left: unknown,
+  right: unknown,
+): boolean {
+  if (left === right) {
+    return true;
+  }
+
+  const leftId = readFoundryDocumentId(left);
+  const rightId = readFoundryDocumentId(right);
+
+  return Boolean(
+    leftId &&
+    rightId &&
+    leftId === rightId,
+  );
+}
+
+function hasOtherAttachedAccessory(
+  actor: unknown,
+  currentAccessory: unknown,
+  kind: FoundryWeaponAccessoryKind,
+  weaponId: string,
+): boolean {
+  return readCollectionValues(
+    readPath(actor, ["items"]),
+  ).some((candidate) => {
+    if (isSameDocument(candidate, currentAccessory)) {
+      return false;
+    }
+
+    return (
+      detectWeaponAccessoryKind(candidate) === kind &&
+      readAttachedWeaponId(candidate) === weaponId
+    );
+  });
+}
+
+async function updateWeaponAccessoryProperty(
+  weapon: unknown,
+  kind: FoundryWeaponAccessoryKind,
+  enabled: boolean,
+): Promise<void> {
+  const update = asRecord(weapon)?.update;
+
+  if (typeof update !== "function") {
+    return;
+  }
+
+  await update.call(
+    weapon,
+    {
+      [`system.props.${kind}`]: enabled,
+    },
+  );
+}
+
+async function persistAttachmentFlag(
   item: unknown,
   weaponId: string | undefined,
 ): Promise<void> {
@@ -181,4 +253,69 @@ export async function persistAttachedWeaponId(
         [`flags.${MODULE_ID}.-=${ATTACHED_WEAPON_FLAG}`]: null,
       },
   );
+}
+
+/**
+ * Persists the TW2K Tactical attachment and mirrors that attachment onto the
+ * selected weapon's native T2K4E capability property.
+ *
+ * Attachment remains distinct from deployment: attaching a bipod/tripod
+ * checks the weapon capability and exposes the deployment control, but does
+ * not automatically mark the support as deployed for an attack.
+ */
+export async function persistAttachedWeaponId(
+  item: unknown,
+  weaponId: string | undefined,
+): Promise<void> {
+  const kind = detectWeaponAccessoryKind(item);
+  const actor = asRecord(item)?.parent;
+  const previousWeaponId = readAttachedWeaponId(item);
+
+  await persistAttachmentFlag(
+    item,
+    weaponId,
+  );
+
+  if (!kind || !actor) {
+    return;
+  }
+
+  if (weaponId) {
+    const newWeapon = findWeapon(
+      actor,
+      weaponId,
+    );
+
+    if (newWeapon) {
+      await updateWeaponAccessoryProperty(
+        newWeapon,
+        kind,
+        true,
+      );
+    }
+  }
+
+  if (
+    previousWeaponId &&
+    previousWeaponId !== weaponId &&
+    !hasOtherAttachedAccessory(
+      actor,
+      item,
+      kind,
+      previousWeaponId,
+    )
+  ) {
+    const previousWeapon = findWeapon(
+      actor,
+      previousWeaponId,
+    );
+
+    if (previousWeapon) {
+      await updateWeaponAccessoryProperty(
+        previousWeapon,
+        kind,
+        false,
+      );
+    }
+  }
 }
