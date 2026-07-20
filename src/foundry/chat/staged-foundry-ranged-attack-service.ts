@@ -29,6 +29,8 @@ export interface StagedFoundryRangedAttackRequest {
     CombatChatNames;
 
   attackerActor?: unknown;
+
+  targetActorUuid?: string;
 }
 
 export class StagedFoundryRangedAttackService {
@@ -70,6 +72,7 @@ export class StagedFoundryRangedAttackService {
     const payload =
       this.payloadFactory.create(
         result,
+        request.targetActorUuid,
       );
 
     await this.publisher.publish({

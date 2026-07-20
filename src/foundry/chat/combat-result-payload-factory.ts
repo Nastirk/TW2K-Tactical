@@ -9,10 +9,15 @@ export class CombatResultPayloadFactory {
   create(
     result:
       StagedEndToEndRangedCombatResult,
+    targetActorUuid?: string,
   ): CombatResultPayload {
     return {
       targetActorId:
         result.targetActorId,
+
+      ...(targetActorUuid
+        ? { targetActorUuid }
+        : {}),
 
       finalDamage:
         result.postHit

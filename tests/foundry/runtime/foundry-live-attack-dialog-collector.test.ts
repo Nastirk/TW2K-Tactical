@@ -70,4 +70,56 @@ describe("FoundryLiveAttackDialogCollector", () => {
       }),
     ).resolves.toEqual({ attack });
   });
+
+  it("pre-resolves a random hit location before selecting T2K4E armor", async () => {
+    const attack = {
+      combat: { attackerId: "a" },
+      modifiers: { weaponCategory: "pistol" },
+    };
+
+    const selection = {
+      attackerActor: { id: "a" },
+      targetActor: { id: "t" },
+      weapon: { id: "w", type: "weapon" },
+    };
+
+    const createRangedAttack = vi.fn(() => ({
+      attackerId: "a",
+      chosenHitLocation: "torso",
+      bodyArmorLevels: [2],
+    }));
+
+    const dialogService = {
+      open: vi.fn((request: { onSubmit: (value: unknown) => void }) => {
+        request.onSubmit(attack);
+      }),
+    };
+
+    const hitLocationResolver = {
+      resolve: vi.fn(async () => "torso"),
+    };
+
+    const collector = new FoundryLiveAttackDialogCollector(
+      dialogService as never,
+      { createRangedAttack } as never,
+      {
+        create: vi.fn(() => ({ weaponCategory: "pistol" })),
+      } as never,
+      undefined,
+      hitLocationResolver as never,
+    );
+
+    await expect(
+      collector.collect(selection),
+    ).resolves.toEqual({ attack });
+
+    expect(hitLocationResolver.resolve).toHaveBeenCalledTimes(1);
+    expect(createRangedAttack).toHaveBeenCalledWith({
+      attacker: selection.attackerActor,
+      target: selection.targetActor,
+      weapon: selection.weapon,
+      chosenHitLocation: "torso",
+    });
+  });
+
 });

@@ -19,13 +19,20 @@ export class CombatResultApplicationService {
   async apply(
     payload: CombatResultPayload,
   ): Promise<CombatResultApplicationResult> {
+    // A synthetic token actor has the same actor ID as its base actor, but a
+    // distinct UUID. Prefer the UUID so Apply Result updates the exact actor
+    // instance that was targeted when the attack was rolled.
+    const targetActorReference =
+      payload.targetActorUuid ??
+      payload.targetActorId;
+
     if (
       payload.finalDamage > 0
     ) {
       await this.actorStateService
         .applyDamage({
           actorId:
-            payload.targetActorId,
+            targetActorReference,
           damage:
             payload.finalDamage,
         });
@@ -36,7 +43,7 @@ export class CombatResultApplicationService {
     ) {
       await this.actorStateService
         .addCriticalInjury(
-          payload.targetActorId,
+          targetActorReference,
           payload.criticalInjury,
         );
     }
@@ -46,7 +53,7 @@ export class CombatResultApplicationService {
     ) {
       await this.actorStateService
         .setDeathSaveState(
-          payload.targetActorId,
+          targetActorReference,
           payload.deathSaveState,
         );
     }

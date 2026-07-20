@@ -3,6 +3,7 @@ import {
   FoundryCanvasTargetActorSource,
   FoundryOwnerOrGmCombatActionPermission,
   FoundryWeaponCategoryResolver,
+  readFoundryUuid,
 } from "../../../src/foundry/runtime/foundry-runtime-adapters";
 
 describe("Foundry runtime adapters", () => {
@@ -47,5 +48,16 @@ describe("Foundry runtime adapters", () => {
     }));
 
     expect(permission.canApplyResult("target")).toBe(true);
+  });
+
+
+  it("reads a synthetic actor UUID from the targeted actor", () => {
+    expect(
+      readFoundryUuid({
+        uuid: "Scene.scene-1.Token.token-1.Actor.target",
+      }),
+    ).toBe(
+      "Scene.scene-1.Token.token-1.Actor.target",
+    );
   });
 });

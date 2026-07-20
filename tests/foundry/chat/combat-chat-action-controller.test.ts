@@ -30,6 +30,7 @@ class MemoryRepository
   constructor(
     public state:
       ActorCombatState,
+    private readonly failSet = false,
   ) {}
 
   async get():
@@ -44,9 +45,34 @@ class MemoryRepository
     state:
       ActorCombatState,
   ): Promise<void> {
+    if (this.failSet) {
+      throw new Error(
+        "Persistence failed.",
+      );
+    }
+
     this.state =
       structuredClone(state);
   }
+}
+
+function createMessage(
+  update = vi.fn()
+    .mockResolvedValue(undefined),
+) {
+  return {
+    id: "message-1",
+    flags: {
+      "tw2k-tactical": {
+        combatResult: {
+          targetActorId:
+            "target",
+          finalDamage: 2,
+        },
+      },
+    },
+    update,
+  };
 }
 
 describe(
@@ -83,19 +109,8 @@ describe(
             new InMemoryCombatActionIdempotency(),
           );
 
-        const message = {
-          id: "message-1",
-          flags: {
-            "tw2k-tactical": {
-              combatResult: {
-                targetActorId:
-                  "target",
-                finalDamage: 2,
-              },
-            },
-          },
-          update,
-        };
+        const message =
+          createMessage(update);
 
         await controller
           .applyResult({
@@ -120,6 +135,96 @@ describe(
         ).rejects.toThrow(
           "Combat result has already been applied.",
         );
+      },
+    );
+
+    it(
+      "honors the persisted applied chat flag after a runtime restart",
+      async () => {
+        const repository =
+          new MemoryRepository({
+            damage: 0,
+            hitCapacity: 5,
+            incapacitated: false,
+            criticalInjuries: [],
+          });
+
+        const controller =
+          new CombatChatActionController(
+            new CombatResultApplicationService(
+              new ActorStateService(
+                repository,
+              ),
+            ),
+            {
+              canApplyResult:
+                () => true,
+            },
+            new InMemoryCombatActionIdempotency(),
+          );
+
+        await expect(
+          controller.applyResult({
+            message: {
+              ...createMessage(),
+              flags: {
+                "tw2k-tactical": {
+                  applied: true,
+                  combatResult: {
+                    targetActorId:
+                      "target",
+                    finalDamage: 2,
+                  },
+                },
+              },
+            },
+          }),
+        ).rejects.toThrow(
+          "Combat result has already been applied.",
+        );
+
+        expect(repository.state.damage)
+          .toBe(0);
+      },
+    );
+
+    it(
+      "does not mark the result applied when actor persistence fails",
+      async () => {
+        const update = vi.fn();
+        const controller =
+          new CombatChatActionController(
+            new CombatResultApplicationService(
+              new ActorStateService(
+                new MemoryRepository(
+                  {
+                    damage: 0,
+                    hitCapacity: 5,
+                    incapacitated: false,
+                    criticalInjuries: [],
+                  },
+                  true,
+                ),
+              ),
+            ),
+            {
+              canApplyResult:
+                () => true,
+            },
+            new InMemoryCombatActionIdempotency(),
+          );
+
+        await expect(
+          controller.applyResult({
+            message:
+              createMessage(update),
+          }),
+        ).rejects.toThrow(
+          "Persistence failed.",
+        );
+
+        expect(update)
+          .not.toHaveBeenCalled();
       },
     );
 

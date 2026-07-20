@@ -29,6 +29,7 @@ import {
   FoundrySelectionAttackContextSource,
   FoundryWeaponCategoryResolver,
   readFoundryName,
+  readFoundryUuid,
 } from "./foundry-runtime-adapters";
 
 interface ModifierAwareAttackServiceLike {
@@ -40,6 +41,7 @@ interface ModifierAwareAttackServiceLike {
       weaponName: string;
     };
     attackerActor?: unknown;
+    targetActorUuid?: string;
   }): Promise<unknown>;
 }
 
@@ -153,6 +155,10 @@ export class FoundryModifierAwareLiveAttackExecutor implements FoundryLiveAttack
         weaponName: readFoundryName(request.selection.weapon, "Weapon"),
       },
       attackerActor: request.selection.attackerActor,
+      targetActorUuid:
+        readFoundryUuid(
+          request.selection.targetActor,
+        ),
     });
   }
 

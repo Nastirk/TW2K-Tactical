@@ -16,7 +16,10 @@ describe("FoundryModifierAwareLiveAttackExecutor", () => {
     await executor.execute({
       selection: {
         attackerActor: { name: "Attacker" },
-        targetActor: { name: "Target" },
+        targetActor: {
+          name: "Target",
+          uuid: "Scene.scene-1.Token.token-1.Actor.target",
+        },
         weapon: { name: "Weapon" },
       },
       dialogInput: {
@@ -45,6 +48,8 @@ describe("FoundryModifierAwareLiveAttackExecutor", () => {
             atShortRange: true,
           }),
         }),
+        targetActorUuid:
+          "Scene.scene-1.Token.token-1.Actor.target",
       }),
     );
   });

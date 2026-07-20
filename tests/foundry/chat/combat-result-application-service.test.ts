@@ -107,5 +107,55 @@ describe(
         ).toBe("required");
       },
     );
+
+
+    it(
+      "uses the synthetic actor UUID as the repository reference",
+      async () => {
+        const actorReferences: string[] = [];
+
+        const repository: ActorCombatStateRepository = {
+          async get(actorId) {
+            actorReferences.push(
+              `get:${actorId}`,
+            );
+            return {
+              damage: 0,
+              hitCapacity: 5,
+              incapacitated: false,
+              criticalInjuries: [],
+            };
+          },
+          async set(actorId) {
+            actorReferences.push(
+              `set:${actorId}`,
+            );
+          },
+        };
+
+        const service =
+          new CombatResultApplicationService(
+            new ActorStateService(
+              repository,
+            ),
+          );
+
+        const actorUuid =
+          "Scene.scene-1.Token.token-1.Actor.target";
+
+        await service.apply({
+          targetActorId: "target",
+          targetActorUuid:
+            actorUuid,
+          finalDamage: 2,
+        });
+
+        expect(actorReferences)
+          .toEqual([
+            `get:${actorUuid}`,
+            `set:${actorUuid}`,
+          ]);
+      },
+    );
   },
 );

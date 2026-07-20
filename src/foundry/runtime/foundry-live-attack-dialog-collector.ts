@@ -1,4 +1,5 @@
 import type { ModifierAwareStagedRangedCombatRequest } from "../../combat/modifier-aware-staged-ranged-combat-workflow";
+import type { HitLocation } from "../../combat/hit-location-resolver";
 import type {
   FoundryAttackDialogCollector,
   FoundryAttackDialogInput,
@@ -14,12 +15,17 @@ export interface CollectedFoundryAttackDialogInput extends FoundryAttackDialogIn
   attack: ModifierAwareStagedRangedCombatRequest;
 }
 
+export interface FoundryHitLocationResolver {
+  resolve(): Promise<HitLocation>;
+}
+
 export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogCollector {
   constructor(
     private readonly dialogService: FoundryAttackDialogService,
     private readonly combatRequestFactory: T2K4ECombatRequestFactory,
     private readonly initialFactory: FoundryAttackDialogInitialFactory,
     private readonly selectionValidator?: FoundryAttackSelectionValidator,
+    private readonly hitLocationResolver?: FoundryHitLocationResolver,
   ) {}
 
   async collect(
@@ -27,10 +33,17 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
   ): Promise<CollectedFoundryAttackDialogInput | null> {
     this.selectionValidator?.assertAttackSelection(selection);
 
+    // Resolve the normal random hit location before the T2K4E request
+    // factory selects location-specific body armor. The core post-hit
+    // workflow then receives this as chosenHitLocation and reuses it.
+    const chosenHitLocation =
+      await this.hitLocationResolver?.resolve();
+
     const combat = this.combatRequestFactory.createRangedAttack({
       attacker: selection.attackerActor as T2K4EActorLike,
       target: selection.targetActor as T2K4EActorLike,
       weapon: selection.weapon as T2K4EItemLike,
+      chosenHitLocation,
     });
 
     const initial = this.initialFactory.create(selection);
