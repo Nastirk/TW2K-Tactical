@@ -9,6 +9,7 @@ export interface TargetSizeModifier {
   source: "target-size";
   value: number;
   description: string;
+  provenance: "automatic";
 }
 
 export class TargetSizeModifierProvider
@@ -31,6 +32,7 @@ export class TargetSizeModifierProvider
           source: "target-size",
           value: 2,
           description: "Large target",
+          provenance: "automatic",
         },
       ];
     }
@@ -43,6 +45,7 @@ export class TargetSizeModifierProvider
           source: "target-size",
           value: -2,
           description: "Small target",
+          provenance: "automatic",
         },
       ];
     }

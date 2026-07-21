@@ -623,4 +623,213 @@ describe("Foundry runtime adapters", () => {
       "Scene.scene-1.Token.token-1.Actor.target",
     );
   });
+
+
+  it("treats offset tokens inside the same Foundry hex as same-hex combat", () => {
+    const attackerActor = { id: "attacker" };
+    const targetActor = { id: "target" };
+
+    const source = new FoundrySelectionAttackContextSource(
+      {
+        attackerActor,
+        targetActor,
+        weapon: createWeapon(),
+      },
+      () => ({
+        tokens: {
+          placeables: [
+            { actor: attackerActor, center: { x: 110, y: 110 } },
+            { actor: targetActor, center: { x: 175, y: 145 } },
+          ],
+        },
+        grid: {
+          size: 100,
+          pointToCube: () => ({ q: 3, r: 4, s: -7 }),
+          measurePath: () => ({ distance: 10, spaces: 1 }),
+        },
+        scene: { grid: { distance: 10 } },
+      }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.getTokenDistanceHexes("attacker", "target")).toBe(0);
+    expect(source.isSameHex()).toBe(true);
+  });
+
+  it("converts four 2m Foundry steps into same-hex T2K combat", () => {
+    const attackerActor = { id: "attacker" };
+    const targetActor = { id: "target" };
+
+    const source = new FoundrySelectionAttackContextSource(
+      {
+        attackerActor,
+        targetActor,
+        weapon: createWeapon(),
+      },
+      () => ({
+        tokens: {
+          placeables: [
+            { actor: attackerActor, center: { x: 100, y: 100 } },
+            { actor: targetActor, center: { x: 200, y: 100 } },
+          ],
+        },
+        grid: {
+          size: 100,
+          measurePath: () => ({ distance: 8, spaces: 4 }),
+        },
+        scene: { grid: { distance: 2 } },
+      }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.getTokenDistanceHexes("attacker", "target")).toBe(0);
+    expect(source.isSameHex()).toBe(true);
+    expect(source.getCombatGridEvidence("attacker", "target")).toMatchObject({
+      foundryMetersPerGridSpace: 2,
+      foundryGridSteps: 4,
+      foundryDistanceMeters: 8,
+      t2kMetersPerCombatHex: 10,
+      foundrySpacesPerT2KHex: 5,
+      measurementSource: "foundry-path",
+    });
+  });
+
+  it("converts five 2m Foundry steps into one T2K combat hex", () => {
+    const attackerActor = { id: "attacker" };
+    const targetActor = { id: "target" };
+
+    const source = new FoundrySelectionAttackContextSource(
+      {
+        attackerActor,
+        targetActor,
+        weapon: createWeapon(),
+      },
+      () => ({
+        tokens: {
+          placeables: [
+            { actor: attackerActor, center: { x: 100, y: 100 } },
+            { actor: targetActor, center: { x: 200, y: 100 } },
+          ],
+        },
+        grid: {
+          size: 100,
+          measurePath: () => ({ distance: 10, spaces: 5 }),
+        },
+        scene: { grid: { distance: 2 } },
+      }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.getTokenDistanceHexes("attacker", "target")).toBe(1);
+    expect(source.isSameHex()).toBe(false);
+  });
+
+  it("detects automatic cover, defenseless, movement, specialty, and environment facts", () => {
+    const attackerActor = {
+      id: "attacker",
+      items: [
+        {
+          type: "specialty",
+          name: "Machinegunner",
+        },
+        {
+          type: "gear",
+          name: "Night Vision Goggles",
+          system: {
+            equipped: true,
+            backpack: false,
+          },
+        },
+        {
+          type: "gear",
+          name: "Thermal Optics",
+          system: {
+            equipped: true,
+            backpack: false,
+          },
+        },
+      ],
+      flags: {
+        "tw2k-tactical": {
+          firingFromMovingVehicle: true,
+          helperCount: 2,
+        },
+      },
+    };
+    const targetActor = {
+      id: "target",
+      statuses: new Set(["fullCover"]),
+      system: {
+        health: {
+          value: 0,
+        },
+      },
+      flags: {
+        "tw2k-tactical": {
+          movedSincePreviousTurn: true,
+          coverEffectiveAgainstAttacker: true,
+          coverArmorLevel: 3,
+        },
+      },
+    };
+
+    const source = new FoundrySelectionAttackContextSource(
+      {
+        attackerActor,
+        targetActor,
+        weapon: createWeapon(),
+      },
+      () => ({
+        tokens: {
+          placeables: [
+            {
+              actor: attackerActor,
+              center: { x: 0, y: 0 },
+              document: { actorId: "attacker", width: 1, height: 1 },
+            },
+            {
+              actor: targetActor,
+              center: { x: 200, y: 0 },
+              document: { actorId: "target", width: 1, height: 1 },
+            },
+          ],
+        },
+        grid: { size: 100 },
+        scene: {
+          grid: { distance: 10 },
+          flags: {
+            "tw2k-tactical": {
+              lightLevel: "dark",
+              weatherModifier: -1,
+              visibilityLimitHexes: 10,
+            },
+          },
+        },
+      }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.isTargetDefenseless("target")).toBe(true);
+    expect(source.isTargetInFullCover("target")).toBe(true);
+    expect(source.isCoverEffectiveAgainstAttacker("attacker", "target")).toBe(true);
+    expect(source.getTargetCoverArmorLevel("target")).toBe(3);
+    expect(source.didTargetMove("target")).toBe(true);
+    expect(source.isFiringFromMovingVehicle("attacker")).toBe(true);
+    expect(source.getLightLevel("attacker", "target")).toBe("dark");
+    expect(source.getWeatherModifier()).toBe(-1);
+    expect(source.getVisibilityLimitHexes()).toBe(10);
+    expect(source.hasNightVision("attacker", 2)).toBe(true);
+    expect(source.hasThermalOptics("attacker")).toBe(true);
+    expect(source.getHelperCount("attacker")).toBe(2);
+    expect(source.hasAttackerSpecialty("attacker", "Machinegunner")).toBe(true);
+  });
+
+  it("distinguishes specialty-relevant weapon categories", () => {
+    const resolver = new FoundryWeaponCategoryResolver();
+    expect(resolver.resolve({ system: { itemType: "Sniper Rifle" } })).toBe("sniper-rifle");
+    expect(resolver.resolve({ system: { itemType: "Hunting Rifle" } })).toBe("hunting-rifle");
+    expect(resolver.resolve({ system: { itemType: "Grenade Launcher" } })).toBe("grenade-launcher");
+    expect(resolver.resolve({ system: { itemType: "Mortar" } })).toBe("mortar");
+  });
+
 });

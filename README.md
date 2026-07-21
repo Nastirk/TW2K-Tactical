@@ -16,7 +16,7 @@ TW2K Tactical is designed to complement—not replace—the T2K4E system, Year Z
 
 ## Current Development Status
 
-**Active development milestone:** `v0.24 — Automatic Combat Context & Modifier Engine`
+**Active development milestone:** `v0.24 — Automatic Combat Context & Modifier Engine` (completion candidate)
 
 Current development branch:
 
@@ -36,6 +36,7 @@ Recent validated work includes:
 - Automatic target-size modifiers
 - Automatic elevation modifiers
 - Terrain and hex context
+- Configurable Foundry tactical sub-grid converted into core 10m T2K combat distance
 - Forest / foliage terrain modifiers
 - Same-hex terrain exception
 - Shotgun range-to-damage behavior
@@ -46,6 +47,14 @@ Recent validated work includes:
 - LMG / GPMG carried-fire penalties
 - Bipod and tripod deployment state
 - Real T2K4E Heavy Weapons dice schema compatibility
+- Automatic Core combat-specialty modifiers
+- Defenseless-target same-hex rule
+- Cover status, directional-effect input, and cover armor
+- Darkness, weather, smoke, night vision, thermal optics, and visibility limits
+- Hard line-of-sight gating and blocking terrain
+- Structured movement-state automation
+- Helpers and NPC group attack bonuses
+- Modifier provenance in combat chat
 - Unified local verification command
 - GitHub Actions verification workflow
 
@@ -84,6 +93,18 @@ Final step-dice pool
 
 ### Automatic context
 
+TW2K Tactical keeps Foundry positioning separate from the core game's 10m combat abstraction. A Scene may use a finer tactical grid—for example **2m per Foundry hex**—while ranged-combat distance is converted into complete **10m T2K combat hexes**.
+
+With a 2m Scene grid, five Foundry grid steps equal one T2K combat hex:
+
+```text
+0–4 Foundry hexes  = 0 T2K hexes (same combat hex)
+5–9 Foundry hexes  = 1 T2K hex
+10–14 Foundry hexes = 2 T2K hexes
+```
+
+This supports more immersive token positioning without making an 8m separation count as four T2K range hexes. Combat chat context evidence reports the Foundry grid scale, measured steps, tactical distance in metres, and the converted T2K combat distance.
+
 TW2K Tactical can currently derive or use:
 
 - Attacker and target token positions
@@ -101,31 +122,33 @@ TW2K Tactical can currently derive or use:
 
 ### Automatic ranged modifiers
 
-Implemented or actively being finalized:
-
 | Rule | Status |
 |---|---|
 | Short / Medium / Long / Extreme range | Implemented |
-| Same-hex firearm penalty | Implemented |
+| Same-hex active/aware firearm penalty | Implemented |
+| Defenseless target in same hex | Implemented |
 | Target prone | Implemented |
 | Large / small target | Implemented |
 | Elevated firing position | Implemented |
-| Terrain modifiers | Implemented |
-| Same-hex terrain exception | Implemented |
-| Quick shot by weapon category | Implemented |
-| Fast Aim | Implemented |
-| Slow telescopic aim | Implemented |
+| Terrain modifiers / same-hex exception | Implemented |
+| Quick shot / Fast Aim / Slow telescopic aim | Implemented |
 | Stable firing platform | Implemented |
 | Shotgun range exception | Implemented |
-| LMG carried penalty | Implemented |
-| GPMG carried penalty | Implemented |
-| Bipod deployment | Implemented |
-| Tripod deployment | In active validation |
-| HMG support requirements | In active development |
-| One-handed weapon restrictions | In active development |
-| Cover / visibility / LOS | Planned next |
-| Movement state | Planned |
-| Combat specialties | Planned |
+| LMG / GPMG carried penalties | Implemented |
+| Bipod / tripod deployment | Implemented |
+| HMG support requirements | Implemented |
+| One-handed weapon restrictions | Implemented |
+| Core ranged/heavy-weapon specialties | Implemented |
+| Called shot | Implemented |
+| Target movement | Implemented with automatic flag/manual override |
+| Firing from moving vehicle | Implemented with automatic flag/manual override |
+| Partial / full cover | Implemented |
+| Cover armor | Implemented for protected hit locations |
+| Darkness / weather / smoke | Implemented |
+| Night vision / thermal optics | Implemented |
+| Visibility-limit / hard LOS blocking | Implemented |
+| Helpers / NPC group attacks | Implemented, max +3 |
+| Modifier provenance | Implemented |
 
 ---
 
@@ -188,6 +211,23 @@ Supported terrain types currently include:
 - Indoors
 
 Terrain can be supplied by tagged Foundry Regions, with token flags available as a fallback/testing path.
+
+Other context that Foundry cannot reliably infer from a single current-state snapshot can be authored with structured flags, including:
+
+```text
+flags.tw2k-tactical.coverEffectiveAgainstAttacker
+flags.tw2k-tactical.coverArmorLevel
+flags.tw2k-tactical.movedSincePreviousTurn
+flags.tw2k-tactical.firingFromMovingVehicle
+flags.tw2k-tactical.lightLevel
+flags.tw2k-tactical.weatherModifier
+flags.tw2k-tactical.visibilityLimitHexes
+flags.tw2k-tactical.lineOfSightBlocked
+flags.tw2k-tactical.denseSmoke
+flags.tw2k-tactical.helperCount
+```
+
+These flags are transparent fallbacks for facts that should not be guessed from map artwork or historical movement that Foundry does not natively retain.
 
 ---
 

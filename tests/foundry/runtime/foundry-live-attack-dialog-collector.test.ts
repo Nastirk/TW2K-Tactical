@@ -224,4 +224,50 @@ describe("FoundryLiveAttackDialogCollector", () => {
   });
 
 
+
+  it("applies effective terrain cover armor to covered hit locations", async () => {
+    const attack = {
+      combat: {
+        attackerId: "a",
+      },
+      modifiers: {
+        weaponCategory: "pistol" as const,
+        targetInPartialCover: true,
+        coverEffectiveAgainstAttacker: true,
+        targetCoverArmorLevel: 3,
+      },
+    };
+
+    const dialogService = {
+      open: vi.fn((request: { onSubmit: (value: unknown) => void }) => {
+        request.onSubmit(attack);
+      }),
+    };
+
+    const collector = new FoundryLiveAttackDialogCollector(
+      dialogService as never,
+      {
+        createRangedAttack: vi.fn(() => ({
+          attackerId: "a",
+          chosenHitLocation: "torso",
+        })),
+      } as never,
+      {
+        create: vi.fn(() => ({ weaponCategory: "pistol" })),
+      } as never,
+      undefined,
+      {
+        resolve: vi.fn(async () => "torso"),
+      } as never,
+    );
+
+    const result = await collector.collect({
+      attackerActor: { id: "a" },
+      targetActor: { id: "t" },
+      weapon: { id: "w" },
+    });
+
+    expect(result?.attack.combat.externalArmorLevel).toBe(3);
+  });
+
 });

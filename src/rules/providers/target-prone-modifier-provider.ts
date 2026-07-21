@@ -9,6 +9,7 @@ export interface TargetProneModifier {
   source: "target-prone";
   value: -1;
   description: string;
+  provenance: "automatic";
 }
 
 export class TargetProneModifierProvider
@@ -30,6 +31,7 @@ export class TargetProneModifierProvider
         source: "target-prone",
         value: -1,
         description: "Target prone",
+        provenance: "automatic",
       },
     ];
   }

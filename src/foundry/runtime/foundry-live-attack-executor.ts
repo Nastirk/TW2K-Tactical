@@ -17,6 +17,12 @@ import { SameHexFirearmModifierProvider } from "../../rules/providers/same-hex-f
 import { TargetProneModifierProvider } from "../../rules/providers/target-prone-modifier-provider";
 import { TargetSizeModifierProvider } from "../../rules/providers/target-size-modifier-provider";
 import { TerrainModifierProvider } from "../../rules/providers/terrain-modifier-provider";
+import { CalledShotModifierProvider } from "../../rules/providers/called-shot-modifier-provider";
+import { DefenselessSameHexModifierProvider } from "../../rules/providers/defenseless-same-hex-modifier-provider";
+import { HelperModifierProvider } from "../../rules/providers/helper-modifier-provider";
+import { MovingVehicleModifierProvider } from "../../rules/providers/moving-vehicle-modifier-provider";
+import { SpecialtyModifierProvider } from "../../rules/providers/specialty-modifier-provider";
+import { TargetMovementModifierProvider } from "../../rules/providers/target-movement-modifier-provider";
 import { CombatChatCardRenderer } from "../../ui/combat-chat-card-renderer";
 import { CombatResultPayloadFactory } from "../chat/combat-result-payload-factory";
 import { FoundryChatMessagePublisher } from "../chat/foundry-chat-message-publisher";
@@ -100,10 +106,16 @@ export class DefaultFoundryLiveAttackExecutionContextFactory
       [
         new RangeModifierProvider(),
         new SameHexFirearmModifierProvider(source),
+        new DefenselessSameHexModifierProvider(),
         new TargetProneModifierProvider(),
         new TargetSizeModifierProvider(),
         new ElevationModifierProvider(),
         new TerrainModifierProvider(),
+        new CalledShotModifierProvider(),
+        new TargetMovementModifierProvider(),
+        new MovingVehicleModifierProvider(),
+        new HelperModifierProvider(),
+        new SpecialtyModifierProvider(source),
       ],
       new DiceModifierApplicator(),
       new DiceEngine(dieRoller),

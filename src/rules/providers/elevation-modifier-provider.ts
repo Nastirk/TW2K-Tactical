@@ -9,6 +9,7 @@ export interface ElevationModifier {
   source: "elevation";
   value: 1;
   description: string;
+  provenance: "automatic";
 }
 
 export class ElevationModifierProvider
@@ -30,6 +31,7 @@ export class ElevationModifierProvider
         value: 1,
         description:
           "Elevated firing position",
+        provenance: "automatic",
       },
     ];
   }

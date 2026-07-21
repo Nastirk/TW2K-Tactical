@@ -9,6 +9,7 @@ export interface TerrainModifier {
   source: "target-terrain";
   value: number;
   description: string;
+  provenance: "automatic";
 }
 
 export class TerrainModifierProvider
@@ -45,6 +46,7 @@ export class TerrainModifierProvider
           context.targetTerrain
             ? `Target terrain: ${context.targetTerrain}`
             : "Target terrain",
+        provenance: "automatic",
       },
     ];
   }

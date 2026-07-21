@@ -1,6 +1,12 @@
 type UnknownRecord = Record<string, unknown>;
 
-export type FoundryWeaponAccessoryKind = "scope" | "bipod" | "tripod";
+export type FoundryWeaponAccessoryKind =
+  | "scope"
+  | "bipod"
+  | "tripod"
+  | "nightVision"
+  | "suppressor"
+  | "bayonet";
 
 const MODULE_ID = "tw2k-tactical";
 const ATTACHED_WEAPON_FLAG = "attachedWeaponId";
@@ -81,6 +87,18 @@ export function detectWeaponAccessoryKind(
 
   if (/\btripod\b/.test(description)) {
     return "tripod";
+  }
+
+  if (/night[ -]?vision|\bnvg\b/.test(description)) {
+    return "nightVision";
+  }
+
+  if (/suppressor|silencer/.test(description)) {
+    return "suppressor";
+  }
+
+  if (/bayonet/.test(description)) {
+    return "bayonet";
   }
 
   return undefined;

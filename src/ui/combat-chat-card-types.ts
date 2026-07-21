@@ -1,11 +1,18 @@
 import type {
   HitLocation,
 } from "../combat/hit-location-resolver";
+import type { ModifierProvenance } from "../rules/modifier";
 
 export interface CombatChatModifierView {
   source: string;
   value: number;
   description: string;
+  provenance?: ModifierProvenance;
+}
+
+export interface CombatChatEvidenceView {
+  label: string;
+  value: string;
 }
 
 export interface CombatChatDieView {
@@ -34,6 +41,9 @@ export interface CombatChatCardViewModel {
 
   modifiers:
     CombatChatModifierView[];
+
+  evidence?:
+    CombatChatEvidenceView[];
 
   netModifier: number;
 

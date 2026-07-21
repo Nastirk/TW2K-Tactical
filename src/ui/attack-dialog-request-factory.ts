@@ -18,61 +18,82 @@ export class AttackDialogRequestFactory {
       !input.tripodDeployed &&
       !input.vehicleMounted;
 
+    const visibilityLimitHexes = input.visibilityLimitHexes ?? 0;
+    const visibilityBlocked =
+      !input.hasThermalOptics &&
+      visibilityLimitHexes > 0 &&
+      (input.distanceHexes ?? 0) > visibilityLimitHexes;
+
     return {
       combat: {
         ...combat,
         contextOverrides: {
           ...combat.contextOverrides,
-          aimMode:
-            input.aimMode,
-          hasTelescopicSight:
-            input.hasTelescopicSight,
-          bipodDeployed:
-            input.bipodDeployed,
-          // Only an explicit/manual stable platform overrides automatic
-          // context. Leaving this undefined allows AttackContextBuilder to
-          // derive stability from the attacker being prone or a deployed bipod.
-          stablePlatform: input.stablePlatform
-            ? true
-            : undefined,
-          targetProne:
-            input.targetProne,
-          targetSize:
-            input.targetSize,
-          elevatedPosition:
-            input.elevatedPosition,
-          targetTerrainModifier:
-            input.targetTerrainModifier,
+          aimMode: input.aimMode,
+          hasTelescopicSight: input.hasTelescopicSight,
+          bipodDeployed: input.bipodDeployed,
+          stablePlatform: input.stablePlatform ? true : undefined,
+          calledShot: input.calledShot,
+          targetProne: input.targetProne,
+          targetDefenseless: input.targetDefenseless ?? false,
+          targetSize: input.targetSize,
+          elevatedPosition: input.elevatedPosition,
+          targetTerrainModifier: input.targetTerrainModifier,
+          targetInFullCover: input.targetInFullCover,
+          targetInPartialCover: input.targetInPartialCover ?? false,
+          coverEffectiveAgainstAttacker:
+            input.coverEffectiveAgainstAttacker ?? false,
+          targetCoverArmorLevel: input.targetCoverArmorLevel ?? 0,
+          approximateTargetLocationKnown:
+            input.approximateTargetLocationKnown,
+          targetMoved: input.targetMoved,
+          firingFromMovingVehicle: input.firingFromMovingVehicle,
+          lightLevel: input.lightLevel,
+          weatherModifier: input.weatherModifier,
+          denseSmoke: input.denseSmoke,
+          hasNightVision: input.hasNightVision,
+          hasThermalOptics: input.hasThermalOptics,
+          visibilityLimitHexes,
+          lineOfSightBlocked:
+            (input.lineOfSightBlocked ?? false) || visibilityBlocked,
+          helperCount: input.helperCount ?? 0,
         },
       },
       modifiers: {
         weaponCategory: input.weaponCategory,
         aimMode: input.aimMode,
-        calledShot: input.calledShot,
 
-        // These three facts are now resolved by automatic
-        // AttackContext modifier providers. Neutralize the
-        // legacy monolithic resolver fields so they are not
-        // counted twice. The dialog values are preserved above
-        // as explicit context overrides.
+        // Provider-owned modifiers are neutralized here to prevent double
+        // counting. Their selected/automatic facts are carried in context.
+        calledShot: false,
         targetProne: false,
+        targetDefenseless: false,
+        targetMoved: false,
+        firingFromMovingVehicle: false,
         targetSize: "normal",
         elevatedPosition: false,
+        targetTerrainModifier: 0,
+        helperCount: 0,
 
         targetInFullCover: input.targetInFullCover,
-        approximateTargetLocationKnown: input.approximateTargetLocationKnown,
-        targetMoved: input.targetMoved,
-        firingFromMovingVehicle: input.firingFromMovingVehicle,
-        // Terrain is resolved by TerrainModifierProvider from
-        // automatic context, with the dialog value preserved
-        // above as an explicit override. Neutralize the legacy
-        // resolver field to avoid double-counting.
-        targetTerrainModifier: 0,
+        targetInPartialCover: input.targetInPartialCover ?? false,
+        coverEffectiveAgainstAttacker:
+          input.coverEffectiveAgainstAttacker ?? false,
+        targetCoverArmorLevel: input.targetCoverArmorLevel ?? 0,
+        approximateTargetLocationKnown:
+          input.approximateTargetLocationKnown,
+
         lightLevel: input.lightLevel,
         weatherModifier: input.weatherModifier,
         denseSmoke: input.denseSmoke,
         hasNightVision: input.hasNightVision,
         hasThermalOptics: input.hasThermalOptics,
+        visibilityLimitHexes,
+        distanceHexes: input.distanceHexes ?? 0,
+        lineOfSightBlocked:
+          (input.lineOfSightBlocked ?? false) || visibilityBlocked,
+        lineOfSightBlockReason: input.lineOfSightBlockReason,
+
         machineGunCarried,
         bipodDeployed: input.bipodDeployed,
         tripodDeployed: input.tripodDeployed,

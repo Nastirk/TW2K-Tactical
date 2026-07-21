@@ -1,10 +1,14 @@
 import type {
   AimMode,
+  LightLevel,
 } from "../rules/ranged-combat-modifier-types";
 import type {
   TerrainType,
   TerrainVisibility,
 } from "./terrain";
+import type {
+  T2KCombatGridEvidence,
+} from "./t2k-combat-grid";
 
 export type RangeBand =
   | "short"
@@ -22,16 +26,43 @@ export type TargetSizeCategory =
   | "normal"
   | "large";
 
+/**
+ * Explicit choices and corrections supplied by the attack workflow.
+ * Automatic Foundry readers remain the default source of truth when an
+ * override is omitted.
+ */
 export interface AttackContextOverrides {
   aimMode?: AimMode;
   hasTelescopicSight?: boolean;
   bipodDeployed?: boolean;
   stablePlatform?: boolean;
 
+  calledShot?: boolean;
   targetProne?: boolean;
+  targetDefenseless?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
   targetTerrainModifier?: number;
+
+  targetInFullCover?: boolean;
+  targetInPartialCover?: boolean;
+  coverEffectiveAgainstAttacker?: boolean;
+  targetCoverArmorLevel?: number;
+  approximateTargetLocationKnown?: boolean;
+
+  targetMoved?: boolean;
+  firingFromMovingVehicle?: boolean;
+
+  lightLevel?: LightLevel;
+  weatherModifier?: number;
+  denseSmoke?: boolean;
+  hasNightVision?: boolean;
+  hasThermalOptics?: boolean;
+  visibilityLimitHexes?: number;
+  lineOfSightBlocked?: boolean;
+  lineOfSightBlockReason?: string;
+
+  helperCount?: number;
 }
 
 export interface AttackContext {
@@ -43,14 +74,9 @@ export interface AttackContext {
   combatMode: CombatMode;
   rangeBand?: RangeBand;
   sameHex: boolean;
+  combatGridEvidence?: T2KCombatGridEvidence;
 
-  /**
-   * Automatically observed combat-state facts.
-   *
-   * These remain optional on the public context contract
-   * for backward compatibility. AttackContextBuilder supplies
-   * neutral defaults when automatic readers are unavailable.
-   */
+  /** Automatically observed or explicitly overridden combat facts. */
   attackerProne?: boolean;
   aimMode?: AimMode;
   hasTelescopicSight?: boolean;
@@ -58,9 +84,31 @@ export interface AttackContext {
   bipodDeployed?: boolean;
   stablePlatform?: boolean;
 
+  calledShot?: boolean;
   targetProne?: boolean;
+  targetDefenseless?: boolean;
   targetSize?: TargetSizeCategory;
   elevatedPosition?: boolean;
+
+  targetInFullCover?: boolean;
+  targetInPartialCover?: boolean;
+  coverEffectiveAgainstAttacker?: boolean;
+  targetCoverArmorLevel?: number;
+  approximateTargetLocationKnown?: boolean;
+
+  targetMoved?: boolean;
+  firingFromMovingVehicle?: boolean;
+
+  lightLevel?: LightLevel;
+  weatherModifier?: number;
+  denseSmoke?: boolean;
+  hasNightVision?: boolean;
+  hasThermalOptics?: boolean;
+  visibilityLimitHexes?: number;
+  lineOfSightBlocked?: boolean;
+  lineOfSightBlockReason?: string;
+
+  helperCount?: number;
 
   /**
    * True when the selected weapon follows the core shotgun rule:

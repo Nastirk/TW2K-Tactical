@@ -411,5 +411,56 @@ describe(
         ).toBe(true);
       },
     );
+
+    it(
+      "blocks hard LOS and visibility-limit violations",
+      () => {
+        expect(
+          resolver.resolve({
+            weaponCategory: "rifle",
+            lineOfSightBlocked: true,
+          }).attackAllowed,
+        ).toBe(false);
+
+        expect(
+          resolver.resolve({
+            weaponCategory: "rifle",
+            distanceHexes: 6,
+            visibilityLimitHexes: 5,
+          }).attackAllowed,
+        ).toBe(false);
+
+        expect(
+          resolver.resolve({
+            weaponCategory: "rifle",
+            distanceHexes: 6,
+            visibilityLimitHexes: 5,
+            hasThermalOptics: true,
+          }).attackAllowed,
+        ).toBe(true);
+      },
+    );
+
+    it(
+      "only applies full-cover firing penalties when cover is effective against the attacker",
+      () => {
+        expect(
+          resolver.resolve({
+            weaponCategory: "rifle",
+            targetInFullCover: true,
+            coverEffectiveAgainstAttacker: false,
+          }).netModifier,
+        ).toBe(0);
+
+        expect(
+          resolver.resolve({
+            weaponCategory: "rifle",
+            targetInFullCover: true,
+            coverEffectiveAgainstAttacker: true,
+            approximateTargetLocationKnown: true,
+          }).netModifier,
+        ).toBe(-3);
+      },
+    );
   },
 );

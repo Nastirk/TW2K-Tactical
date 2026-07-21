@@ -17,17 +17,30 @@ export class AttackDialogRenderer {
 
         ${this.checkbox("calledShot", "Called shot", initial.calledShot)}
         ${this.checkbox("targetProne", "Target prone", initial.targetProne)}
+        ${this.checkbox("targetDefenseless", "Target defenseless", initial.targetDefenseless ?? false)}
+        ${this.checkbox("targetInPartialCover", "Target in partial cover", initial.targetInPartialCover ?? false)}
         ${this.checkbox("targetInFullCover", "Target in full cover", initial.targetInFullCover)}
+        ${this.checkbox("coverEffectiveAgainstAttacker", "Cover effective against attacker", initial.coverEffectiveAgainstAttacker ?? false)}
+        <p class="notes"><small>Cover only blocks or modifies this attack when it is effective against this attacker. Same-hex cover is normally ineffective unless a barrier lies between the combatants.</small></p>
+
+        <div class="form-group">
+          <label>Cover Armor Level</label>
+          <input type="number" name="targetCoverArmorLevel" min="0" max="20" step="1" value="${initial.targetCoverArmorLevel ?? 0}" />
+        </div>
+
         ${this.checkbox("approximateTargetLocationKnown", "Approximate target location known", initial.approximateTargetLocationKnown)}
         ${this.checkbox("targetMoved", "Target moved since previous turn", initial.targetMoved)}
         ${this.checkbox("firingFromMovingVehicle", "Firing from moving vehicle", initial.firingFromMovingVehicle)}
         ${this.checkbox("elevatedPosition", "Elevated firing position", initial.elevatedPosition)}
         ${this.checkbox("denseSmoke", "Dense smoke", initial.denseSmoke)}
-        ${this.checkbox("hasNightVision", "Night vision", initial.hasNightVision)}
+        ${this.checkbox("hasNightVision", "Night vision effective at this range", initial.hasNightVision)}
         ${this.checkbox("hasThermalOptics", "Thermal optics", initial.hasThermalOptics)}
+        ${this.checkbox("lineOfSightBlocked", "Hard line of sight blocked", initial.lineOfSightBlocked ?? false)}
         ${this.oneHandedControl(initial)}
+
         <input type="hidden" name="machineGunCarried" value="${initial.machineGunCarried}" />
         <input type="hidden" name="atShortRange" value="${initial.atShortRange}" />
+        <input type="hidden" name="distanceHexes" value="${initial.distanceHexes ?? 0}" />
         <input type="hidden" name="hasTelescopicSight" value="${initial.hasTelescopicSight}" />
         <input type="hidden" name="attackerProne" value="${initial.attackerProne ?? false}" />
         <input type="hidden" name="hasBipod" value="${initial.hasBipod}" />
@@ -40,6 +53,16 @@ export class AttackDialogRenderer {
           : ""}
         <input type="hidden" name="vehicleMounted" value="${initial.vehicleMounted}" />
         ${this.checkbox("stablePlatform", "Other stable firing platform", initial.stablePlatform)}
+
+        <div class="form-group">
+          <label>Helpers / NPC group support</label>
+          <select name="helperCount">
+            ${this.option("0", "0", String(initial.helperCount ?? 0))}
+            ${this.option("1", "+1 (1 helper)", String(initial.helperCount ?? 0))}
+            ${this.option("2", "+2 (2 helpers)", String(initial.helperCount ?? 0))}
+            ${this.option("3", "+3 (3 helpers)", String(initial.helperCount ?? 0))}
+          </select>
+        </div>
 
         <div class="form-group">
           <label>Target Size</label>
@@ -63,7 +86,7 @@ export class AttackDialogRenderer {
           <label>Light Level</label>
           <select name="lightLevel">
             ${this.option("normal", "Normal", initial.lightLevel)}
-            ${this.option("dim", "Dim light", initial.lightLevel)}
+            ${this.option("dim", "Dim light / dusk", initial.lightLevel)}
             ${this.option("dark", "Darkness", initial.lightLevel)}
             ${this.option("total-darkness", "Total darkness", initial.lightLevel)}
           </select>
@@ -72,6 +95,11 @@ export class AttackDialogRenderer {
         <div class="form-group">
           <label>Weather Modifier</label>
           <input type="number" name="weatherModifier" max="0" step="1" value="${initial.weatherModifier}" />
+        </div>
+
+        <div class="form-group">
+          <label>Visibility Limit (hexes, 0 = unlimited)</label>
+          <input type="number" name="visibilityLimitHexes" min="0" step="1" value="${initial.visibilityLimitHexes ?? 0}" />
         </div>
       </form>
     `;
@@ -84,6 +112,8 @@ export class AttackDialogRenderer {
       case "carbine":
       case "rifle":
       case "assault-rifle":
+      case "sniper-rifle":
+      case "hunting-rifle":
         return this.checkbox(
           "oneHanded",
           "One-handed shooting",

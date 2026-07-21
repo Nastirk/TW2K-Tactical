@@ -1,3 +1,6 @@
+import {
+  buildCombatChatContextEvidence,
+} from "../../ui/combat-chat-context-evidence";
 import type {
   StagedEndToEndRangedCombatResult,
 } from "../../combat/staged-end-to-end-ranged-combat-workflow";
@@ -28,6 +31,11 @@ export class StagedCombatChatViewModelFactory {
       weaponName:
         names.weaponName,
 
+      evidence:
+        buildCombatChatContextEvidence(
+          result.attack.context,
+        ),
+
       modifiers:
         result.attack.modifiers.map(
           (modifier) => ({
@@ -37,6 +45,8 @@ export class StagedCombatChatViewModelFactory {
               modifier.value,
             description:
               modifier.description,
+            provenance:
+              modifier.provenance,
           }),
         ),
 

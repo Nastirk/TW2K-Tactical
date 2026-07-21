@@ -71,22 +71,29 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
             attack.modifiers
               .weaponCategory;
 
-          const isMachineGun =
+          const isHeavyWeapon =
             category === "lmg" ||
             category === "gpmg" ||
-            category === "hmg";
+            category === "hmg" ||
+            category === "grenade-launcher" ||
+            category === "missile-launcher" ||
+            category === "mortar" ||
+            category === "howitzer" ||
+            category === "vehicle-cannon";
 
-          if (!isMachineGun) {
-            finish({ attack });
-            return;
-          }
+          const coverArmorLevel =
+            this.resolveCoverArmorLevel(
+              attack.modifiers,
+              chosenHitLocation,
+            );
 
-          const dice =
-            new T2K4ERangedDiceSelector()
-              .select(
-                selection.attackerActor as T2K4EActorLike,
-                attack.modifiers,
-              );
+          const dice = isHeavyWeapon
+            ? new T2K4ERangedDiceSelector()
+                .select(
+                  selection.attackerActor as T2K4EActorLike,
+                  attack.modifiers,
+                )
+            : {};
 
           finish({
             attack: {
@@ -94,6 +101,9 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
               combat: {
                 ...attack.combat,
                 ...dice,
+                ...(coverArmorLevel !== undefined
+                  ? { externalArmorLevel: coverArmorLevel }
+                  : {}),
               },
             },
           });
@@ -103,5 +113,35 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
         },
       });
     });
+  }
+
+  private resolveCoverArmorLevel(
+    modifiers: ModifierAwareStagedRangedCombatRequest["modifiers"],
+    hitLocation: HitLocation | undefined,
+  ): number | undefined {
+    if (
+      !modifiers.coverEffectiveAgainstAttacker ||
+      !hitLocation
+    ) {
+      return undefined;
+    }
+
+    const level = modifiers.targetCoverArmorLevel ?? 0;
+    if (level <= 0) {
+      return undefined;
+    }
+
+    if (modifiers.targetInFullCover) {
+      return level;
+    }
+
+    if (
+      modifiers.targetInPartialCover &&
+      (hitLocation === "torso" || hitLocation === "legs")
+    ) {
+      return level;
+    }
+
+    return undefined;
   }
 }

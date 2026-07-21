@@ -29,14 +29,19 @@ export class T2K4ERangedDiceSelector {
       );
 
     const isMachineGun =
-      modifiers.weaponCategory ===
-        "lmg" ||
-      modifiers.weaponCategory ===
-        "gpmg" ||
-      modifiers.weaponCategory ===
-        "hmg";
+      modifiers.weaponCategory === "lmg" ||
+      modifiers.weaponCategory === "gpmg" ||
+      modifiers.weaponCategory === "hmg";
 
-    if (!isMachineGun) {
+    const isHeavyWeapon =
+      isMachineGun ||
+      modifiers.weaponCategory === "grenade-launcher" ||
+      modifiers.weaponCategory === "missile-launcher" ||
+      modifiers.weaponCategory === "mortar" ||
+      modifiers.weaponCategory === "howitzer" ||
+      modifiers.weaponCategory === "vehicle-cannon";
+
+    if (!isHeavyWeapon) {
       return {
         baseAttributeDie:
           actor.getAttributeDie(
@@ -50,10 +55,9 @@ export class T2K4ERangedDiceSelector {
     }
 
     const mounted =
-      modifiers.tripodDeployed ===
-        true ||
-      modifiers.vehicleMounted ===
-        true;
+      modifiers.tripodDeployed === true ||
+      modifiers.vehicleMounted === true ||
+      modifiers.weaponCategory === "vehicle-cannon";
 
     return {
       baseAttributeDie:

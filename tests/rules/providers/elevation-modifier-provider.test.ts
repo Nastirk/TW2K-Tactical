@@ -37,6 +37,7 @@ describe(
             value: 1,
             description:
               "Elevated firing position",
+            provenance: "automatic",
           },
         ]);
       },

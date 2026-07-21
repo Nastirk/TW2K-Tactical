@@ -41,6 +41,7 @@ describe("RangeModifierProvider", () => {
         value: 0,
         description:
           "Shotgun range: medium (no hit penalty; base damage -1)",
+        provenance: "automatic",
       },
     ]);
 

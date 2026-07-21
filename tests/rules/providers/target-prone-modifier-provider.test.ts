@@ -38,6 +38,7 @@ describe(
             value: -1,
             description:
               "Target prone",
+            provenance: "automatic",
           },
         ]);
       },

@@ -47,21 +47,25 @@ describe("AttackDialogRequestFactory", () => {
     );
 
     expect(request.modifiers.aimMode).toBe("quick");
-    expect(request.modifiers.calledShot).toBe(true);
-    expect(request.modifiers.targetMoved).toBe(true);
+    expect(request.modifiers.calledShot).toBe(false);
+    expect(request.modifiers.targetMoved).toBe(false);
+    expect(request.combat.contextOverrides?.calledShot).toBe(true);
+    expect(request.combat.contextOverrides?.targetMoved).toBe(true);
 
     expect(
       request.combat.contextOverrides,
-    ).toEqual({
+    ).toMatchObject({
       aimMode: "quick",
       hasTelescopicSight: false,
       bipodDeployed: true,
-      stablePlatform: undefined,
       targetProne: true,
       targetSize: "small",
       elevatedPosition: true,
       targetTerrainModifier: -1,
+      calledShot: true,
+      targetMoved: true,
     });
+    expect(request.combat.contextOverrides?.stablePlatform).toBeUndefined();
 
     expect(
       request.modifiers.targetProne,

@@ -51,6 +51,7 @@ describe(
             value: -1,
             description:
               "Target terrain: forest",
+            provenance: "automatic",
           },
         ]);
       },

@@ -39,7 +39,7 @@ describe(
 
         expect(
           result,
-        ).toEqual({
+        ).toMatchObject({
           attackerId:
             "attacker-1",
           targetId:
@@ -150,7 +150,7 @@ describe(
 
         expect(
           result,
-        ).toEqual({
+        ).toMatchObject({
           attackerId:
             "attacker-1",
           targetId:

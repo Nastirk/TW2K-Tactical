@@ -17,7 +17,11 @@ export class AttackDialogParser {
       aimMode: this.readEnum<AimMode>(form, "aimMode", ["quick", "fast", "slow"]),
       calledShot: this.readBoolean(form, "calledShot"),
       targetProne: this.readBoolean(form, "targetProne"),
+      targetDefenseless: this.readBoolean(form, "targetDefenseless"),
       targetInFullCover: this.readBoolean(form, "targetInFullCover"),
+      targetInPartialCover: this.readBoolean(form, "targetInPartialCover"),
+      coverEffectiveAgainstAttacker: this.readBoolean(form, "coverEffectiveAgainstAttacker"),
+      targetCoverArmorLevel: this.readIntegerDefault(form, "targetCoverArmorLevel", 0),
       approximateTargetLocationKnown: this.readBoolean(form, "approximateTargetLocationKnown"),
       targetMoved: this.readBoolean(form, "targetMoved"),
       firingFromMovingVehicle: this.readBoolean(form, "firingFromMovingVehicle"),
@@ -29,9 +33,14 @@ export class AttackDialogParser {
       denseSmoke: this.readBoolean(form, "denseSmoke"),
       hasNightVision: this.readBoolean(form, "hasNightVision"),
       hasThermalOptics: this.readBoolean(form, "hasThermalOptics"),
+      visibilityLimitHexes: this.readIntegerDefault(form, "visibilityLimitHexes", 0),
+      lineOfSightBlocked: this.readBoolean(form, "lineOfSightBlocked"),
+      lineOfSightBlockReason: this.readString(form, "lineOfSightBlockReason"),
+      helperCount: this.readIntegerDefault(form, "helperCount", 0),
       machineGunCarried: this.readBoolean(form, "machineGunCarried"),
       oneHanded: this.readBoolean(form, "oneHanded"),
       atShortRange: this.readBoolean(form, "atShortRange"),
+      distanceHexes: this.readIntegerDefault(form, "distanceHexes", 0),
       hasTelescopicSight: this.readBoolean(form, "hasTelescopicSight"),
       attackerProne: this.readBoolean(form, "attackerProne"),
       hasBipod: this.readBoolean(form, "hasBipod"),
@@ -51,12 +60,29 @@ export class AttackDialogParser {
   private readInteger(form: AttackDialogFormDataLike, name: string): number {
     const value = form.get(name);
     const parsed = typeof value === "number" ? value : Number(value);
-
     if (!Number.isInteger(parsed)) {
       throw new Error(`${name} must be an integer.`);
     }
-
     return parsed;
+  }
+
+  private readIntegerDefault(
+    form: AttackDialogFormDataLike,
+    name: string,
+    fallback: number,
+  ): number {
+    const value = form.get(name);
+    if (value === undefined || value === "") {
+      return fallback;
+    }
+    return this.readInteger(form, name);
+  }
+
+  private readString(form: AttackDialogFormDataLike, name: string): string | undefined {
+    const value = form.get(name);
+    return typeof value === "string" && value.length > 0
+      ? value
+      : undefined;
   }
 
   private readEnum<T extends string>(
@@ -65,11 +91,9 @@ export class AttackDialogParser {
     allowed: readonly T[],
   ): T {
     const value = form.get(name);
-
     if (typeof value !== "string" || !allowed.includes(value as T)) {
       throw new Error(`Invalid ${name}.`);
     }
-
     return value as T;
   }
 }

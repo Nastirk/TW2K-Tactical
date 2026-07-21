@@ -18,7 +18,9 @@ export class CombatChatCardRenderer {
                 <li>
                   <span>${escapeHtml(
                     modifier.description,
-                  )}</span>
+                  )}${modifier.provenance
+                    ? ` <small class="tw2k-tactical-card__provenance">(${escapeHtml(modifier.provenance)})</small>`
+                    : ""}</span>
                   <strong>${this.formatModifier(
                     modifier.value,
                   )}</strong>
@@ -26,6 +28,23 @@ export class CombatChatCardRenderer {
             )
             .join("")
         : "<li>No modifiers</li>";
+
+    const evidenceHtml =
+      model.evidence && model.evidence.length > 0
+        ? `
+          <details class="tw2k-tactical-card__evidence" open>
+            <summary><strong>Context evidence</strong></summary>
+            <dl>
+              ${model.evidence
+                .map(
+                  (entry) => `
+                    <dt>${escapeHtml(entry.label)}</dt>
+                    <dd>${escapeHtml(entry.value)}</dd>`,
+                )
+                .join("")}
+            </dl>
+          </details>`
+        : "";
 
     const criticalHtml =
       model.critical
@@ -151,6 +170,8 @@ export class CombatChatCardRenderer {
             )}
           </p>
         </header>
+
+        ${evidenceHtml}
 
         <section>
           <h4>Modifiers</h4>
