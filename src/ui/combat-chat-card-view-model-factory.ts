@@ -1,6 +1,3 @@
-import {
-  buildCombatChatContextEvidence,
-} from "./combat-chat-context-evidence";
 import type {
   ActorCombatState,
 } from "../combat/actor-combat-state";
@@ -40,11 +37,6 @@ export class CombatChatCardViewModelFactory {
       weaponName:
         names.weaponName,
 
-      evidence:
-        buildCombatChatContextEvidence(
-          result.attack.context,
-        ),
-
       modifiers:
         result.attack.modifiers.map(
           (modifier) => ({
@@ -54,8 +46,6 @@ export class CombatChatCardViewModelFactory {
               modifier.value,
             description:
               modifier.description,
-            provenance:
-              modifier.provenance,
           }),
         ),
 

@@ -1,8 +1,11 @@
 import type { AttackContext } from "../../combat/attack-context";
 import type { RangedAttackModifierProvider } from "../../combat/ranged-attack-resolver";
-import type { RangedWeaponCategory } from "../ranged-combat-modifier-types";
 
-export type SameHexFirearmCategory = RangedWeaponCategory;
+export type SameHexFirearmCategory =
+  | "pistol"
+  | "carbine"
+  | "smg"
+  | "other";
 
 export interface SameHexFirearmModifierSource {
   getWeaponCategory(
@@ -18,7 +21,6 @@ export interface SameHexFirearmModifier {
   source: "same-hex-firearm";
   value: number;
   description: string;
-  provenance: "automatic";
 }
 
 export class SameHexFirearmModifierProvider
@@ -36,7 +38,6 @@ export class SameHexFirearmModifierProvider
       context.combatMode !== "ranged" ||
       !context.sameHex ||
       !context.weaponId ||
-      context.targetDefenseless === true ||
       !this.source.isTargetActiveAndAware(
         context.targetId,
       )
@@ -62,7 +63,6 @@ export class SameHexFirearmModifierProvider
         value,
         description:
           "Firing at active and aware target in same hex",
-        provenance: "automatic",
       },
     ];
   }

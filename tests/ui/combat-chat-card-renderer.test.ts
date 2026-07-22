@@ -25,10 +25,6 @@ describe(
                 "Marauder",
               weaponName:
                 "AKM",
-              evidence: [
-                { label: "Same T2K 10m hex", value: "Yes" },
-                { label: "Cover", value: "Full" },
-              ],
               modifiers: [
                 {
                   source:
@@ -87,12 +83,6 @@ describe(
           "HIT",
         );
         expect(html).toContain(
-          "Context evidence",
-        );
-        expect(html).toContain(
-          "Same T2K 10m hex",
-        );
-        expect(html).toContain(
           "Broken ribs",
         );
         expect(html).toContain(
@@ -134,6 +124,48 @@ describe(
         expect(html).toContain(
           "&lt;script&gt;",
         );
+      },
+    );
+
+    it(
+      "reports ammo rolls, allocation, expenditure, and empty state",
+      () => {
+        const html =
+          new CombatChatCardRenderer()
+            .render({
+              title: "Attack",
+              attackerName: "Attacker",
+              targetName: "Target",
+              weaponName: "Rifle",
+              modifiers: [],
+              netModifier: 0,
+              baseDice: [],
+              finalDice: [],
+              rolledDice: [],
+              successes: 0,
+              hit: false,
+              ammunition: {
+                rolls: [6, 2],
+                successes: 1,
+                allocation:
+                  "additional-hits",
+                damageSuccesses: 0,
+                additionalHitSuccesses: 1,
+                roundsSpent: 9,
+                roundsRemaining: 0,
+                empty: true,
+              },
+              canApplyResult: false,
+            });
+
+        expect(html).toContain("d6: 6");
+        expect(html).toContain(
+          "1 reserved for additional hits",
+        );
+        expect(html).toContain(
+          "Rounds spent",
+        );
+        expect(html).toContain("EMPTY");
       },
     );
   },

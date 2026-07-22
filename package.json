@@ -1,6 +1,6 @@
 {
   "name": "tw2k-tactical",
-  "version": "0.5.1-alpha",
+  "version": "0.5.2-alpha",
   "type": "module",
   "scripts": {
     "build": "vite build",

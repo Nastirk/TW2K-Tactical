@@ -1,5 +1,6 @@
 import type { FoundryWeaponAttackAction } from "./foundry-weapon-attack-action";
 import type { FoundryWeaponSheetAdapter } from "./foundry-weapon-sheet-adapter";
+import type { FoundryWeaponReloadAction } from "./foundry-weapon-reload-action";
 
 export interface FoundryItemSheetHookBus {
   on(
@@ -15,6 +16,7 @@ export function registerFoundryWeaponSheetAttackHook(
   hooks: FoundryItemSheetHookBus,
   adapter: FoundryWeaponSheetAdapter,
   action: FoundryWeaponAttackAction,
+  reloadAction?: FoundryWeaponReloadAction,
 ): void {
   const onRender = (
     application: unknown,
@@ -37,6 +39,20 @@ export function registerFoundryWeaponSheetAttackHook(
         );
       },
     );
+
+    if (
+      reloadAction &&
+      context.addReloadAction
+    ) {
+      context.addReloadAction(
+        async () => {
+          await reloadAction.launch(
+            context.attackerActor,
+            context.weapon,
+          );
+        },
+      );
+    }
   };
 
   // Foundry V14 systems may render sheets through legacy Application

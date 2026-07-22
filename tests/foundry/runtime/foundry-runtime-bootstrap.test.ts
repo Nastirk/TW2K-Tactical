@@ -50,10 +50,12 @@ describe("bootstrapFoundryRuntime", () => {
 
     const api = moduleRecord.api as {
       attack?: unknown;
+      reload?: unknown;
       diagnostics?: () => { systemId?: string };
     };
 
     expect(typeof api.attack).toBe("function");
+    expect(typeof api.reload).toBe("function");
     expect(api.diagnostics?.().systemId).toBe("t2k4e");
     expect(runtime.diagnostics().ok).toBe(true);
   });

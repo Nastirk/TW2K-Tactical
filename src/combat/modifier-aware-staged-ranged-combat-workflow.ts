@@ -34,6 +34,9 @@ import {
 import {
   StaticModifierProvider,
 } from "../rules/providers/static-modifier-provider";
+import type {
+  AmmoAttackResolver,
+} from "./ammo-resolver";
 
 export interface ModifierAwareStagedRangedCombatRequest {
   combat:
@@ -91,6 +94,8 @@ export class ModifierAwareStagedRangedCombatWorkflow {
 
     private readonly rangedCombatModifierResolver:
       RangedCombatModifierResolver,
+    private readonly ammoAttackResolver?:
+      AmmoAttackResolver,
   ) {}
 
   async resolve(
@@ -116,6 +121,18 @@ export class ModifierAwareStagedRangedCombatWorkflow {
       );
     }
 
+    if (
+      request.combat
+        .ammunition
+        ?.ammoDice &&
+      !modifierResolution
+        .ammoDiceAllowed
+    ) {
+      throw new AttackBlockedError(
+        "Slow telescopic aim does not allow ammo dice.",
+      );
+    }
+
     const staticProvider =
       new StaticModifierProvider(
         modifierResolution.modifiers,
@@ -138,6 +155,7 @@ export class ModifierAwareStagedRangedCombatWorkflow {
         this.postHitResolver,
         this.criticalInjuryRollResolver,
         this.deathSaveResolver,
+        this.ammoAttackResolver,
       );
 
     const combat =

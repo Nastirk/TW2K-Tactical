@@ -11,18 +11,8 @@ import { PostHitResolver } from "../../combat/post-hit-resolver";
 import { DiceModifierApplicator } from "../../dice/modifier-applicator";
 import { DiceEngine } from "../../dice/roller";
 import { RangedCombatModifierResolver } from "../../rules/ranged-combat-modifier-resolver";
-import { ElevationModifierProvider } from "../../rules/providers/elevation-modifier-provider";
 import { RangeModifierProvider } from "../../rules/providers/range-modifier-provider";
 import { SameHexFirearmModifierProvider } from "../../rules/providers/same-hex-firearm-modifier-provider";
-import { TargetProneModifierProvider } from "../../rules/providers/target-prone-modifier-provider";
-import { TargetSizeModifierProvider } from "../../rules/providers/target-size-modifier-provider";
-import { TerrainModifierProvider } from "../../rules/providers/terrain-modifier-provider";
-import { CalledShotModifierProvider } from "../../rules/providers/called-shot-modifier-provider";
-import { DefenselessSameHexModifierProvider } from "../../rules/providers/defenseless-same-hex-modifier-provider";
-import { HelperModifierProvider } from "../../rules/providers/helper-modifier-provider";
-import { MovingVehicleModifierProvider } from "../../rules/providers/moving-vehicle-modifier-provider";
-import { SpecialtyModifierProvider } from "../../rules/providers/specialty-modifier-provider";
-import { TargetMovementModifierProvider } from "../../rules/providers/target-movement-modifier-provider";
 import { CombatChatCardRenderer } from "../../ui/combat-chat-card-renderer";
 import { CombatResultPayloadFactory } from "../chat/combat-result-payload-factory";
 import { FoundryChatMessagePublisher } from "../chat/foundry-chat-message-publisher";
@@ -35,6 +25,8 @@ import type {
   FoundryLiveAttackSelection,
 } from "../combat/foundry-live-attack-types";
 import { FoundryDieRoller } from "../dice/foundry-die-roller";
+import { AmmoAttackResolver } from "../../combat/ammo-resolver";
+import { FoundryAmmoConsumptionService } from "../item/foundry-ammo-consumption-service";
 import {
   FoundrySelectionAttackContextSource,
   FoundryWeaponCategoryResolver,
@@ -106,16 +98,6 @@ export class DefaultFoundryLiveAttackExecutionContextFactory
       [
         new RangeModifierProvider(),
         new SameHexFirearmModifierProvider(source),
-        new DefenselessSameHexModifierProvider(),
-        new TargetProneModifierProvider(),
-        new TargetSizeModifierProvider(),
-        new ElevationModifierProvider(),
-        new TerrainModifierProvider(),
-        new CalledShotModifierProvider(),
-        new TargetMovementModifierProvider(),
-        new MovingVehicleModifierProvider(),
-        new HelperModifierProvider(),
-        new SpecialtyModifierProvider(source),
       ],
       new DiceModifierApplicator(),
       new DiceEngine(dieRoller),
@@ -123,6 +105,9 @@ export class DefaultFoundryLiveAttackExecutionContextFactory
       criticalInjuryRollResolver,
       new DeathSaveResolver(),
       new RangedCombatModifierResolver(),
+      new AmmoAttackResolver(
+        dieRoller,
+      ),
     );
 
     const service = new ModifierAwareStagedFoundryRangedAttackService(
@@ -131,6 +116,7 @@ export class DefaultFoundryLiveAttackExecutionContextFactory
       new CombatChatCardRenderer(),
       new CombatResultPayloadFactory(),
       new FoundryChatMessagePublisher(this.ChatMessage),
+      new FoundryAmmoConsumptionService(),
     );
 
     return {

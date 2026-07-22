@@ -176,4 +176,79 @@ describe("FoundryJQueryWeaponSheetAdapter", () => {
 
     expect(result).toBeNull();
   });
+
+  it("adds and wires a Tactical Reload button", async () => {
+    let buttonExists = false;
+    let clickHandler:
+      | ((event: unknown) => unknown)
+      | undefined;
+    const header = {
+      length: 1,
+      append: vi.fn(() => {
+        buttonExists = true;
+      }),
+      on: vi.fn(),
+    };
+    const button = {
+      get length() {
+        return buttonExists ? 1 : 0;
+      },
+      append: vi.fn(),
+      on: vi.fn(
+        (
+          _eventName: string,
+          handler: (event: unknown) => unknown,
+        ) => {
+          clickHandler = handler;
+        },
+      ),
+    };
+    const empty = {
+      length: 0,
+      append: vi.fn(),
+      on: vi.fn(),
+    };
+    const html = {
+      find: (selector: string) => {
+        if (selector === ".sheet-header") {
+          return header;
+        }
+        if (
+          selector ===
+          '[data-tw2k-tactical-action="reload"]'
+        ) {
+          return button;
+        }
+        return empty;
+      },
+    };
+    const context =
+      new FoundryJQueryWeaponSheetAdapter()
+        .resolve(
+          {
+            object: {
+              type: "weapon",
+              parent: { id: "actor" },
+            },
+          },
+          html,
+        );
+    const callback =
+      vi.fn()
+        .mockResolvedValue(undefined);
+
+    context?.addReloadAction?.(
+      callback,
+    );
+    await clickHandler?.({
+      preventDefault: vi.fn(),
+    });
+
+    expect(header.append).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'data-tw2k-tactical-action="reload"',
+      ),
+    );
+    expect(callback).toHaveBeenCalledOnce();
+  });
 });

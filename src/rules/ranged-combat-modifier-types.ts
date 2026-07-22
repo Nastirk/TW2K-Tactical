@@ -6,21 +6,11 @@ export type RangedWeaponCategory =
   | "pistol"
   | "carbine"
   | "smg"
-  | "shotgun"
   | "rifle"
   | "assault-rifle"
-  | "sniper-rifle"
-  | "hunting-rifle"
-  | "bow"
-  | "crossbow"
   | "lmg"
   | "gpmg"
   | "hmg"
-  | "grenade-launcher"
-  | "missile-launcher"
-  | "mortar"
-  | "howitzer"
-  | "vehicle-cannon"
   | "other";
 
 export type AimMode =
@@ -40,20 +30,18 @@ export type LightLevel =
   | "total-darkness";
 
 export interface RangedCombatModifierInput {
-  weaponCategory: RangedWeaponCategory;
+  weaponCategory:
+    RangedWeaponCategory;
 
   aimMode?: AimMode;
+
   hasTelescopicSight?: boolean;
   stablePlatform?: boolean;
 
   targetProne?: boolean;
-  targetDefenseless?: boolean;
   sameHex?: boolean;
 
   targetInFullCover?: boolean;
-  targetInPartialCover?: boolean;
-  coverEffectiveAgainstAttacker?: boolean;
-  targetCoverArmorLevel?: number;
   approximateTargetLocationKnown?: boolean;
 
   calledShot?: boolean;
@@ -63,28 +51,31 @@ export interface RangedCombatModifierInput {
   targetSize?: TargetSize;
   elevatedPosition?: boolean;
 
-  /** Terrain modifier from the target hex. Expected values: 0, -1, -2. */
+  /**
+   * Terrain modifier from the target hex.
+   * Expected values are 0, -1, or -2.
+   */
   targetTerrainModifier?: number;
 
   lightLevel?: LightLevel;
+
+  /**
+   * Weather modifier, typically -1 but the Referee may set a larger penalty.
+   */
   weatherModifier?: number;
+
   denseSmoke?: boolean;
+
   hasNightVision?: boolean;
   hasThermalOptics?: boolean;
-  visibilityLimitHexes?: number;
-  distanceHexes?: number;
-  lineOfSightBlocked?: boolean;
-  lineOfSightBlockReason?: string;
-
-  helperCount?: number;
 
   machineGunCarried?: boolean;
-  bipodDeployed?: boolean;
-  tripodDeployed?: boolean;
-  vehicleMounted?: boolean;
   oneHanded?: boolean;
 
-  /** Needed for one-handed rifle/assault-rifle SHORT-range restriction. */
+  /**
+   * Needed for the rule that rifles and assault rifles may only
+   * be fired one-handed at SHORT range.
+   */
   atShortRange?: boolean;
 }
 
@@ -94,6 +85,8 @@ export interface RangedCombatModifierResolution {
   modifiers: Modifier[];
   netModifier: number;
 
-  /** Slow telescopic aim forbids ammo dice. */
+  /**
+   * Slow telescopic aim forbids ammo dice.
+   */
   ammoDiceAllowed: boolean;
 }

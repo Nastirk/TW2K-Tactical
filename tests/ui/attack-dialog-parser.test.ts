@@ -11,12 +11,11 @@ describe("AttackDialogParser", () => {
       ["lightLevel", "dark"],
       ["weatherModifier", "-1"],
       ["hasTelescopicSight", "on"],
-      ["attackerProne", "true"],
-      ["hasBipod", "true"],
-      ["bipodDeployed", "on"],
-      ["hasTripod", "true"],
-      ["tripodDeployed", "on"],
-      ["vehicleMounted", "true"],
+      ["ammoDice", "2"],
+      [
+        "ammoSuccessAllocation",
+        "additional-hits",
+      ],
     ]);
 
     const result = new AttackDialogParser().parse(
@@ -33,11 +32,9 @@ describe("AttackDialogParser", () => {
     expect(result.lightLevel).toBe("dark");
     expect(result.weatherModifier).toBe(-1);
     expect(result.hasTelescopicSight).toBe(true);
-    expect(result.attackerProne).toBe(true);
-    expect(result.hasBipod).toBe(true);
-    expect(result.bipodDeployed).toBe(true);
-    expect(result.hasTripod).toBe(true);
-    expect(result.tripodDeployed).toBe(true);
-    expect(result.vehicleMounted).toBe(true);
+    expect(result.ammoDice).toBe(2);
+    expect(result.ammoSuccessAllocation).toBe(
+      "additional-hits",
+    );
   });
 });

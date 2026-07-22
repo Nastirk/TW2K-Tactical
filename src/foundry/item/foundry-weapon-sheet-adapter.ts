@@ -2,6 +2,7 @@ export interface FoundryWeaponSheetActionContext {
   attackerActor: unknown;
   weapon: unknown;
   addAttackAction(callback: () => void | Promise<void>): void;
+  addReloadAction?(callback: () => void | Promise<void>): void;
 }
 
 export interface FoundryWeaponSheetAdapter {
@@ -97,6 +98,26 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
           this.addDomAttackAction(domRoot, callback);
         }
       },
+      addReloadAction: (callback) => {
+        if (jqueryRoot) {
+          this.addJQueryAction(
+            jqueryRoot,
+            "reload",
+            this.reloadButtonHtml(),
+            callback,
+          );
+          return;
+        }
+
+        if (domRoot) {
+          this.addDomAction(
+            domRoot,
+            "reload",
+            this.reloadButtonHtml(),
+            callback,
+          );
+        }
+      },
     };
   }
 
@@ -104,8 +125,34 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
     root: JQueryRootLike,
     callback: () => void | Promise<void>,
   ): void {
+    this.addJQueryAction(
+      root,
+      "attack",
+      this.attackButtonHtml(),
+      callback,
+    );
+  }
+
+  private addDomAttackAction(
+    root: DomElementLike,
+    callback: () => void | Promise<void>,
+  ): void {
+    this.addDomAction(
+      root,
+      "attack",
+      this.attackButtonHtml(),
+      callback,
+    );
+  }
+
+  private addJQueryAction(
+    root: JQueryRootLike,
+    action: string,
+    buttonHtml: string,
+    callback: () => void | Promise<void>,
+  ): void {
     const buttonSelector =
-      '[data-tw2k-tactical-action="attack"]';
+      `[data-tw2k-tactical-action="${action}"]`;
 
     if (root.find(buttonSelector).length > 0) {
       return;
@@ -117,7 +164,7 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       return;
     }
 
-    header.append(this.buttonHtml());
+    header.append(buttonHtml);
 
     root.find(buttonSelector).on(
       "click",
@@ -128,12 +175,14 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
     );
   }
 
-  private addDomAttackAction(
+  private addDomAction(
     root: DomElementLike,
+    action: string,
+    buttonHtml: string,
     callback: () => void | Promise<void>,
   ): void {
     const buttonSelector =
-      '[data-tw2k-tactical-action="attack"]';
+      `[data-tw2k-tactical-action="${action}"]`;
 
     if (root.querySelector?.(buttonSelector)) {
       return;
@@ -147,7 +196,7 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
 
     header.insertAdjacentHTML(
       "beforeend",
-      this.buttonHtml(),
+      buttonHtml,
     );
 
     const button = root.querySelector?.(buttonSelector);
@@ -183,8 +232,12 @@ export class FoundryJQueryWeaponSheetAdapter implements FoundryWeaponSheetAdapte
       ?? null;
   }
 
-  private buttonHtml(): string {
+  private attackButtonHtml(): string {
     return '<button type="button" class="tw2k-tactical-weapon-attack" data-tw2k-tactical-action="attack">TW2K Tactical Attack</button>';
+  }
+
+  private reloadButtonHtml(): string {
+    return '<button type="button" class="tw2k-tactical-weapon-reload" data-tw2k-tactical-action="reload">TW2K Tactical Reload</button>';
   }
 
   private preventDefault(event: unknown): void {

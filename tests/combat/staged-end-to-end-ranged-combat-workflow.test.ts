@@ -72,14 +72,6 @@ function createWorkflow(
   diceValues: number[],
   hitLocationRoll: number,
   critRolls: number[],
-  options: {
-    rangeBand?:
-      "short" |
-      "medium" |
-      "long" |
-      "extreme";
-    shotgun?: boolean;
-  } = {},
 ) {
   const dataSource:
     AttackContextDataSource = {
@@ -88,13 +80,7 @@ function createWorkflow(
       getCombatMode:
         () => "ranged",
       getRangeBand:
-        () =>
-          options.rangeBand ??
-          "short",
-      usesShotgunRangeRules:
-        () =>
-          options.shotgun ??
-          false,
+        () => "short",
     };
 
   const attackResolver =
@@ -210,48 +196,6 @@ describe(
         expect(
           result.targetUpdated,
         ).toBe(false);
-      },
-    );
-
-    it(
-      "reduces shotgun base damage by range without reducing hit chance",
-      async () => {
-        const workflow =
-          createWorkflow(
-            [6, 2],
-            3,
-            [],
-            {
-              rangeBand:
-                "long",
-              shotgun: true,
-            },
-          );
-
-        const result =
-          await workflow.resolve({
-            attackerId: "a",
-            targetId: "t",
-            targetActorId:
-              "target",
-            weaponId: "w",
-            baseAttributeDie: 8,
-            baseSkillDie: 8,
-            weaponBaseDamage: 3,
-            critThreshold: 3,
-            weaponArmorModifier: 0,
-          });
-
-        expect(
-          result.postHit
-            ?.damage
-            .weaponBaseDamage,
-        ).toBe(1);
-
-        expect(
-          result.postHit
-            ?.finalDamage,
-        ).toBe(1);
       },
     );
 

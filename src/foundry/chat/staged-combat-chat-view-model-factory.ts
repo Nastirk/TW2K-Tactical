@@ -1,6 +1,3 @@
-import {
-  buildCombatChatContextEvidence,
-} from "../../ui/combat-chat-context-evidence";
 import type {
   StagedEndToEndRangedCombatResult,
 } from "../../combat/staged-end-to-end-ranged-combat-workflow";
@@ -31,11 +28,6 @@ export class StagedCombatChatViewModelFactory {
       weaponName:
         names.weaponName,
 
-      evidence:
-        buildCombatChatContextEvidence(
-          result.attack.context,
-        ),
-
       modifiers:
         result.attack.modifiers.map(
           (modifier) => ({
@@ -45,8 +37,6 @@ export class StagedCombatChatViewModelFactory {
               modifier.value,
             description:
               modifier.description,
-            provenance:
-              modifier.provenance,
           }),
         ),
 
@@ -82,6 +72,45 @@ export class StagedCombatChatViewModelFactory {
 
       hit:
         result.hit,
+
+      ammunition:
+        result.ammunition
+          ? {
+              rolls: [
+                ...result
+                  .ammunition
+                  .rolls,
+              ],
+              successes:
+                result
+                  .ammunition
+                  .successes,
+              allocation:
+                result
+                  .ammunition
+                  .allocation,
+              damageSuccesses:
+                result
+                  .ammunition
+                  .damageSuccesses,
+              additionalHitSuccesses:
+                result
+                  .ammunition
+                  .additionalHitSuccesses,
+              roundsSpent:
+                result
+                  .ammunition
+                  .roundsSpent,
+              roundsRemaining:
+                result
+                  .ammunition
+                  .roundsRemaining,
+              empty:
+                result
+                  .ammunition
+                  .empty,
+            }
+          : undefined,
 
       hitLocation:
         result.postHit?.location,

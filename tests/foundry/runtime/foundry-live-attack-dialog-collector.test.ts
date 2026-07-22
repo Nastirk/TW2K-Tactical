@@ -9,19 +9,7 @@ describe("FoundryLiveAttackDialogCollector", () => {
     };
 
     const selection = {
-      attackerActor: {
-      id: "a",
-      system: {
-        attributes: {
-          agl: { value: 10 },
-          str: { value: 12 },
-        },
-        skills: {
-          rangedCombat: { value: 8 },
-          heavyWeapons: { value: 6 },
-        },
-      },
-    },
+      attackerActor: { id: "a" },
       targetActor: { id: "t" },
       weapon: { id: "w", type: "weapon" },
     };
@@ -76,19 +64,7 @@ describe("FoundryLiveAttackDialogCollector", () => {
 
     await expect(
       collector.collect({
-        attackerActor: {
-      id: "a",
-      system: {
-        attributes: {
-          agl: { value: 10 },
-          str: { value: 12 },
-        },
-        skills: {
-          rangedCombat: { value: 8 },
-          heavyWeapons: { value: 6 },
-        },
-      },
-    },
+        attackerActor: {},
         targetActor: {},
         weapon: {},
       }),
@@ -102,19 +78,7 @@ describe("FoundryLiveAttackDialogCollector", () => {
     };
 
     const selection = {
-      attackerActor: {
-      id: "a",
-      system: {
-        attributes: {
-          agl: { value: 10 },
-          str: { value: 12 },
-        },
-        skills: {
-          rangedCombat: { value: 8 },
-          heavyWeapons: { value: 6 },
-        },
-      },
-    },
+      attackerActor: { id: "a" },
       targetActor: { id: "t" },
       weapon: { id: "w", type: "weapon" },
     };
@@ -156,118 +120,6 @@ describe("FoundryLiveAttackDialogCollector", () => {
       weapon: selection.weapon,
       chosenHitLocation: "torso",
     });
-  });
-
-
-  it("switches machine-gun attacks to Heavy Weapons with the correct attribute", async () => {
-    const attack = {
-      combat: {
-        attackerId: "a",
-        baseAttributeDie: 10,
-        baseSkillDie: 8,
-      },
-      modifiers: {
-        weaponCategory: "gpmg",
-        tripodDeployed: true,
-      },
-    };
-
-    const attackerActor = {
-      id: "a",
-      system: {
-        attributes: {
-          str: { value: 12 },
-          agl: { value: 10 },
-        },
-        skills: {
-          rangedCombat: { value: 8 },
-          heavyWeapons: { value: 6 },
-        },
-      },
-    };
-
-    const dialogService = {
-      open: vi.fn((request: { onSubmit: (value: unknown) => void }) => {
-        request.onSubmit(attack);
-      }),
-    };
-
-    const collector = new FoundryLiveAttackDialogCollector(
-      dialogService as never,
-      {
-        createRangedAttack: vi.fn(() => ({
-          attackerId: "a",
-        })),
-      } as never,
-      {
-        create: vi.fn(() => ({
-          weaponCategory: "gpmg",
-        })),
-      } as never,
-    );
-
-    const result =
-      await collector.collect({
-        attackerActor,
-        targetActor: {},
-        weapon: {},
-      });
-
-    expect(
-      result?.attack.combat
-        .baseAttributeDie,
-    ).toBe(10);
-    expect(
-      result?.attack.combat
-        .baseSkillDie,
-    ).toBe(6);
-  });
-
-
-
-  it("applies effective terrain cover armor to covered hit locations", async () => {
-    const attack = {
-      combat: {
-        attackerId: "a",
-      },
-      modifiers: {
-        weaponCategory: "pistol" as const,
-        targetInPartialCover: true,
-        coverEffectiveAgainstAttacker: true,
-        targetCoverArmorLevel: 3,
-      },
-    };
-
-    const dialogService = {
-      open: vi.fn((request: { onSubmit: (value: unknown) => void }) => {
-        request.onSubmit(attack);
-      }),
-    };
-
-    const collector = new FoundryLiveAttackDialogCollector(
-      dialogService as never,
-      {
-        createRangedAttack: vi.fn(() => ({
-          attackerId: "a",
-          chosenHitLocation: "torso",
-        })),
-      } as never,
-      {
-        create: vi.fn(() => ({ weaponCategory: "pistol" })),
-      } as never,
-      undefined,
-      {
-        resolve: vi.fn(async () => "torso"),
-      } as never,
-    );
-
-    const result = await collector.collect({
-      attackerActor: { id: "a" },
-      targetActor: { id: "t" },
-      weapon: { id: "w" },
-    });
-
-    expect(result?.attack.combat.externalArmorLevel).toBe(3);
   });
 
 });
