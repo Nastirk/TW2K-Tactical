@@ -31,10 +31,10 @@ describe("T2K4EAmmunitionAdapter", () => {
             type: "character",
             items: [{
               id: "loaded",
-              name: "5.56x45mm Magazine",
-              type: "gear",
+              name: "Magazine A",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "5.56x45mm",
                 ammo: {
                   value: 17,
                   max: 30,
@@ -86,25 +86,25 @@ describe("T2K4EAmmunitionAdapter", () => {
             {
               id: "loaded",
               name: "5.56x45mm Loaded",
-              type: "gear",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "5.56x45mm",
                 ammo: { value: 10, max: 30 },
               },
             },
             {
               id: "good",
-              name: "5.56x45mm Magazine",
-              type: "gear",
+              name: "Magazine A",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "5.56x45mm",
                 ammo: { value: 30, max: 30 },
               },
             },
             {
               id: "safe-name-fallback",
               name: "5.56x45mm Magazine",
-              type: "gear",
+              type: "ammunition",
               system: {
                 ammo: { value: 12, max: 30 },
               },
@@ -112,27 +112,27 @@ describe("T2K4EAmmunitionAdapter", () => {
             {
               id: "empty",
               name: "5.56x45mm Magazine",
-              type: "gear",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "5.56x45mm",
                 ammo: { value: 0, max: 30 },
               },
             },
             {
               id: "wrong-caliber",
               name: "7.62x51mm Magazine",
-              type: "gear",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "7.62x51mm",
                 ammo: { value: 20, max: 30 },
               },
             },
             {
               id: "wrong-capacity",
               name: "5.56x45mm Magazine",
-              type: "gear",
+              type: "ammunition",
               system: {
-                itemType: "ammunition",
+                itemType: "5.56x45mm",
                 ammo: { value: 20, max: 20 },
               },
             },

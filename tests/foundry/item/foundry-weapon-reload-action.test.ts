@@ -87,9 +87,9 @@ function fixtures() {
       {
         id: "loaded",
         name: "5.56x45mm Magazine",
-        type: "gear",
+        type: "ammunition",
         system: {
-          itemType: "ammunition",
+          itemType: "5.56x45mm",
           ammo: {
             value: 5,
             max: 30,
@@ -99,9 +99,9 @@ function fixtures() {
       {
         id: "spare",
         name: "5.56x45mm Magazine",
-        type: "gear",
+        type: "ammunition",
         system: {
-          itemType: "ammunition",
+          itemType: "5.56x45mm",
           ammo: {
             value: 30,
             max: 30,

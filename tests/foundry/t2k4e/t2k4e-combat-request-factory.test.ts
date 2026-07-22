@@ -111,8 +111,9 @@ describe(
                 items: [{
                   id: "magazine",
                   name: "5.56x45mm Magazine",
-                  type: "gear",
+                  type: "ammunition",
                   system: {
+                    itemType: "5.56x45mm",
                     ammo: {
                       value: 12,
                       max: 30,

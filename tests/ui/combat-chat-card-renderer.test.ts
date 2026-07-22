@@ -25,6 +25,10 @@ describe(
                 "Marauder",
               weaponName:
                 "AKM",
+              evidence: [
+                { label: "Same T2K 10m hex", value: "Yes" },
+                { label: "Cover", value: "Full" },
+              ],
               modifiers: [
                 {
                   source:
@@ -81,6 +85,12 @@ describe(
 
         expect(html).toContain(
           "HIT",
+        );
+        expect(html).toContain(
+          "Context evidence",
+        );
+        expect(html).toContain(
+          "Same T2K 10m hex",
         );
         expect(html).toContain(
           "Broken ribs",

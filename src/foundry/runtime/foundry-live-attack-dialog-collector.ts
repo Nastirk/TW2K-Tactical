@@ -7,6 +7,7 @@ import type {
 } from "../combat/foundry-live-attack-types";
 import { FoundryAttackDialogService } from "../dialog/foundry-attack-dialog-service";
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
+import { T2K4ERangedDiceSelector } from "../t2k4e/t2k4e-ranged-dice-selector";
 import type { T2K4EActorLike, T2K4EItemLike } from "../t2k4e/t2k4e-types";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
 import type { FoundryAttackSelectionValidator } from "./foundry-t2k4e-compatibility";
@@ -66,12 +67,81 @@ export class FoundryLiveAttackDialogCollector implements FoundryAttackDialogColl
         combat,
         initial,
         onSubmit: (attack) => {
-          finish({ attack });
+          const category =
+            attack.modifiers
+              .weaponCategory;
+
+          const isHeavyWeapon =
+            category === "lmg" ||
+            category === "gpmg" ||
+            category === "hmg" ||
+            category === "grenade-launcher" ||
+            category === "missile-launcher" ||
+            category === "mortar" ||
+            category === "howitzer" ||
+            category === "vehicle-cannon";
+
+          const coverArmorLevel =
+            this.resolveCoverArmorLevel(
+              attack.modifiers,
+              chosenHitLocation,
+            );
+
+          const dice = isHeavyWeapon
+            ? new T2K4ERangedDiceSelector()
+                .select(
+                  selection.attackerActor as T2K4EActorLike,
+                  attack.modifiers,
+                )
+            : {};
+
+          finish({
+            attack: {
+              ...attack,
+              combat: {
+                ...attack.combat,
+                ...dice,
+                ...(coverArmorLevel !== undefined
+                  ? { externalArmorLevel: coverArmorLevel }
+                  : {}),
+              },
+            },
+          });
         },
         onCancel: () => {
           finish(null);
         },
       });
     });
+  }
+
+  private resolveCoverArmorLevel(
+    modifiers: ModifierAwareStagedRangedCombatRequest["modifiers"],
+    hitLocation: HitLocation | undefined,
+  ): number | undefined {
+    if (
+      !modifiers.coverEffectiveAgainstAttacker ||
+      !hitLocation
+    ) {
+      return undefined;
+    }
+
+    const level = modifiers.targetCoverArmorLevel ?? 0;
+    if (level <= 0) {
+      return undefined;
+    }
+
+    if (modifiers.targetInFullCover) {
+      return level;
+    }
+
+    if (
+      modifiers.targetInPartialCover &&
+      (hitLocation === "torso" || hitLocation === "legs")
+    ) {
+      return level;
+    }
+
+    return undefined;
   }
 }

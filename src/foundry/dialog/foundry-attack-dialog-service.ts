@@ -53,6 +53,7 @@ export class FoundryAttackDialogService {
             const input = this.parser.parse(
               form,
               request.initial.weaponCategory,
+              request.initial,
             );
 
             this.validator.validate(input);

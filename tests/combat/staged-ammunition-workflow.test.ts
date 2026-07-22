@@ -163,6 +163,6 @@ describe("staged ammunition workflow", () => {
     expect(result.hit).toBe(false);
     expect(result.postHit).toBeUndefined();
     expect(result.ammunition?.successes).toBe(1);
-    expect(result.ammunition?.roundsSpent).toBe(7);
+    expect(result.ammunition?.roundsSpent).toBe(6);
   });
 });

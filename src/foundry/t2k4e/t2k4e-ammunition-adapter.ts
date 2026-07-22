@@ -257,32 +257,39 @@ export class T2K4EAmmunitionAdapter {
     const markedAsAmmo =
       /ammo|ammunition|magazine|belt/
         .test(itemType);
-    const hasDeclaredItemType =
-      typeof system?.itemType ===
-        "string" &&
-      system.itemType.trim()
-        .length > 0;
 
     const normalizedCaliber =
       this.normalize(caliber);
+    const normalizedDeclaredCaliber =
+      this.normalize(
+        typeof system?.itemType ===
+          "string"
+          ? system.itemType
+          : "",
+      );
     const normalizedName =
       this.normalize(
         item.name ?? "",
       );
 
-    const caliberMatches =
+    const declaredCaliberMatches =
+      normalizedCaliber.length > 0 &&
+      normalizedDeclaredCaliber ===
+        normalizedCaliber;
+    const nameCaliberMatches =
       normalizedCaliber.length > 0 &&
       normalizedName.includes(
         normalizedCaliber,
       );
 
-    // T2K4E-created ammo normally supplies itemType. Some system-created
-    // items omit it, so a caliber-bearing item name is a deliberately narrow
-    // fallback instead of accepting every gear item with an ammo counter.
-    return caliberMatches &&
+    // Official T2K4E ammunition uses item.type="ammunition" and may store
+    // the caliber in system.itemType. System-created magazines can omit that
+    // field, so a caliber-bearing item name remains a deliberately narrow
+    // fallback instead of accepting every item with an ammo counter.
+    return markedAsAmmo &&
       (
-        markedAsAmmo ||
-        !hasDeclaredItemType
+        declaredCaliberMatches ||
+        nameCaliberMatches
       );
   }
 

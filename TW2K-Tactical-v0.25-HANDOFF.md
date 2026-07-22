@@ -6,18 +6,18 @@ v0.25 Ammo, RoF & Reloads is implemented on the supplied complete repository. Re
 
 ## Source baseline
 
-- Uploaded archive: `TW2K-Tactical-main(2).zip`
-- Uploaded archive SHA-256: `07893777d88b79dbf682c1d56e4c0ca66ac98476a9243727d0f8c4b2150f2f6f`
-- Baseline release metadata: `0.5.1-alpha`
-- Baseline verification: 59 test files / 184 tests passed; Vite production build passed.
+- Complete v0.24 Git parent: `80e9a6f` (`feat: complete automatic combat context and modifier engine`).
+- Baseline release metadata: `0.5.1-alpha`.
+- Baseline verification: 72 test files / 262 tests passed; 84 Vite modules transformed.
+- The v0.25 delta was reconstructed onto this parent so CI, terrain/grid automation, weapon accessories, modifier providers, context evidence, and all v0.24 tests remain present.
 
 ## Implemented behavior
 
 ### Ammo dice and RoF
 
-- Legal ammo dice are capped at `min(RoF, rounds remaining - 1)`.
+- Legal ammo dice are capped at `min(RoF, rounds remaining)`.
 - Empty tracked weapons cannot attack.
-- One remaining round permits an attack with zero ammo dice.
+- One remaining round permits up to one ammo die.
 - Slow telescopic aim permits zero ammo dice only, enforced by both dialog validation and the core modifier-aware workflow/ammo resolver.
 - Ammo D6s and their successes are kept separate from the base step-dice hit roll.
 - Ammo successes can be allocated to primary-hit damage or reserved/reported for manual additional-hit resolution.
@@ -26,7 +26,7 @@ v0.25 Ammo, RoF & Reloads is implemented on the supplied complete repository. Re
 ### Expenditure and persistence
 
 - Zero ammo dice spend one round.
-- Nonzero ammo dice spend one plus the sum of their D6 results.
+- Nonzero ammo dice spend the sum of their D6 results.
 - Expenditure is capped at the rounds loaded.
 - Remaining ammunition persists to the loaded item at `system.ammo.value` before the chat card is published.
 - Persistence verifies that the loaded value still equals the pre-roll value, preventing stale concurrent expenditure.
@@ -59,11 +59,11 @@ v0.25 Ammo, RoF & Reloads is implemented on the supplied complete repository. Re
 `npm run verify` passed:
 
 - TypeScript: passed.
-- Vitest: 65 test files / 212 tests passed.
-- Vite build: passed; 72 modules transformed.
-- Production bundle: `dist/tw2k-tactical.js`, 69.54 kB (18.94 kB gzip).
+- Vitest: 79 test files / 291 tests passed.
+- Vite build: passed; 89 modules transformed.
+- Production bundle: `dist/tw2k-tactical.js`, 106.89 kB (28.05 kB gzip).
 
-The suite covers the ammo-dice cap, one-round and D6 expenditure, empty-magazine handling, slow-aim rejection, separated ammo successes, damage/additional-hit allocation, official schema parsing, stale-state persistence, persistence-before-publication ordering, reload action costs, Reloader +1, candidate filtering, failed fast-only reload forfeiture, sheet hooks, and module API exposure.
+The suite covers the ammo-dice cap, zero-dice and D6-sum expenditure, empty-magazine handling, slow-aim rejection, trusted dialog-cap propagation, separated ammo successes, damage/additional-hit allocation, official schema parsing, stale-state persistence, persistence-before-publication ordering, reload action costs, Reloader +1, candidate filtering, failed fast-only reload forfeiture, sheet hooks, and module API exposure. The full v0.24 regression suite remains included.
 
 A live Foundry GUI was not available in the build environment. Complete the environment-specific checklist in `README-v0.25.md` before starting v0.26.
 

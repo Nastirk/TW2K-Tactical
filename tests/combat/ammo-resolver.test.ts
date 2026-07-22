@@ -34,10 +34,10 @@ const base = {
 };
 
 describe("AmmoAttackResolver", () => {
-  it("caps ammo dice by RoF and the rounds that remain after the attack round", () => {
-    expect(getMaximumAmmoDice(5, 3)).toBe(2);
+  it("caps ammo dice by RoF and the rounds remaining", () => {
+    expect(getMaximumAmmoDice(5, 3)).toBe(3);
     expect(getMaximumAmmoDice(2, 30)).toBe(2);
-    expect(getMaximumAmmoDice(4, 1)).toBe(0);
+    expect(getMaximumAmmoDice(4, 1)).toBe(1);
   });
 
   it("spends one round when no ammo dice are rolled", async () => {
@@ -51,7 +51,7 @@ describe("AmmoAttackResolver", () => {
     expect(result.roundsRemaining).toBe(19);
   });
 
-  it("rolls D6s separately, counts sixes, and spends one plus their sum", async () => {
+  it("rolls D6s separately, counts sixes, and spends their sum", async () => {
     const result =
       await new AmmoAttackResolver(
         new SequenceRoller([6, 2, 6]),
@@ -63,8 +63,8 @@ describe("AmmoAttackResolver", () => {
     expect(result.rolls).toEqual([6, 2, 6]);
     expect(result.successes).toBe(2);
     expect(result.damageSuccesses).toBe(2);
-    expect(result.roundsSpent).toBe(15);
-    expect(result.roundsRemaining).toBe(5);
+    expect(result.roundsSpent).toBe(14);
+    expect(result.roundsRemaining).toBe(6);
   });
 
   it("caps expenditure at the rounds actually loaded", async () => {
@@ -113,9 +113,9 @@ describe("AmmoAttackResolver", () => {
       resolver.resolve({
         ...base,
         roundsBefore: 2,
-        ammoDice: 2,
+        ammoDice: 3,
       }),
-    ).rejects.toThrow("cannot exceed 1");
+    ).rejects.toThrow("cannot exceed 2");
 
     await expect(
       resolver.resolve({

@@ -18,8 +18,8 @@ const result = {
   allocation: "damage" as const,
   damageSuccesses: 0,
   additionalHitSuccesses: 0,
-  roundsSpent: 5,
-  roundsRemaining: 15,
+  roundsSpent: 4,
+  roundsRemaining: 16,
   empty: false,
 };
 
@@ -48,7 +48,7 @@ describe("FoundryAmmoConsumptionService", () => {
       );
 
     expect(update).toHaveBeenCalledWith({
-      "system.ammo.value": 15,
+      "system.ammo.value": 16,
     });
   });
 

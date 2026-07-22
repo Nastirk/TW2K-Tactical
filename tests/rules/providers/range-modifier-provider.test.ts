@@ -18,4 +18,39 @@ describe("RangeModifierProvider", () => {
     expect(provider.getModifiers({ ...base, rangeBand: "long" })[0]?.value).toBe(-2);
     expect(provider.getModifiers({ ...base, rangeBand: "extreme" })[0]?.value).toBe(-3);
   });
+  it("removes range-to-hit penalties for shotguns and explains damage falloff", () => {
+    const provider = new RangeModifierProvider();
+    const base = {
+      attackerId: "a",
+      targetId: "t",
+      weaponId: "shotgun",
+      distanceHexes: 3,
+      combatMode: "ranged" as const,
+      sameHex: false,
+      usesShotgunRangeRules: true,
+    };
+
+    expect(
+      provider.getModifiers({
+        ...base,
+        rangeBand: "medium",
+      }),
+    ).toEqual([
+      {
+        source: "range",
+        value: 0,
+        description:
+          "Shotgun range: medium (no hit penalty; base damage -1)",
+        provenance: "automatic",
+      },
+    ]);
+
+    expect(
+      provider.getModifiers({
+        ...base,
+        rangeBand: "extreme",
+      })[0]?.value,
+    ).toBe(0);
+  });
+
 });

@@ -21,6 +21,10 @@ import { FoundryWeaponAttackSelectionSource } from "../item/foundry-weapon-attac
 import { FoundryWeaponReloadAction } from "../item/foundry-weapon-reload-action";
 import { FoundryJQueryWeaponSheetAdapter } from "../item/foundry-weapon-sheet-adapter";
 import { registerFoundryWeaponSheetAttackHook, type FoundryItemSheetHookBus } from "../item/foundry-weapon-sheet-attack-hook";
+import {
+  registerFoundryWeaponAccessoryAttachmentHook,
+  type FoundryWeaponAccessoryHookBus,
+} from "../item/foundry-weapon-accessory-attachment-hook";
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
 import {
@@ -176,6 +180,10 @@ export function bootstrapFoundryRuntime(
     new FoundryJQueryWeaponSheetAdapter(),
     weaponAttackAction,
     weaponReloadAction,
+  );
+
+  registerFoundryWeaponAccessoryAttachmentHook(
+    environment.hooks as FoundryWeaponAccessoryHookBus,
   );
 
   let readyRegistered = false;

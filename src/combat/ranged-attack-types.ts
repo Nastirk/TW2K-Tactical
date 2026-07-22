@@ -1,17 +1,19 @@
 import type { AttackContext } from "./attack-context";
+import type { AttackRequest } from "./attack-request";
 import type { DicePool } from "../dice/pool";
 import type { DicePoolResult } from "../dice/result";
 import type { StepDie } from "../dice/types";
+import type { ModifierProvenance } from "../rules/modifier";
 
 export interface RangedAttackModifier {
   source: string;
   value: number;
   description: string;
+  provenance?: ModifierProvenance;
 }
 
-export interface RangedAttackRequest {
-  attackerId: string;
-  targetId: string;
+export interface RangedAttackRequest
+  extends AttackRequest {
   weaponId: string;
   baseAttributeDie?: StepDie;
   baseSkillDie?: StepDie;

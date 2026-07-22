@@ -45,7 +45,7 @@ export function getMaximumAmmoDice(
     0,
     Math.min(
       rateOfFire,
-      roundsRemaining - 1,
+      roundsRemaining,
     ),
   );
 }
@@ -152,16 +152,18 @@ export class AmmoAttackResolver {
       ).length;
 
     const rolledExpenditure =
-      rolls.reduce(
-        (sum, value) =>
-          sum + value,
-        0,
-      );
+      rolls.length === 0
+        ? 1
+        : rolls.reduce(
+            (sum, value) =>
+              sum + value,
+            0,
+          );
 
     const roundsSpent =
       Math.min(
         request.roundsBefore,
-        1 + rolledExpenditure,
+        rolledExpenditure,
       );
 
     const roundsRemaining =
