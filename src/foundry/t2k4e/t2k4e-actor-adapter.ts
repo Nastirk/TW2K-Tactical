@@ -20,6 +20,7 @@ const ATTRIBUTE_ALIASES:
     readonly string[]
   > = {
     str: [
+      "system.attributes.str.score",
       "system.attributes.str.value",
       "system.attributes.str",
       "system.attribute.str.value",
@@ -27,6 +28,7 @@ const ATTRIBUTE_ALIASES:
       "system.str.value",
     ],
     agl: [
+      "system.attributes.agl.score",
       "system.attributes.agl.value",
       "system.attributes.agl",
       "system.attribute.agl.value",
@@ -34,6 +36,7 @@ const ATTRIBUTE_ALIASES:
       "system.agl.value",
     ],
     int: [
+      "system.attributes.int.score",
       "system.attributes.int.value",
       "system.attributes.int",
       "system.attribute.int.value",
@@ -41,6 +44,7 @@ const ATTRIBUTE_ALIASES:
       "system.int.value",
     ],
     emp: [
+      "system.attributes.emp.score",
       "system.attributes.emp.value",
       "system.attributes.emp",
       "system.attribute.emp.value",
@@ -55,54 +59,66 @@ const SKILL_ALIASES:
     readonly string[]
   > = {
     closeCombat: [
+      "system.skills.closeCombat.score",
       "system.skills.closeCombat.value",
       "system.skills.closecombat.value",
       "system.skills.closeCombat",
     ],
     heavyWeapons: [
+      "system.skills.heavyWeapons.score",
       "system.skills.heavyWeapons.value",
       "system.skills.heavyweapons.value",
       "system.skills.heavyWeapons",
     ],
     stamina: [
+      "system.skills.stamina.score",
       "system.skills.stamina.value",
       "system.skills.stamina",
     ],
     driving: [
+      "system.skills.driving.score",
       "system.skills.driving.value",
       "system.skills.driving",
     ],
     rangedCombat: [
+      "system.skills.rangedCombat.score",
       "system.skills.rangedCombat.value",
       "system.skills.rangedcombat.value",
       "system.skills.rangedCombat",
     ],
     mobility: [
+      "system.skills.mobility.score",
       "system.skills.mobility.value",
       "system.skills.mobility",
     ],
     recon: [
+      "system.skills.recon.score",
       "system.skills.recon.value",
       "system.skills.recon",
     ],
     survival: [
+      "system.skills.survival.score",
       "system.skills.survival.value",
       "system.skills.survival",
     ],
     tech: [
+      "system.skills.tech.score",
       "system.skills.tech.value",
       "system.skills.tech",
     ],
     command: [
+      "system.skills.command.score",
       "system.skills.command.value",
       "system.skills.command",
     ],
     medicalAid: [
+      "system.skills.medicalAid.score",
       "system.skills.medicalAid.value",
       "system.skills.medicalaid.value",
       "system.skills.medicalAid",
     ],
     persuasion: [
+      "system.skills.persuasion.score",
       "system.skills.persuasion.value",
       "system.skills.persuasion",
     ],
@@ -128,12 +144,31 @@ export class T2K4EActorAdapter {
 
   getSkillDie(
     key: T2KSkillKey,
-  ): StepDie {
-    return normalizeStepDie(
+  ): StepDie | undefined {
+    const value =
       firstDefined(
         this.actor,
         SKILL_ALIASES[key],
-      ),
+      );
+
+    if (
+      typeof value === "string" &&
+      [
+        "f",
+        "-",
+        "–",
+        "—",
+      ].includes(
+        value
+          .trim()
+          .toLowerCase(),
+      )
+    ) {
+      return undefined;
+    }
+
+    return normalizeStepDie(
+      value,
       `skill ${key}`,
     );
   }
@@ -166,5 +201,42 @@ export class T2K4EActorAdapter {
   getItems():
     T2K4EActorLike["items"] {
     return this.actor.items;
+  }
+
+  hasSpecialty(
+    name: string,
+  ): boolean {
+    const expected =
+      this.normalizeName(name);
+
+    return Array.from(
+      this.actor.items ?? [],
+    ).some(
+      (item) => {
+        const type =
+          item.type.toLowerCase();
+
+        if (
+          type !== "specialty" &&
+          type !== "speciality" &&
+          type !== "talent"
+        ) {
+          return false;
+        }
+
+        return this.normalizeName(
+          item.name ?? "",
+        ) === expected;
+      },
+    );
+  }
+
+  private normalizeName(
+    value: string,
+  ): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
   }
 }

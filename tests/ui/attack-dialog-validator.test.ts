@@ -22,6 +22,11 @@ const base = {
   oneHanded: false,
   atShortRange: true,
   hasTelescopicSight: false,
+  hasBipod: false,
+  bipodDeployed: false,
+  hasTripod: false,
+  tripodDeployed: false,
+  vehicleMounted: false,
   stablePlatform: false,
 };
 
@@ -48,5 +53,51 @@ describe("AttackDialogValidator", () => {
         targetTerrainModifier: -3,
       }),
     ).toThrow("targetTerrainModifier must be 0, -1, or -2.");
+  });
+
+  it("requires attached support gear before deployment", () => {
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        bipodDeployed: true,
+      }),
+    ).toThrow(
+      "Bipod deployment requires an equipped bipod attached to the selected weapon.",
+    );
+
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        tripodDeployed: true,
+      }),
+    ).toThrow(
+      "Tripod deployment requires an equipped tripod attached to the selected weapon.",
+    );
+  });
+
+  it("rejects ammo dice over the legal cap", () => {
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        ammoDice: 3,
+        maxAmmoDice: 2,
+      }),
+    ).toThrow(
+      "ammoDice must be an integer from 0 to 2",
+    );
+  });
+
+  it("allows only zero ammo dice with slow telescopic aim", () => {
+    expect(() =>
+      new AttackDialogValidator().validate({
+        ...base,
+        aimMode: "slow",
+        hasTelescopicSight: true,
+        ammoDice: 1,
+        maxAmmoDice: 3,
+      }),
+    ).toThrow(
+      "Slow telescopic aim does not allow ammo dice",
+    );
   });
 });

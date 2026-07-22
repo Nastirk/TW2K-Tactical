@@ -204,5 +204,44 @@ describe(
         );
       },
     );
+
+    it(
+      "enforces the slow-aim ammo-dice restriction in the core workflow",
+      async () => {
+        const workflow =
+          createWorkflow([]);
+
+        await expect(
+          workflow.resolve({
+            combat: {
+              attackerId: "a",
+              targetId: "t",
+              targetActorId: "target",
+              weaponId: "w",
+              baseAttributeDie: 8,
+              baseSkillDie: 8,
+              weaponBaseDamage: 2,
+              critThreshold: 3,
+              weaponArmorModifier: 0,
+              ammunition: {
+                ammunitionItemId: "mag",
+                rateOfFire: 3,
+                roundsBefore: 20,
+                ammoDice: 1,
+                allocation: "damage",
+                slowAim: false,
+              },
+            },
+            modifiers: {
+              weaponCategory: "rifle",
+              aimMode: "slow",
+              hasTelescopicSight: true,
+            },
+          }),
+        ).rejects.toThrow(
+          "Slow telescopic aim does not allow ammo dice",
+        );
+      },
+    );
   },
 );

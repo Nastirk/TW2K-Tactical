@@ -2,8 +2,8 @@ import type {
   HitLocation,
 } from "../../combat/hit-location-resolver";
 import type {
-  EndToEndRangedCombatRequest,
-} from "../../combat/end-to-end-ranged-combat-workflow";
+  StagedEndToEndRangedCombatRequest,
+} from "../../combat/staged-end-to-end-ranged-combat-workflow";
 import {
   T2K4EActorAdapter,
 } from "./t2k4e-actor-adapter";
@@ -17,6 +17,9 @@ import type {
 import {
   T2K4EWeaponAdapter,
 } from "./t2k4e-weapon-adapter";
+import {
+  T2K4EAmmunitionAdapter,
+} from "./t2k4e-ammunition-adapter";
 
 export interface T2K4ERangedCombatInput {
   attacker:
@@ -31,10 +34,15 @@ export interface T2K4ERangedCombatInput {
 }
 
 export class T2K4ECombatRequestFactory {
+  constructor(
+    private readonly ammunitionAdapter =
+      new T2K4EAmmunitionAdapter(),
+  ) {}
+
   createRangedAttack(
     input:
       T2K4ERangedCombatInput,
-  ): EndToEndRangedCombatRequest {
+  ): StagedEndToEndRangedCombatRequest {
     const attacker =
       new T2K4EActorAdapter(
         input.attacker,
@@ -44,6 +52,13 @@ export class T2K4ECombatRequestFactory {
       new T2K4EWeaponAdapter(
         input.weapon,
       ).toProfile();
+
+    const ammunitionState =
+      this.ammunitionAdapter
+        .getWeaponAmmoState(
+          input.attacker,
+          input.weapon,
+        );
 
     return {
       attackerId:
@@ -82,6 +97,16 @@ export class T2K4ECombatRequestFactory {
 
       chosenHitLocation:
         input.chosenHitLocation,
+
+      ...(ammunitionState
+        ? {
+            ammunition:
+              this.ammunitionAdapter
+                .toAttackRequest(
+                  ammunitionState,
+                ),
+          }
+        : {}),
     };
   }
 

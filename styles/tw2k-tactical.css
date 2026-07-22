@@ -56,3 +56,19 @@
   width: 100%;
   cursor: pointer;
 }
+
+.tw2k-tactical-card__ammunition,
+.tw2k-tactical-card--reload {
+  border-top: 1px solid currentColor;
+  padding-top: 0.5rem;
+}
+
+.tw2k-tactical-attack-dialog__ammo {
+  margin: 0.75rem 0;
+}
+
+.tw2k-tactical-weapon-attack,
+.tw2k-tactical-weapon-reload {
+  margin-left: 0.25rem;
+  cursor: pointer;
+}

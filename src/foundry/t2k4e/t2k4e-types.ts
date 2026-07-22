@@ -3,6 +3,9 @@ export interface T2K4EItemLike {
   name?: string;
   type: string;
   system?: Record<string, unknown>;
+  update?(
+    changes: Record<string, unknown>,
+  ): Promise<unknown>;
 }
 
 export interface T2K4EActorLike {

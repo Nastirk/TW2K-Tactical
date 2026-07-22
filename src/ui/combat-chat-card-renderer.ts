@@ -18,7 +18,9 @@ export class CombatChatCardRenderer {
                 <li>
                   <span>${escapeHtml(
                     modifier.description,
-                  )}</span>
+                  )}${modifier.provenance
+                    ? ` <small class="tw2k-tactical-card__provenance">(${escapeHtml(modifier.provenance)})</small>`
+                    : ""}</span>
                   <strong>${this.formatModifier(
                     modifier.value,
                   )}</strong>
@@ -26,6 +28,23 @@ export class CombatChatCardRenderer {
             )
             .join("")
         : "<li>No modifiers</li>";
+
+    const evidenceHtml =
+      model.evidence && model.evidence.length > 0
+        ? `
+          <details class="tw2k-tactical-card__evidence" open>
+            <summary><strong>Context evidence</strong></summary>
+            <dl>
+              ${model.evidence
+                .map(
+                  (entry) => `
+                    <dt>${escapeHtml(entry.label)}</dt>
+                    <dd>${escapeHtml(entry.value)}</dd>`,
+                )
+                .join("")}
+            </dl>
+          </details>`
+        : "";
 
     const criticalHtml =
       model.critical
@@ -131,6 +150,29 @@ export class CombatChatCardRenderer {
           </button>`
         : "";
 
+    const ammunitionHtml =
+      model.ammunition
+        ? `
+          <section class="tw2k-tactical-card__ammunition">
+            <h4>Ammunition</h4>
+            <p>
+              Ammo dice:
+              ${model.ammunition.rolls.length > 0
+                ? model.ammunition.rolls
+                    .map(
+                      (value) =>
+                        `<span class="tw2k-tactical-card__die">d6: ${value}</span>`,
+                    )
+                    .join(" ")
+                : "—"}
+            </p>
+            <p>Ammo successes: <strong>${model.ammunition.successes}</strong></p>
+            <p>${model.ammunition.damageSuccesses} to damage; ${model.ammunition.additionalHitSuccesses} reserved for additional hits.</p>
+            <p>Rounds spent: <strong>${model.ammunition.roundsSpent}</strong></p>
+            <p>Rounds remaining: <strong>${model.ammunition.roundsRemaining}</strong>${model.ammunition.empty ? " — EMPTY" : ""}</p>
+          </section>`
+        : "";
+
     return `
       <article class="tw2k-tactical-card">
         <header>
@@ -151,6 +193,8 @@ export class CombatChatCardRenderer {
             )}
           </p>
         </header>
+
+        ${evidenceHtml}
 
         <section>
           <h4>Modifiers</h4>
@@ -196,6 +240,7 @@ export class CombatChatCardRenderer {
         </div>
 
         ${postHitHtml}
+        ${ammunitionHtml}
         ${criticalHtml}
         ${deathSaveHtml}
         ${actionHtml}

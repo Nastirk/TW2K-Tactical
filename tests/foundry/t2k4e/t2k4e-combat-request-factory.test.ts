@@ -90,5 +90,68 @@ describe(
         ).toBe(2);
       },
     );
+
+    it(
+      "adds tracked ammunition only for the official magazine schema",
+      () => {
+        const request =
+          new T2K4ECombatRequestFactory()
+            .createRangedAttack({
+              attacker: {
+                id: "attacker",
+                type: "character",
+                system: {
+                  attributes: {
+                    agl: { value: "C" },
+                  },
+                  skills: {
+                    rangedCombat: { value: "C" },
+                  },
+                },
+                items: [{
+                  id: "magazine",
+                  name: "5.56x45mm Magazine",
+                  type: "ammunition",
+                  system: {
+                    itemType: "5.56x45mm",
+                    ammo: {
+                      value: 12,
+                      max: 30,
+                    },
+                  },
+                }],
+              },
+              target: {
+                id: "target",
+                type: "character",
+              },
+              weapon: {
+                id: "rifle",
+                type: "weapon",
+                system: {
+                  damage: 2,
+                  crit: 3,
+                  armorModifier: 0,
+                  range: 4,
+                  rof: 3,
+                  ammo: "5.56x45mm",
+                  mag: {
+                    target: "magazine",
+                    max: 30,
+                  },
+                },
+              },
+            });
+
+        expect(request.ammunition).toEqual({
+          ammunitionItemId: "magazine",
+          rateOfFire: 3,
+          roundsBefore: 12,
+          ammoDice: 0,
+          allocation: "damage",
+          slowAim: false,
+        });
+      },
+    );
   },
 );

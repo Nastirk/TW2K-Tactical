@@ -18,8 +18,13 @@ import type { FoundryDialogClassLike } from "../dialog/foundry-dialog-types";
 import { FoundryDieRoller } from "../dice/foundry-die-roller";
 import { FoundryWeaponAttackAction } from "../item/foundry-weapon-attack-action";
 import { FoundryWeaponAttackSelectionSource } from "../item/foundry-weapon-attack-selection-source";
+import { FoundryWeaponReloadAction } from "../item/foundry-weapon-reload-action";
 import { FoundryJQueryWeaponSheetAdapter } from "../item/foundry-weapon-sheet-adapter";
 import { registerFoundryWeaponSheetAttackHook, type FoundryItemSheetHookBus } from "../item/foundry-weapon-sheet-attack-hook";
+import {
+  registerFoundryWeaponAccessoryAttachmentHook,
+  type FoundryWeaponAccessoryHookBus,
+} from "../item/foundry-weapon-accessory-attachment-hook";
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
 import {
@@ -60,6 +65,10 @@ export interface FoundryRuntimeEnvironment {
 
 export interface FoundryRuntimeHandle {
   attack(): Promise<boolean>;
+  reload(
+    attackerActor: unknown,
+    weapon: unknown,
+  ): Promise<boolean>;
   diagnostics(): FoundryT2K4ECompatibilityReport;
   registerReady(): void;
 }
@@ -74,6 +83,10 @@ function installModuleApi(
   game: unknown,
   api: {
     attack: () => Promise<boolean>;
+    reload: (
+      attackerActor: unknown,
+      weapon: unknown,
+    ) => Promise<boolean>;
     diagnostics: () => FoundryT2K4ECompatibilityReport;
   },
 ): void {
@@ -149,6 +162,14 @@ export function bootstrapFoundryRuntime(
     controller,
   );
 
+  const weaponReloadAction =
+    new FoundryWeaponReloadAction(
+      environment.Dialog,
+      environment.ChatMessage,
+      new FoundryDieRoller(),
+      notifications,
+    );
+
   registerFoundryLiveAttackHook(
     environment.hooks as FoundryHookBus,
     controller,
@@ -158,12 +179,25 @@ export function bootstrapFoundryRuntime(
     environment.hooks as FoundryItemSheetHookBus,
     new FoundryJQueryWeaponSheetAdapter(),
     weaponAttackAction,
+    weaponReloadAction,
+  );
+
+  registerFoundryWeaponAccessoryAttachmentHook(
+    environment.hooks as FoundryWeaponAccessoryHookBus,
   );
 
   let readyRegistered = false;
 
   const handle: FoundryRuntimeHandle = {
     attack: () => controller.attack(),
+    reload: (
+      attackerActor,
+      weapon,
+    ) =>
+      weaponReloadAction.launch(
+        attackerActor,
+        weapon,
+      ),
     diagnostics: () => compatibility.inspect(),
     registerReady: () => {
       if (readyRegistered) {
@@ -210,6 +244,7 @@ export function bootstrapFoundryRuntime(
     environment.getGame(),
     {
       attack: handle.attack,
+      reload: handle.reload,
       diagnostics: handle.diagnostics,
     },
   );

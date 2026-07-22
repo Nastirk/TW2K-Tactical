@@ -28,6 +28,8 @@ export class RangedAttackResolver {
       attackerId: request.attackerId,
       targetId: request.targetId,
       weaponId: request.weaponId,
+      contextOverrides:
+        request.contextOverrides,
     });
 
     if (context.combatMode !== "ranged") {

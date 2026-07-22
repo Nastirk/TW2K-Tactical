@@ -1,11 +1,21 @@
 import type {
   HitLocation,
 } from "../combat/hit-location-resolver";
+import type { ModifierProvenance } from "../rules/modifier";
+import type {
+  AmmoSuccessAllocation,
+} from "../combat/ammo-resolver";
 
 export interface CombatChatModifierView {
   source: string;
   value: number;
   description: string;
+  provenance?: ModifierProvenance;
+}
+
+export interface CombatChatEvidenceView {
+  label: string;
+  value: string;
 }
 
 export interface CombatChatDieView {
@@ -26,6 +36,17 @@ export interface CombatChatCriticalView {
   instantDeath: boolean;
 }
 
+export interface CombatChatAmmunitionView {
+  rolls: number[];
+  successes: number;
+  allocation: AmmoSuccessAllocation;
+  damageSuccesses: number;
+  additionalHitSuccesses: number;
+  roundsSpent: number;
+  roundsRemaining: number;
+  empty: boolean;
+}
+
 export interface CombatChatCardViewModel {
   title: string;
   attackerName: string;
@@ -34,6 +55,9 @@ export interface CombatChatCardViewModel {
 
   modifiers:
     CombatChatModifierView[];
+
+  evidence?:
+    CombatChatEvidenceView[];
 
   netModifier: number;
 
@@ -48,6 +72,9 @@ export interface CombatChatCardViewModel {
 
   successes: number;
   hit: boolean;
+
+  ammunition?:
+    CombatChatAmmunitionView;
 
   hitLocation?: HitLocation;
   damageBeforeArmor?: number;

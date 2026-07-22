@@ -1,11 +1,12 @@
 {
   "name": "tw2k-tactical",
-  "version": "0.5.1-alpha",
+  "version": "0.5.2-alpha",
   "type": "module",
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "verify": "tsc --noEmit && vitest run && vite build"
   },
   "devDependencies": {
     "typescript": "^5",

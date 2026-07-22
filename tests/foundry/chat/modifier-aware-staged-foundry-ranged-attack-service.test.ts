@@ -105,5 +105,78 @@ describe(
           );
       },
     );
+
+    it(
+      "persists ammunition before publishing the attack card",
+      async () => {
+        const events: string[] = [];
+        const ammunition = {
+          ammunitionItemId: "mag",
+          roundsBefore: 20,
+          roundsRemaining: 15,
+        };
+        const combat = {
+          ammunition,
+          targetActorId: "target",
+        };
+
+        const service =
+          new ModifierAwareStagedFoundryRangedAttackService(
+            {
+              resolve: vi.fn()
+                .mockResolvedValue({
+                  combat,
+                }),
+            } as never,
+            {
+              create: vi.fn()
+                .mockReturnValue({}),
+            } as never,
+            {
+              render: vi.fn()
+                .mockReturnValue(
+                  "<article></article>",
+                ),
+            } as never,
+            {
+              create: vi.fn()
+                .mockReturnValue({}),
+            } as never,
+            {
+              publish: vi.fn()
+                .mockImplementation(
+                  async () => {
+                    events.push("publish");
+                  },
+                ),
+            } as never,
+            {
+              consume: vi.fn()
+                .mockImplementation(
+                  async () => {
+                    events.push("consume");
+                  },
+                ),
+            } as never,
+          );
+
+        await service.execute({
+          attack: {} as never,
+          names: {
+            attackerName: "Attacker",
+            targetName: "Target",
+            weaponName: "Weapon",
+          },
+          attackerActor: {
+            id: "attacker",
+          },
+        });
+
+        expect(events).toEqual([
+          "consume",
+          "publish",
+        ]);
+      },
+    );
   },
 );

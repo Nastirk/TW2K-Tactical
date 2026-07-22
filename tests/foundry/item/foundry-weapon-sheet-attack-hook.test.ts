@@ -25,6 +25,9 @@ describe("registerFoundryWeaponSheetAttackHook", () => {
     let attackCallback:
       | (() => void | Promise<void>)
       | undefined;
+    let reloadCallback:
+      | (() => void | Promise<void>)
+      | undefined;
 
     const actor = { id: "actor" };
     const weapon = { id: "weapon" };
@@ -38,16 +41,24 @@ describe("registerFoundryWeaponSheetAttackHook", () => {
         ) => {
           attackCallback = callback;
         },
+        addReloadAction: (
+          callback: () => void | Promise<void>,
+        ) => {
+          reloadCallback = callback;
+        },
       })),
     };
 
     const launch =
+      vi.fn().mockResolvedValue(true);
+    const reload =
       vi.fn().mockResolvedValue(true);
 
     registerFoundryWeaponSheetAttackHook(
       hooks,
       adapter,
       { launch } as never,
+      { launch: reload } as never,
     );
 
     expect(callbacks.has("renderItemSheet")).toBe(true);
@@ -55,8 +66,13 @@ describe("registerFoundryWeaponSheetAttackHook", () => {
 
     callbacks.get("renderItemSheetV2")?.({}, {});
     await attackCallback?.();
+    await reloadCallback?.();
 
     expect(launch).toHaveBeenCalledWith(
+      actor,
+      weapon,
+    );
+    expect(reload).toHaveBeenCalledWith(
       actor,
       weapon,
     );
