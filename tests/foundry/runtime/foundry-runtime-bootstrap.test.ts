@@ -47,16 +47,27 @@ describe("bootstrapFoundryRuntime", () => {
     expect(registered).toContain("tw2k-tactical.attack");
     expect(registered).toContain("renderItemSheet");
     expect(registered).toContain("renderItemSheetV2");
+    expect(registered).toContain("createChatMessage");
+    expect(registered).toContain("deleteChatMessage");
 
     const api = moduleRecord.api as {
       attack?: unknown;
+      officialAttack?: unknown;
       reload?: unknown;
       diagnostics?: () => { systemId?: string };
+      integrationCapabilities?: () => {
+        officialT2K4E: { active: boolean };
+      };
     };
 
     expect(typeof api.attack).toBe("function");
+    expect(typeof api.officialAttack).toBe("function");
     expect(typeof api.reload).toBe("function");
     expect(api.diagnostics?.().systemId).toBe("t2k4e");
+    expect(
+      api.integrationCapabilities?.()
+        .officialT2K4E.active,
+    ).toBe(true);
     expect(runtime.diagnostics().ok).toBe(true);
   });
 });

@@ -26,6 +26,16 @@ import {
   type FoundryWeaponAccessoryHookBus,
 } from "../item/foundry-weapon-accessory-attachment-hook";
 import { T2K4ECombatRequestFactory } from "../t2k4e/t2k4e-combat-request-factory";
+import {
+  OfficialAttackCorrelationObserver,
+  ResolutionPlanAssociationStore,
+} from "../t2k4e/official-attack-association";
+import {
+  OfficialT2K4EAttackAdapterV1,
+  type OfficialT2K4EAttackCommit,
+  type OfficialT2K4EAttackRequest,
+} from "../t2k4e/official-t2k4e-attack-adapter";
+import type { ResolutionPlan } from "../t2k4e/resolution-plan";
 import { FoundryAttackDialogInitialFactory } from "./foundry-attack-dialog-initial-factory";
 import {
   FoundryCanvasTargetActorSource,
@@ -43,6 +53,10 @@ import {
   FoundryT2K4ECompatibilityService,
   type FoundryT2K4ECompatibilityReport,
 } from "./foundry-t2k4e-compatibility";
+import {
+  FoundryIntegrationCapabilityService,
+  type FoundryOfficialAttackCapabilities,
+} from "./foundry-integration-capabilities";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -65,11 +79,18 @@ export interface FoundryRuntimeEnvironment {
 
 export interface FoundryRuntimeHandle {
   attack(): Promise<boolean>;
+  officialAttack(
+    request: OfficialT2K4EAttackRequest,
+  ): Promise<OfficialT2K4EAttackCommit | undefined>;
   reload(
     attackerActor: unknown,
     weapon: unknown,
   ): Promise<boolean>;
   diagnostics(): FoundryT2K4ECompatibilityReport;
+  integrationCapabilities(): FoundryOfficialAttackCapabilities;
+  resolutionPlanForMessage(
+    messageId: string,
+  ): ResolutionPlan | undefined;
   registerReady(): void;
 }
 
@@ -83,11 +104,16 @@ function installModuleApi(
   game: unknown,
   api: {
     attack: () => Promise<boolean>;
+    officialAttack: (
+      request: OfficialT2K4EAttackRequest,
+    ) => Promise<OfficialT2K4EAttackCommit | undefined>;
     reload: (
       attackerActor: unknown,
       weapon: unknown,
     ) => Promise<boolean>;
     diagnostics: () => FoundryT2K4ECompatibilityReport;
+    integrationCapabilities:
+      () => FoundryOfficialAttackCapabilities;
   },
 ): void {
   const modules = asRecord(game)?.modules;
@@ -116,6 +142,20 @@ export function bootstrapFoundryRuntime(
     environment.getGame,
     environment.getCanvas,
   );
+  const integrationCapabilities =
+    new FoundryIntegrationCapabilityService(
+      environment.getGame,
+    );
+  const resolutionPlanAssociations =
+    new ResolutionPlanAssociationStore();
+  const officialAttackAdapter =
+    new OfficialT2K4EAttackAdapterV1(
+      resolutionPlanAssociations,
+    );
+
+  new OfficialAttackCorrelationObserver(
+    resolutionPlanAssociations,
+  ).register(environment.hooks);
 
   const selectionSource = new FoundryWeaponAttackSelectionSource(
     new FoundryCanvasTargetActorSource(environment.getGame),
@@ -190,6 +230,8 @@ export function bootstrapFoundryRuntime(
 
   const handle: FoundryRuntimeHandle = {
     attack: () => controller.attack(),
+    officialAttack: (request) =>
+      officialAttackAdapter.execute(request),
     reload: (
       attackerActor,
       weapon,
@@ -199,6 +241,11 @@ export function bootstrapFoundryRuntime(
         weapon,
       ),
     diagnostics: () => compatibility.inspect(),
+    integrationCapabilities: () =>
+      integrationCapabilities.inspect(),
+    resolutionPlanForMessage: (messageId) =>
+      resolutionPlanAssociations
+        .getByMessageId(messageId),
     registerReady: () => {
       if (readyRegistered) {
         return;
@@ -244,8 +291,12 @@ export function bootstrapFoundryRuntime(
     environment.getGame(),
     {
       attack: handle.attack,
+      officialAttack:
+        handle.officialAttack,
       reload: handle.reload,
       diagnostics: handle.diagnostics,
+      integrationCapabilities:
+        handle.integrationCapabilities,
     },
   );
 
