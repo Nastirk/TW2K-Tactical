@@ -185,6 +185,9 @@ Accessory attached  ≠  Accessory deployed
 
 A bipod or tripod may be attached to a weapon while not currently deployed in combat.
 
+For slow telescopic aim, the module follows the printed stable-platform rule:
+cover, a bipod, or prone on the ground.
+
 ---
 
 ## Terrain
@@ -228,6 +231,18 @@ flags.tw2k-tactical.helperCount
 ```
 
 These flags are transparent fallbacks for facts that should not be guessed from map artwork or historical movement that Foundry does not natively retain.
+
+Night Vision Goggles also use these actor or equipped-item flags until battery
+and infrared-light controls have dedicated UI support:
+
+```text
+flags.tw2k-tactical.nightVisionBatteryAvailable
+flags.tw2k-tactical.nightVisionAttachedLightActive
+```
+
+With a battery, goggles negate darkness effects through one T2K combat hex in
+near-total darkness. Their attached infrared light is required in total
+darkness and extends this to two combat hexes when active.
 
 ---
 

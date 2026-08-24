@@ -1,0 +1,15 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"survival-encumbrance-travel-and-camping",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[138,139,140,141,142,143,144,146,147,148,149],"sections":["Travel Maps","Tasks & Shifts of the Day","Terrain Types","Weather","Marching","Forced March","Driving","Navigation","Terrain","Driving at Night","Mishaps","Fuel & Stills","Horses","Keeping Watch","Scrounging","Foraging","Hunting","Fishing","Making Camp","Hidden Camp","Fire","Cooking","Resting","Sleeping","Bare Ground","Exploring","City Travel","Water Travel"]},
+  "ambiguousPassages":["Task-interruption guidance says at least three quarters of shift is a rule of thumb and Referee has final say; no automatic interruption threshold is inferred.","Referee selects travel encounter timing, encounter-mishap application, and movement lost to interruptions."],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Terrain table dashes are represented as null and road 'as terrain' is retained literally.","Scrap table rows are reference data; only their table procedure is a mechanic."],
+  "missingDataRequirements":["Shift/day counters, task assignments, terrain and roads, weather, route and intended hex, travel speed, fuel, raw materials, food/water, camp state, vehicle state, and encounter state.","Referee determinations for interruptions, encounter approach, mishap location, and applicable mishap rerolls."],
+  "excludedPrintedContent":["Combat, injury, and vehicle-combat procedures are referenced through dependencies rather than duplicated.","Individual scrap-table item rows remain reference data."],
+  "statusCounts":{"Extracted":43,"Verified":0,"NeedsVerification":0},
+  "referenceDataCount":2,
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

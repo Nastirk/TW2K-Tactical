@@ -7,6 +7,7 @@ import {
 import type { ChatLogElementLike } from "./foundry/chat/combat-chat-action-listener";
 import type { FoundryChatMessageClassLike } from "./foundry/chat/foundry-chat-types";
 import type { FoundryDialogClassLike } from "./foundry/dialog/foundry-dialog-types";
+import { FoundryTravelMapController } from "./foundry/maps/foundry-travel-map-controller";
 
 type FoundryGlobalScope = typeof globalThis & {
   Dialog?: FoundryDialogClassLike;
@@ -29,6 +30,12 @@ Hooks.once("init", () => {
   }
 
   try {
+    new FoundryTravelMapController({
+      getCanvas: () => globals.canvas,
+      getGame: () => globals.game,
+      getUi: () => globals.ui,
+    }).register(Hooks);
+
     runtime = bootstrapFoundryRuntime({
       hooks: Hooks as unknown as FoundryRuntimeHookBus,
       Dialog: globals.Dialog,

@@ -1,0 +1,20 @@
+{
+  "$schema": "tw2k-tactical/player-manual-source-index/v1",
+  "manual": "players",
+  "status": "Extracted",
+  "chapters": [
+    { "id": "players.introduction", "title": "You're On Your Own Now", "startPage": 5, "endPage": 11, "classifications": ["setting", "advice"] },
+    { "id": "players.character-creation", "title": "Player Characters", "startPage": 13, "endPage": 41, "classifications": ["mechanic", "reference-data", "advice"] },
+    { "id": "players.skills-and-specialties", "title": "Skills & Specialties", "startPage": 43, "endPage": 51, "classifications": ["mechanic", "reference-data"] },
+    { "id": "players.combat-and-damage", "title": "Combat & Damage", "startPage": 53, "endPage": 87, "classifications": ["mechanic", "reference-data"] },
+    { "id": "players.weapons-vehicles-and-gear", "title": "Weapons, Vehicles & Gear", "startPage": 89, "endPage": 131, "classifications": ["mechanic", "reference-data"] },
+    { "id": "players.home-base", "title": "Home Base", "startPage": 132, "endPage": 136, "classifications": ["mechanic", "reference-data", "advice"] },
+    { "id": "players.travel", "title": "Travel", "startPage": 137, "endPage": 149, "classifications": ["mechanic", "reference-data", "advice"] }
+  ],
+  "summary": {
+    "chapterCount": 7,
+    "printedPageCoverage": { "start": 5, "end": 149 },
+    "classificationCounts": { "mechanic": 6, "reference-data": 6, "setting": 1, "advice": 4, "scenario": 0 },
+    "needsVerification": ["Official T2K4E Foundry system source files were not available in the accessible workspace for schema comparison."]
+  }
+}

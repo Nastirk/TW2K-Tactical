@@ -133,7 +133,11 @@ export class FoundryAttackDialogInitialFactory {
       initial.lightLevel = source.getLightLevel(attackerId, targetId);
       initial.weatherModifier = source.getWeatherModifier();
       initial.denseSmoke = source.hasDenseSmoke(attackerId, targetId);
-      initial.hasNightVision = source.hasNightVision(attackerId, distanceHexes);
+      initial.hasNightVision = source.hasNightVision(
+        attackerId,
+        distanceHexes,
+        initial.lightLevel,
+      );
       initial.hasThermalOptics = source.hasThermalOptics(attackerId);
       initial.visibilityLimitHexes = source.getVisibilityLimitHexes() ?? 0;
       initial.lineOfSightBlocked = source.isLineOfSightBlocked(attackerId, targetId);

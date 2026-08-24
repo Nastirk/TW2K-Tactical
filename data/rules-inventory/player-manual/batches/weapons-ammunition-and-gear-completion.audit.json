@@ -1,0 +1,22 @@
+{
+  "$schema": "tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook": "Twilight: 2000 4th Edition Player's Manual",
+  "topic": "weapons-ammunition-and-gear-completion",
+  "status": "completed",
+  "authority": "printed Player's Manual only",
+  "pageCoverage": {
+    "printedPages": [91, 92, 127, 128, 129, 130, 131],
+    "directRecordPages": [91, 127, 128, 129, 130, 131],
+    "crossBatchCoverage": [{"printedPage": 92, "records": ["gear.weapon-table.field-meanings", "reference.weapon-tables.field-schema"], "reason": "Weapon Features field definitions and table annotations were already represented; no duplicate completion record was added."}],
+    "sections": ["Reliability", "Weapon Features", "Communications Gear", "Radio Range", "Radios & EMP", "Global Positioning System", "Protective Gear", "Fuel & Stills", "Electricity", "Explosives", "Food & Drink", "Field Gear"]
+  },
+  "ambiguousPassages": [{"record": "gear.radio.emp-vulnerability", "printedPage": 128, "section": "Radios & EMP", "reason": "The printed wording describes possible radio outcomes and variables affecting vulnerability within 50 km, but supplies no deterministic roll, threshold, or mandated outcome."}],
+  "duplicateOrConflictingPassages": [{"record": "gear.radio.range-doubling", "resolution": "The duplicate completion-batch record was removed after global-ID validation. The existing weapons-ammunition-and-gear record remains the sole inventory record and retains its printed stacking ambiguity."}],
+  "tableInterpretationConcerns": [{"record": "gear.radio.travel-hex-range", "reason": "Only the printed chart values present in the supplied page scope are encoded; its continuation is not extrapolated."}],
+  "missingDataRequirements": [],
+  "excludedPrintedContent": ["Static equipment statistics and descriptive equipment text without a printed procedure.", "Weapon Features material already represented by the existing printed-page-92 reference records."],
+  "classificationCounts": {"mechanic": 20, "reference-data": 0, "setting": 0, "advice": 0, "scenario": 0},
+  "statusCounts": {"Extracted": 19, "Verified": 0, "NeedsVerification": 1},
+  "needsVerification": ["gear.radio.emp-vulnerability"],
+  "validation": {"batchJsonParses": true, "auditJsonParses": true, "allMechanicsHavePrintedSourcePages": true, "globalDuplicateIds": 0, "printedSourceOnly": true, "customPolicyRecords": 0, "foundrySpecificRecords": 0, "nonPlayersManualAuthorities": 0, "mechanicCount": 20, "referenceDataCount": 0, "completeScope": true}
+}

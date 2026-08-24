@@ -1,0 +1,178 @@
+{
+  "$schema": "tw2k-tactical/ranged-combat-modifier-extraction/v1",
+  "status": "Extracted",
+  "scope": "Player's Manual ranged-combat modifiers only",
+  "rules": [
+    {
+      "id": "quick-shot",
+      "status": "Extracted",
+      "source": { "page": 65, "section": "Aiming" },
+      "summary": "An unaimed attack is a quick shot.",
+      "modifier": { "compactWeapons": -1, "otherRangedWeapons": -2 },
+      "exceptions": ["Compact weapons are pistols, carbines, and SMGs."],
+      "requiredFacts": ["weapon.category", "attack.aimMode"]
+    },
+    {
+      "id": "telescopic-sight-slow-aim",
+      "status": "Verified",
+      "source": { "page": 65, "section": "Aiming" },
+      "summary": "Slow aiming with a telescopic sight improves the attack.",
+      "modifier": { "normal": 1, "stablePlatform": 2 },
+      "exceptions": ["Requires a telescopic sight.", "A stable platform is cover, a bipod, or prone on the ground.", "No ammo dice may be used.", "Slow aim and firing cannot occur in the same round."],
+      "requiredFacts": ["weapon.hasTelescopicSight", "attack.aimMode", "attacker.hasCover", "weapon.hasBipod", "attacker.isProneOnGround", "attack.ammoDiceCount"]
+    },
+    {
+      "id": "range-band",
+      "status": "Extracted",
+      "source": { "page": 65, "section": "Range" },
+      "summary": "Range penalties apply from a weapon's short range.",
+      "modifier": { "short": 0, "medium": -1, "long": -2, "extreme": -3 },
+      "exceptions": ["Medium is up to twice short range; long is up to four times; extreme is up to eight times and is the effective maximum.", "Shotguns use damage reduction instead of range penalties."],
+      "requiredFacts": ["weapon.shortRangeHexes", "attack.distanceHexes", "weapon.category"]
+    },
+    {
+      "id": "same-hex-active-target",
+      "status": "Extracted",
+      "source": { "page": 65, "section": "Firing in Close Combat" },
+      "summary": "Shooting an active, aware enemy in the same hex is penalized.",
+      "modifier": { "compactWeapons": -1, "otherRangedWeapons": -2 },
+      "exceptions": ["Compact weapons are pistols, carbines, and SMGs.", "Does not describe an unaware or immobile target."],
+      "requiredFacts": ["attack.sameHex", "target.isActive", "target.isAware", "weapon.category"]
+    },
+    {
+      "id": "same-hex-defenseless-target",
+      "status": "Extracted",
+      "source": { "page": 65, "section": "Defenseless Target" },
+      "summary": "A same-hex target that is immobile or unaware grants a bonus.",
+      "modifier": 3,
+      "exceptions": ["Target must be in the same hex."],
+      "requiredFacts": ["attack.sameHex", "target.isImmobile", "target.isAware"]
+    },
+    {
+      "id": "shotgun-range-damage",
+      "status": "Extracted",
+      "source": { "page": 65, "section": "Shotguns" },
+      "summary": "Shotguns do not take range penalties; range reduces base damage instead.",
+      "modifier": { "mediumDamage": -1, "longDamage": -2, "extremeDamage": -3 },
+      "exceptions": ["A zero-damage hit can still suppress.", "This replaces, rather than adds to, normal range-to-hit penalties."],
+      "requiredFacts": ["weapon.category", "attack.rangeBand", "weapon.baseDamage"]
+    },
+    {
+      "id": "target-prone",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Stance" },
+      "summary": "A prone target is harder to hit.",
+      "modifier": -1,
+      "exceptions": ["No protection applies when attacker and target are in the same hex."],
+      "requiredFacts": ["target.isProne", "attack.sameHex"]
+    },
+    {
+      "id": "target-full-cover",
+      "status": "Verified",
+      "source": { "page": 66, "section": "Cover" },
+      "summary": "Firing at a target in full cover is penalized when its hex is known.",
+      "modifier": -3,
+      "exceptions": ["If the target hex is known, the attack is allowed with the full-cover modifier.", "If the target hex is not known, the attack is prohibited.", "The Referee must judge whether the target hex is known.", "All hit locations are protected by full cover."],
+      "requiredFacts": ["target.inFullCover", "cover.isEffectiveAgainstAttacker", "target.approximateLocationKnown"]
+    },
+    {
+      "id": "called-shot",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Called Shots" },
+      "summary": "Targeting a specific body part is penalized.",
+      "modifier": -2,
+      "exceptions": [],
+      "requiredFacts": ["attack.calledShot", "attack.calledLocation"]
+    },
+    {
+      "id": "moving-target",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Moving Target" },
+      "summary": "A target that moved since the attacker's previous turn is harder to hit.",
+      "modifier": -1,
+      "exceptions": [],
+      "requiredFacts": ["target.movedSinceAttackerPreviousTurn"]
+    },
+    {
+      "id": "firing-from-moving-vehicle",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Moving Target" },
+      "summary": "Firing from a vehicle that moved since the attacker's previous turn is penalized.",
+      "modifier": -2,
+      "exceptions": [],
+      "requiredFacts": ["attacker.firingFromVehicle", "vehicle.movedSinceAttackerPreviousTurn"]
+    },
+    {
+      "id": "target-size",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Target Size" },
+      "summary": "Large targets are easier to hit and small objects are harder to hit.",
+      "modifier": { "large": 2, "small": -2 },
+      "exceptions": ["Heavy weapons use separate target-size rules."],
+      "requiredFacts": ["target.size", "weapon.isHeavy"]
+    },
+    {
+      "id": "elevated-firing-position",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Elevation" },
+      "summary": "Firing from higher elevation than the target grants a bonus.",
+      "modifier": 1,
+      "exceptions": [],
+      "requiredFacts": ["attacker.elevation", "target.elevation"]
+    },
+    {
+      "id": "target-hex-terrain",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Terrain, Weather & Darkness" },
+      "summary": "The target hex terrain can penalize a ranged attack.",
+      "modifier": "terrain-defined: -1 or -2",
+      "exceptions": ["No terrain attack modifier applies if the target is in the same hex."],
+      "requiredFacts": ["attack.sameHex", "target.combatTerrain", "target.terrainRangedAttackModifier"]
+    },
+    {
+      "id": "light-level",
+      "status": "Verified",
+      "source": { "page": 66, "section": "Terrain, Weather & Darkness" },
+      "summary": "Dim light and darkness penalize ranged attacks; total darkness prevents a hit.",
+      "modifier": { "dim": -1, "dark": -2, "totalDarkness": "attack prohibited" },
+      "exceptions": ["Thermal optics eliminate all visibility limitations and negative modifiers due to darkness, weather, and smoke.", "Night vision goggles require a battery and eliminate darkness modifiers to ranged combat and recon out to one hex in near-total darkness. In total darkness, their attached infrared light must be active; it extends their range to two hexes."],
+      "requiredFacts": ["scene.lightLevel", "attack.distanceHexes", "attacker.hasNightVision", "attacker.nightVisionBatteryAvailable", "attacker.nightVisionAttachedLightActive", "attacker.hasThermalOptics"]
+    },
+    {
+      "id": "adverse-weather",
+      "status": "Verified",
+      "source": { "page": 66, "section": "Terrain, Weather & Darkness" },
+      "summary": "Heavy rain, fog, and strong winds impose a ranged penalty.",
+      "modifier": "typically -1",
+      "exceptions": ["The Referee can apply a greater penalty.", "Thermal optics eliminate all visibility limitations and negative modifiers due to weather."],
+      "requiredFacts": ["scene.weather", "scene.weatherRangedAttackModifier", "attacker.hasThermalOptics"]
+    },
+    {
+      "id": "dense-smoke",
+      "status": "Verified",
+      "source": { "page": 66, "section": "Smoke" },
+      "summary": "Dense smoke normally blocks line of sight; firing at a known target hex is penalized.",
+      "modifier": -3,
+      "exceptions": ["If the target hex is known, the attack is allowed with the dense-smoke modifier.", "If the target hex is not known, the attack is prohibited.", "The Referee must judge whether the target hex is known.", "Thermal optics eliminate all visibility limitations and negative modifiers due to smoke."],
+      "requiredFacts": ["lineOfSight.hasDenseSmoke", "target.approximateLocationKnown", "attacker.hasThermalOptics"]
+    },
+    {
+      "id": "carried-machine-gun",
+      "status": "Extracted",
+      "source": { "page": 66, "section": "Machine Guns" },
+      "summary": "Machine guns have handling penalties when fired without their normal support.",
+      "modifier": { "lmgCarried": -2, "gpmgCarried": -3, "hmgCarried": "attack prohibited" },
+      "exceptions": ["LMGs normally use a bipod.", "GPMGs normally use a bipod, tripod, or vehicle mount.", "HMGs require a tripod or vehicle mount."],
+      "requiredFacts": ["weapon.category", "weapon.bipodDeployed", "weapon.tripodDeployed", "weapon.vehicleMounted", "attack.isCarried"]
+    },
+    {
+      "id": "one-handed-shooting",
+      "status": "Verified",
+      "source": { "page": 66, "section": "One-Handed Shooting" },
+      "summary": "One-handed firing is permitted or penalized according to weapon category.",
+      "modifier": { "pistol": 0, "smgOrCarbine": -2, "rifleOrAssaultRifle": -3, "machineGun": "attack prohibited" },
+      "exceptions": ["Rifles and assault rifles can be fired one-handed only at short range."],
+      "requiredFacts": ["attack.oneHanded", "weapon.category", "attack.rangeBand"]
+    }
+  ]
+}

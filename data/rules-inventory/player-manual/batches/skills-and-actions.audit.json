@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"skills-and-actions",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[46,47,48,49,50,51,61,90],"sections":["Modifiers","Opposed Rolls","NPCs and Skills","Gear","Damage to Gear","The Skills","Group Recon","Specialties","Social Conflict","Resolution","Negotiating Position","Persuading a Group","Interrogation","Bartering","Supply","Supply & Quantities"]},
+  "ambiguousPassages":["The source uses 'usually' for persuading a group's leader and the group following that leader; skills.social.conflict.group-leader is marked NeedsVerification."],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["The chance-of-success tables are probability references, not separate resolution procedures.","Supply & Quantities lists aggregate availability quantities after a successful supply check and is retained as reference data."],
+  "missingDataRequirements":["Referee judgment determines social-conflict stakes, negotiating-position factors, information revealed by knowledge specialties, NPC price offers, and gear availability context.","Stealth, group Recon, helpers, and specialty applicability require player or Referee input and scene context."],
+  "excludedPrintedContent":["Universal dice construction, pushing, helping, and opposed-roll math are referenced to core-resolution-and-dice rather than repeated.","Combat, travel, injury, repair, vehicle, and base procedures are cross-referenced to their dedicated batches.","The optional specialty-requirement rule is excluded because it is expressly optional."],
+  "classificationCounts":{"mechanic":42,"reference-data":3,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":44,"Verified":0,"NeedsVerification":1},
+  "needsVerification":["skills.social.conflict.group-leader"],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":42,"referenceDataCount":3}
+}

@@ -229,6 +229,7 @@ describe("AttackDialogRequestFactory", () => {
       tripod.modifiers
         .tripodDeployed,
     ).toBe(true);
+
   });
 
 

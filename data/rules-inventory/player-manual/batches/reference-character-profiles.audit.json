@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"reference-character-profiles",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[15,20,22,23,24,25,26,27,28,29,30,32,33,36,37,38,39],"sections":["Military Ranks","Character Creation: Archetypes","Character Generation: Life Paths","Childhood","Military Careers","Crime","Intelligence","Blue Collar","Education","White Collar","At War"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":["Rank-conversion data is already present as reference.character.rank-conversion in the broad reference batch; this dedicated batch does not duplicate that ID."],
+  "tableInterpretationConcerns":["Childhood, military-career, At War specialty rows, all archetype rows on pages 22–30, military starting-gear rows on page 33, and all civilian-career rows on pages 36–38 are complete."],
+  "missingDataRequirements":[],
+  "excludedPrintedContent":[],
+  "classificationCounts":{"mechanic":4,"reference-data":38,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":42,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":4,"referenceDataCount":38,"completeScope":true}
+}

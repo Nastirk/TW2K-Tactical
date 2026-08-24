@@ -495,9 +495,16 @@ function actorHasEquippedGearMatching(
   actor: unknown,
   pattern: RegExp,
 ): boolean {
+  return findEquippedGearMatching(actor, pattern) !== undefined;
+}
+
+function findEquippedGearMatching(
+  actor: unknown,
+  pattern: RegExp,
+): unknown | undefined {
   return readCollectionValues(
     readPath(actor, ["items"]),
-  ).some((item) => {
+  ).find((item) => {
     const type = readPath(item, ["type"]);
     if (
       typeof type === "string" &&
@@ -1355,17 +1362,37 @@ export class FoundrySelectionAttackContextSource
   hasNightVision(
     attackerId: string,
     distanceHexes: number,
+    lightLevel: LightLevel = "dark",
   ): boolean {
     const actor = this.getActorForId(attackerId, this.selection.attackerActor);
-    const hasGear = actorHasEquippedGearMatching(
+    const goggles = findEquippedGearMatching(
       actor,
-      /night[ -]?vision|\bnvg\b/,
-    ) || this.categoryResolver.hasNightVisionSight(
+      /night[ -]?vision goggles|\bnvg\b/,
+    );
+    const gogglesHaveBattery = goggles !== undefined && readBooleanTacticalFlag(
+      [goggles, actor],
+      "nightVisionBatteryAvailable",
+    ) === true;
+
+    if (gogglesHaveBattery) {
+      const attachedLightActive = readBooleanTacticalFlag(
+        [goggles, actor],
+        "nightVisionAttachedLightActive",
+      ) === true;
+
+      if (lightLevel === "total-darkness" && !attachedLightActive) {
+        return false;
+      }
+
+      return distanceHexes <= (attachedLightActive ? 2 : 1);
+    }
+
+    const hasNightVisionSight = this.categoryResolver.hasNightVisionSight(
       this.selection.weapon,
       actor,
     );
 
-    if (!hasGear) {
+    if (!hasNightVisionSight) {
       return false;
     }
 

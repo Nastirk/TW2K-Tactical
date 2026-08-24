@@ -1,0 +1,15 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"weapons-ammunition-and-gear",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[63,64,65,91,92,127,129,130],"sections":["Ammunition","Ammo Dice","Pushing & Reliability","Weapon Jam","Ammo Spent","Reloading","Bows and Thrown Weapons","Damage to Gear","Repairs","Gun Care","Weapon Features","Weapons Gear","Communications Gear","Observation Gear","Protective Gear","Hazmat/MOPP Suit","Medical Supplies","Tools & Spare Parts","Fuel & Stills"]},
+  "ambiguousPassages":["Radio range doubling lists vehicle mounting, long-wire antenna, and successful TECH separately but does not state whether their doubling effects stack."],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Individual weapon statistics on pp. 93-114 are printed reference data and are not inferred into mechanics; their complete transcription belongs to reference-tables-and-derived-values."],
+  "missingDataRequirements":["Weapon category, ammunition and magazine state, dice results, reliability, prepared state, equipment use, batteries, infrared state, mounts, and time tracking.","Referee or player input for stable-platform examples, active scouting, and equipment activation."],
+  "excludedPrintedContent":["Vehicle procedures and statistics are reserved for vehicles-and-vehicle-combat.","Combat modifiers and damage procedures are in the combat batches; visibility rules are in cover-concealment-visibility-and-terrain."],
+  "statusCounts":{"Extracted":37,"Verified":0,"NeedsVerification":1},
+  "referenceDataCount":2,
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

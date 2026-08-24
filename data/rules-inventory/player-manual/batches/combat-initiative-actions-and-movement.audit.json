@@ -1,0 +1,14 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"combat-initiative-actions-and-movement",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[54,55,56,57,58],"sections":["Rounds & Initiative","Exchanging Initiative","Your Turn","NPC Initiative","Slow & Fast Actions","Fast Actions","Slow Actions","Free Actions","Foot Movement","Crawling","Backpack","Elevation","Swamps and Shallows","Close Combat","NPC Movement"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["The Fast, Slow, and Free Actions lists supply action speed, prerequisite, and skill. Detailed resolution of listed actions is intentionally deferred to the printed sections that explain each action."],
+  "missingDataRequirements":["Referee determinations of surprise, NPC grouping, communication, and whether an enemy is active and aware.","Scene data for hex positions, terrain, elevation, barriers, and doors.","Combat history for action refresh and declaration-before-roll timing."],
+  "excludedPrintedContent":["Battle-map presentation guidance and mapless-play advice.","Terrain table values and cover, visibility, barrier, ambush, social-conflict, and close-combat procedures reserved for their dedicated batches."],
+  "statusCounts":{"Extracted":64,"Verified":0,"NeedsVerification":0},
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

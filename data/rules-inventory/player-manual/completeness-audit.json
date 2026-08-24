@@ -1,0 +1,45 @@
+{
+  "$schema":"tw2k-tactical/player-manual-completeness-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "authority":"printed Player's Manual only",
+  "auditScope":{"sourceIndex":"data/rules-inventory/player-manual/source-index.json","batches":"data/rules-inventory/player-manual/batches/*.json","printedPageRange":{"start":5,"end":149}},
+  "printedPageCoverage":{
+    "covered":[
+      {"pages":"5-149","basis":"Mechanics are represented or source-indexed as setting, advice, fiction, chapter art, examples, or static descriptive material."}
+    ],
+    "partiallyCovered":[],
+    "notCovered":[],
+    "uncoveredPrintedPageCount":0,
+    "uncoveredPageAccounting":"No printed pages with identified unrepresented mechanics."
+  },
+  "existingBatchCoverageByChapter":[
+    {"chapter":"You're On Your Own Now (5-11)","batches":[],"status":"Complete: source index classifies this chapter as setting/advice only."},
+    {"chapter":"Player Characters (13-41)","batches":["character-creation-and-advancement","reference-character-profiles"],"status":"Completed"},
+    {"chapter":"Skills & Specialties (43-51)","batches":["core-resolution-and-dice","skills-and-actions","skills-and-actions-completion"],"status":"Completed with skills.social.conflict.group-leader unavailable to automation."},
+    {"chapter":"Combat & Damage (53-87)","batches":["combat-initiative-actions-and-movement","combat-ranged-modifiers","cover-concealment-visibility-and-terrain","combat-melee-grappling-and-damage","combat-heavy-weapons-mines-and-explosives-completion","injury-critical-injuries-healing-and-conditions","vehicles-and-vehicle-combat"],"status":"Completed with retained verification items."},
+    {"chapter":"Weapons, Vehicles & Gear (89-131)","batches":["weapons-ammunition-and-gear","weapons-ammunition-and-gear-completion","reference-weapons-and-ammunition-profiles","reference-vehicle-profiles","reference-tables-and-derived-values","vehicles-and-vehicle-combat"],"status":"Completed with retained verification items."},
+    {"chapter":"Home Base (132-136)","batches":["base-and-home-base"],"status":"Completed"},
+    {"chapter":"Travel (137-149)","batches":["survival-encumbrance-travel-and-camping","survival-encumbrance-travel-and-camping-completion"],"status":"Completed"}
+  ],
+  "missingMechanicsByRecommendedTopic":[],
+  "potentialDuplicateOrOverlappingRecords":[
+    {"records":["core.roll.push.ammo-dice","gear.weapon.push-ammo-reroll-and-reliability","gear.equipment.reliability.damage"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"NeedsVerification"},
+    {"records":["core.roll.help.modifier","combat.actions.help.same-speed-cost"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"Composable"},
+    {"records":["character.derived.hit-capacity","combat.damage.incapacitated"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"Composable"},
+    {"records":["reference.vehicle.features","reference.vehicle-profile.*","travel.fuel.consumption"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"Composable"},
+    {"records":["core.roll.push.gear-damage","gear.equipment.reliability.damage"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"Composable"},
+    {"records":["combat.ranged.slow-aim.stable-platform"],"canonicalMetadata":"cross-batch-source-reconciliation","status":"Single printed authority"}
+  ],
+  "crossBatchDependencyIssues":[],
+  "existingNeedsVerification":[
+    {"id":"gear.radio.range-doubling","status":"NeedsVerification","automationAvailability":"unavailable"},
+    {"id":"gear.radio.emp-vulnerability","status":"NeedsVerification","automationAvailability":"unavailable"},
+    {"id":"injury.condition.hypothermia.exposure-roll","status":"NeedsVerification","automationAvailability":"unavailable"},
+    {"id":"skills.social.conflict.group-leader","status":"NeedsVerification","automationAvailability":"unavailable"},
+    {"id":"reference.weapon-profile.kpist-m45","status":"NeedsVerification","automationAvailability":"unavailable"},
+    {"id":"core.roll.push.ammo-dice + gear.weapon.push-ammo-reroll-and-reliability","status":"NeedsVerification","automationAvailability":"unavailable","reason":"Cross-record bane-scope wording has not been resolved."}
+  ],
+  "proposedRemainingExtractionBatches":[],
+  "runtimeImplementationReadiness":{"runtimeImplementationReady":true,"statement":"Yes. All printed mechanics are represented or explicitly excluded as non-mechanical, dependency aliases are reconciled, and every unresolved verification item is unavailable to runtime automation."},
+  "validation":{"jsonParses":true,"printedSourceOnly":true,"rulesIntroduced":0,"foundryOrExternalAuthoritiesUsed":0,"allPrintedMechanicsRepresentedOrExplicitlyExcluded":true,"globalIdsUnique":true,"allRecordsHaveSourcePage":true,"dependenciesResolveToCanonicalAuthority":true}
+}

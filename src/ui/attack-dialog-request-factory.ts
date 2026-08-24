@@ -123,8 +123,7 @@ export class AttackDialogRequestFactory {
         stablePlatform:
           (input.attackerProne ?? false) ||
           input.stablePlatform ||
-          input.bipodDeployed ||
-          input.tripodDeployed,
+          input.bipodDeployed,
       },
     };
   }

@@ -1,0 +1,17 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"reference-tables-and-derived-values",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[15,20,22,23,24,25,26,27,28,29,30,32,93,94,95,96,97,98,99,100,101,102,103,104,112,113,115,122,124],"sections":["Military Ranks","Character Creation: Archetypes","Military Careers","Melee Weapons","Bows & Thrown","Civilian Firearms","US Military Weapons","Soviet Military Weapons","Other Military Weapons","Mortars","Vehicle Features","Soviet Military Vehicles","Swedish Military Vehicles"]},
+  "ambiguousPassages":["Several jury-rig table notes authorize jury-rigging but do not state materials, time, roll, or outcome. They are retained as limited permissions without invented procedure."],
+  "duplicateOrConflictingPassages":["Amphibious preparation is already represented in vehicle.amphibious-preparation; reference.vehicle.amphibious-preparation-table records the printed table marker and points to that rule."],
+  "tableInterpretationConcerns":["Character-profile, weapon-and-ammunition-profile, and vehicle-profile extraction is complete in their dedicated batches."],
+  "missingDataRequirements":[],
+  "remainingProfileScope":[],
+  "excludedPrintedContent":[],
+  "classificationCounts":{"mechanic":8,"reference-data":5,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":13,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":8,"referenceDataCount":5,"completeScope":false}
+}

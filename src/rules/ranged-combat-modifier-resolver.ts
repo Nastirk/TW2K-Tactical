@@ -184,8 +184,6 @@ export class RangedCombatModifierResolver {
         return;
       case "rifle":
       case "assault-rifle":
-      case "sniper-rifle":
-      case "hunting-rifle":
         modifiers.push(this.inputModifier("one-handed", -3, "One-handed shooting"));
         return;
       default:
@@ -262,9 +260,7 @@ export class RangedCombatModifierResolver {
 
   private isRifleCategory(category: RangedCombatModifierInput["weaponCategory"]): boolean {
     return category === "rifle" ||
-      category === "assault-rifle" ||
-      category === "sniper-rifle" ||
-      category === "hunting-rifle";
+      category === "assault-rifle";
   }
 
   private isMachineGunCarried(input: RangedCombatModifierInput): boolean {

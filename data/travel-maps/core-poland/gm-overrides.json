@@ -1,0 +1,24 @@
+{
+  "$schema": "../../schemas/travel-map-gm-overrides.schema.json",
+  "mapId": "t2k4e-coreset-poland",
+  "purpose": "GM-reviewed corrections to the source extraction; source data is never overwritten.",
+  "visualClassification": {
+    "settlement": "A dark grey built-up block symbol visibly inside the hex. A place name alone is not evidence.",
+    "ruins": "The black stippled urban-area symbol shown in the official Travel Map legend; it is terrain, not a feature."
+  },
+  "hexes": [
+    { "printedGridReference": "A2", "terrain": "woods", "features": ["river"], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A4", "terrain": "woods", "features": ["river"], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A10", "terrain": "open", "features": [], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A14", "terrain": "woods", "features": [], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A16", "terrain": null, "features": ["river"], "reason": "Visual review: no grey settlement-block symbol; terrain remains unconfirmed." },
+    { "printedGridReference": "A18", "terrain": null, "features": ["river"], "reason": "Visual review: no grey settlement-block symbol; terrain remains unconfirmed." },
+    { "printedGridReference": "A20", "terrain": "woods", "features": ["river"], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A24", "terrain": "open", "features": [], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A26", "terrain": null, "features": [], "reason": "Visual review: no grey settlement-block symbol; terrain remains unconfirmed." },
+    { "printedGridReference": "A28", "terrain": null, "features": [], "reason": "Visual review: no grey settlement-block symbol; terrain remains unconfirmed." },
+    { "printedGridReference": "A32", "terrain": "open", "features": [], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A36", "terrain": "open", "features": [], "reason": "Visual review: no grey settlement-block symbol." },
+    { "printedGridReference": "A44", "terrain": null, "features": [], "reason": "Visual review: no grey settlement-block symbol; terrain remains unconfirmed." }
+  ]
+}

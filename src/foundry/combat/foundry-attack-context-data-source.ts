@@ -46,7 +46,11 @@ export interface FoundryAttackContextSource {
   getLightLevel?(attackerId: string, targetId: string): LightLevel;
   getWeatherModifier?(): number;
   hasDenseSmoke?(attackerId: string, targetId: string): boolean;
-  hasNightVision?(attackerId: string, distanceHexes: number): boolean;
+  hasNightVision?(
+    attackerId: string,
+    distanceHexes: number,
+    lightLevel: LightLevel,
+  ): boolean;
   hasThermalOptics?(attackerId: string): boolean;
   getVisibilityLimitHexes?(): number | undefined;
   isLineOfSightBlocked?(attackerId: string, targetId: string): boolean;
@@ -147,8 +151,12 @@ export class FoundryAttackContextDataSource
     return this.source.hasDenseSmoke?.(attackerId, targetId) ?? false;
   }
 
-  hasNightVision(attackerId: string, distanceHexes: number): boolean {
-    return this.source.hasNightVision?.(attackerId, distanceHexes) ?? false;
+  hasNightVision(
+    attackerId: string,
+    distanceHexes: number,
+    lightLevel: LightLevel,
+  ): boolean {
+    return this.source.hasNightVision?.(attackerId, distanceHexes, lightLevel) ?? false;
   }
 
   hasThermalOptics(attackerId: string): boolean {

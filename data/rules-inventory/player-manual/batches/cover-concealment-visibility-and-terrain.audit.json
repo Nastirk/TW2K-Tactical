@@ -1,0 +1,14 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"cover-concealment-visibility-and-terrain",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[57,58,59,60,66,127,129],"sections":["Hex Features","Terrain Types","Cover","Direction of Cover","Barriers","Visibility & Line of Sight","Weather & Darkness","Smoke","Line of Sight","Stance","Weapons Gear","Observation Gear"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":["Printed p.59 refers to night-vision goggles and thermal optics on p.129, while the night-vision sight rule is printed on p.127. Each printed rule is retained under its actual page and section."],
+  "tableInterpretationConcerns":["The Terrain Types table uses an em dash for no numeric modifier, 'No' for no cover, 'Special' for swamp/shallows movement, and 'n/a' for blocking terrain. These are preserved as 0, false, 'special', and 'n/a' respectively in typed table-lookup values."],
+  "missingDataRequirements":["Hex terrain, elevation, barriers, cover direction, smoke markers, lighting, weather, and token position.","Referee determinations where the printed source expressly assigns them, including mapless cover/line of sight and further visibility adjustment.","Equipment activation, battery, infrared-light, power-source, and thermal-chaff/hot-smoke state."],
+  "excludedPrintedContent":["Barrier-crossing and door procedures are reserved for the movement batch.","Ambush and general combat-action rules are reserved for their dedicated batches."],
+  "statusCounts":{"Extracted":53,"Verified":0,"NeedsVerification":0},
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

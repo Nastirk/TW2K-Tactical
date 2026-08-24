@@ -1,0 +1,18 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"survival-encumbrance-travel-and-camping-completion",
+  "status":"completed",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[145,149],"sections":["Scrounging","City Travel"]},
+  "completedScope":["Printed page 145 D100 rows 51-00, including repeat-roll outcomes.","Printed page 149 city-map scale and city-hex travel-speed/encounter-frequency equivalence."],
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Rows 01-50 are printed on page 144 and are outside this requested page-145 scope; this batch includes every row printed on page 145."],
+  "missingDataRequirements":[],
+  "excludedPrintedContent":["The page-149 statement that future expansions will explore city settings; it establishes no procedure."],
+  "classificationCounts":{"mechanic":5,"reference-data":47,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":52,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":5,"referenceDataCount":47,"completeScope":true}
+}

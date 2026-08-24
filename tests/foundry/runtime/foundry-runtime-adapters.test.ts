@@ -753,6 +753,8 @@ describe("Foundry runtime adapters", () => {
         "tw2k-tactical": {
           firingFromMovingVehicle: true,
           helperCount: 2,
+          nightVisionBatteryAvailable: true,
+          nightVisionAttachedLightActive: true,
         },
       },
     };
@@ -822,6 +824,60 @@ describe("Foundry runtime adapters", () => {
     expect(source.hasThermalOptics("attacker")).toBe(true);
     expect(source.getHelperCount("attacker")).toBe(2);
     expect(source.hasAttackerSpecialty("attacker", "Machinegunner")).toBe(true);
+  });
+
+  it("limits battery-powered night-vision goggles to one hex, or two with their attached infrared light", () => {
+    const attackerActor = {
+      id: "attacker",
+      items: [{
+        type: "gear",
+        name: "Night Vision Goggles",
+        system: { equipped: true, backpack: false },
+      }],
+      flags: {
+        "tw2k-tactical": {
+          nightVisionBatteryAvailable: true,
+        },
+      },
+    };
+    const targetActor = { id: "target" };
+    const source = new FoundrySelectionAttackContextSource(
+      { attackerActor, targetActor, weapon: createWeapon() },
+      () => ({ tokens: { placeables: [] }, grid: { size: 100 }, scene: { grid: { distance: 10 } } }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.hasNightVision("attacker", 1)).toBe(true);
+    expect(source.hasNightVision("attacker", 2)).toBe(false);
+    expect(source.hasNightVision("attacker", 3)).toBe(false);
+    expect(source.hasNightVision("attacker", 1, "total-darkness")).toBe(false);
+  });
+
+  it("requires an available battery before goggles negate darkness and enables two hexes only with the attached infrared light", () => {
+    const attackerActor = {
+      id: "attacker",
+      items: [{
+        type: "gear",
+        name: "Night Vision Goggles",
+        system: { equipped: true, backpack: false },
+      }],
+      flags: { "tw2k-tactical": {} },
+    };
+    const targetActor = { id: "target" };
+    const source = new FoundrySelectionAttackContextSource(
+      { attackerActor, targetActor, weapon: createWeapon() },
+      () => ({ tokens: { placeables: [] }, grid: { size: 100 }, scene: { grid: { distance: 10 } } }),
+      new FoundryWeaponCategoryResolver(),
+    );
+
+    expect(source.hasNightVision("attacker", 1)).toBe(false);
+    attackerActor.flags["tw2k-tactical"] = {
+      nightVisionBatteryAvailable: true,
+      nightVisionAttachedLightActive: true,
+    };
+    expect(source.hasNightVision("attacker", 2)).toBe(true);
+    expect(source.hasNightVision("attacker", 3)).toBe(false);
+    expect(source.hasNightVision("attacker", 2, "total-darkness")).toBe(true);
   });
 
   it("distinguishes specialty-relevant weapon categories", () => {

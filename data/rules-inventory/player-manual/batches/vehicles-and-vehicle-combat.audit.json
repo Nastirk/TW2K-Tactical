@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"vehicles-and-vehicle-combat",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[81,82,83,84,85,86,87,115,122],"sections":["Vehicle Combat","Getting In and Out","Vehicle Movement","Getting Unstuck","Facing","Reliability","Smoke Launchers","Attacks on Vehicles","Component Damage","Secondary Damage","Vehicle Components","Weapon Mounts","Stabilizers & Fire Control Systems","Called Shots","Scavenging Parts","Ramming","Horses","Boats","Vehicle Features","Soviet Military Vehicles"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Individual vehicle-list rows on pages 116–126 are static profiles and are reserved for the reference-tables-and-derived-values batch; their shared feature meanings are recorded here.","Vehicle component outcomes are represented as a procedural D10 lookup plus atomic component-effect records."],
+  "missingDataRequirements":["Vehicle facing, attack side, movement since a prior turn, component presence, occupants, cargo, and vehicle-relative size require scene, combat-history, or Referee input.","Travel-speed, fuel-use, driving-mishap, and lookout procedures are cross-referenced to the travel batch."],
+  "excludedPrintedContent":["Generic combat action costs, universal dice procedures, normal character damage, gear repair, and travel procedures already extracted in their dedicated batches.","Vehicle descriptions and individual static table rows reserved for reference data inventory."],
+  "classificationCounts":{"mechanic":41,"reference-data":3,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":44,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":41,"referenceDataCount":3}
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "tw2k-tactical/encumbrance-alias-verification-report/v1",
+  "sourceBook": "Twilight: 2000 4th Edition Player's Manual",
+  "status": "completed",
+  "mode": "strict-printed-source",
+  "scope": "Verification only; existing batches, rule records, dependencies, audits, and completeness status were not modified.",
+  "sharedPrintedEvidence": [
+    {
+      "id": "players.p50.stamina-specialties.load-carrier",
+      "source": {
+        "printedPage": 50,
+        "section": "Stamina Specialties"
+      },
+      "exactPrintedWording": "You can carry four additional encumbrance units in your combat gear and four more in your backpack.",
+      "establishedScope": "Load Carrier grants two separate four-unit additions; this sentence does not define either underlying capacity procedure."
+    }
+  ],
+  "aliases": [
+    {
+      "alias": "travel.encumbrance.backpack-capacity",
+      "references": [
+        {
+          "batchPath": "data/rules-inventory/player-manual/batches/skills-and-actions.json",
+          "recordId": "skills.specialty.load-carrier",
+          "source": {
+            "printedPage": 50,
+            "section": "Stamina Specialties"
+          },
+          "dependencyField": "mechanics[id=skills.specialty.load-carrier].dependencies[1]"
+        }
+      ],
+      "intendedRuleScope": "The Load Carrier specialty increases the backpack capacity by four encumbrance units.",
+      "printedEvidenceRef": "players.p50.stamina-specialties.load-carrier",
+      "existingCanonicalCandidates": [
+        {
+          "recordId": "gear.backpack.capacity-and-mobility",
+          "source": {
+            "printedPage": 131,
+            "section": "Field Gear"
+          },
+          "match": "partial",
+          "reason": "It establishes a backpack's STR-die-size carry-capacity addition and a MOBILITY modifier. It does not establish the p.50 Load Carrier four-unit addition or a general backpack-capacity procedure."
+        }
+      ],
+      "exactCanonicalRecordId": null,
+      "determination": "stale-non-rule-dependency",
+      "reason": "The cited p.50 specialty outcome is self-contained. It supplies the exact four-unit backpack addition and does not require a separate printed capacity rule to establish that modifier.",
+      "recommendedNonInferentialAction": "Remove this dependency from skills.specialty.load-carrier. Do not create or map a canonical capacity rule from the cited p.50 evidence."
+    },
+    {
+      "alias": "travel.encumbrance.combat-gear-capacity",
+      "references": [
+        {
+          "batchPath": "data/rules-inventory/player-manual/batches/skills-and-actions.json",
+          "recordId": "skills.specialty.load-carrier",
+          "source": {
+            "printedPage": 50,
+            "section": "Stamina Specialties"
+          },
+          "dependencyField": "mechanics[id=skills.specialty.load-carrier].dependencies[0]"
+        }
+      ],
+      "intendedRuleScope": "The Load Carrier specialty increases combat-gear capacity by four encumbrance units.",
+      "printedEvidenceRef": "players.p50.stamina-specialties.load-carrier",
+      "existingCanonicalCandidates": [
+        {
+          "recordId": "gear.backpack.capacity-and-mobility",
+          "source": {
+            "printedPage": 131,
+            "section": "Field Gear"
+          },
+          "match": "not-a-match",
+          "reason": "It concerns a backpack's additional carry capacity and MOBILITY modifier, not combat-gear capacity or the p.50 Load Carrier specialty outcome."
+        }
+      ],
+      "exactCanonicalRecordId": null,
+      "determination": "stale-non-rule-dependency",
+      "reason": "The cited p.50 specialty outcome directly supplies the four-unit combat-gear addition. The printed sentence does not cite or establish a separate combat-gear-capacity procedure that this record must depend on.",
+      "recommendedNonInferentialAction": "Remove this dependency from skills.specialty.load-carrier. Do not create or map a canonical capacity rule from the cited p.50 evidence."
+    }
+  ],
+  "validation": {
+    "jsonParses": true,
+    "aliasCount": 2,
+    "existingInventoryModified": false,
+    "printedSourceOnly": true,
+    "inferredMappings": 0
+  }
+}

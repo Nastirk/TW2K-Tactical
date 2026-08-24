@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Core Set battlemaps represented as Foundry-aligned 2m movement hexes.",
+  "maps": [
+    {
+      "id": "battlemap_01",
+      "dataset": "battlemap_01_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_01.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "curated"
+    },
+    {
+      "id": "battlemap_02",
+      "dataset": "battlemap_02_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_02.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_03",
+      "dataset": "battlemap_03_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_03.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_04",
+      "dataset": "battlemap_04_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_04.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_05",
+      "dataset": "battlemap_05_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_05.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_06",
+      "dataset": "battlemap_06_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_06.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_07",
+      "dataset": "battlemap_07_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_07.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_08",
+      "dataset": "battlemap_08_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_08.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_09",
+      "dataset": "battlemap_09_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_09.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_10",
+      "dataset": "battlemap_10_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_10.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_11",
+      "dataset": "battlemap_11_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_11.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_12",
+      "dataset": "battlemap_12_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_12.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_13",
+      "dataset": "battlemap_13_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_13.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_14",
+      "dataset": "battlemap_14_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_14.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_15",
+      "dataset": "battlemap_15_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_15.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    },
+    {
+      "id": "battlemap_16",
+      "dataset": "battlemap_16_2m.json",
+      "sourceImage": "modules/t2k4e-coreset/assets/scenes/battlemap_16.webp",
+      "dimensions": {
+        "width": 6000,
+        "height": 4766
+      },
+      "movementHexes": 3737,
+      "containerHexes": 196,
+      "classification": "automatic-first-pass"
+    }
+  ]
+}

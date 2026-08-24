@@ -1,0 +1,13 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"cross-batch-source-reconciliation",
+  "status":"completed",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[16,45,46,50,55,64,65,68,69,70,71,73,78,91,115,127,128,141],"sections":["Hit and Stress Capacity","Pushing Your Roll","Help From Others","Stamina Specialties","Helping Others","Pushing & Reliability","Aiming","Heavy Weapons, Mines & Explosives","Incapacitated by Damage","Hypothermic","Damage to Gear","Vehicle Features","Communications Gear","Radios & EMP","Fuel & Stills"]},
+  "canonicalAuthorityCount":6,
+  "unresolvedVerification":["gear.radio.range-doubling","gear.radio.emp-vulnerability","injury.condition.hypothermia.exposure-roll","skills.social.conflict.group-leader","reference.weapon-profile.kpist-m45","core.roll.push.ammo-dice + gear.weapon.push-ammo-reroll-and-reliability"],
+  "missingMechanicPages":[],
+  "dependencyResolution":{"resolvedByCanonicalMetadata":true,"unresolvedAliasCount":0,"unresolvedAliases":[],"reason":"The two p.50 Load Carrier aliases were removed as stale non-rule dependencies after the strict printed-source verification report confirmed that the specialty outcomes are self-contained."},
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"foundrySpecificRules":0,"nonPlayersManualAuthorities":0,"mechanicCount":0,"referenceDataCount":0,"completeScope":true,"runtimeImplementationReady":true}
+}

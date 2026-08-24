@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"base-and-home-base",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[132,133,134,135,136],"sections":["Home Base","Finding a Base","Effects of a Base","Existing Facilities","Upkeep","Encounters","Facilities","Cow Pen","Cropland","Defenses","Heater","Infirmary","Garage","Lookout","Pigsty","Prison Cells","Root Cellar","Shrine","Well","Windmill","Workshop","Construction","Weapons","Ammunition","Vehicles"]},
+  "ambiguousPassages":["The printed rule gives the Referee authority over location suitability, existing facilities, additional facility types, and exact construction requirements in several cases. Those decisions remain automation inputs.","The empty-base passage states a risk of looting or claim but gives no trigger, roll, or outcome; it is not converted into a mechanic."],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Facility prerequisites, times, and skills are retained as source reference data and consumed by the generic construction procedure plus atomic facility outcomes.","Printed page 136 is blank in the supplied PDF; coverage is retained to match requested scope."],
+  "missingDataRequirements":["Campaign state for established base, base occupants, food/livestock/storage, facility construction progress, and weekly/daily timing.","Scene data and Referee input for facility layout, defensive cover above minimum values, site suitability, and enemy approaches."],
+  "excludedPrintedContent":["Suggested base locations and map-drawing recommendation.","Stationary-player encounter details referenced only in the Referee's Manual.","Jury-rigged still and generator procedures on printed page 131, outside the requested printed-page scope."],
+  "classificationCounts":{"mechanic":24,"reference-data":2,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":26,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":24,"referenceDataCount":2}
+}

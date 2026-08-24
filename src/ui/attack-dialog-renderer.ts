@@ -90,7 +90,7 @@ export class AttackDialogRenderer {
           ? this.checkbox("tripodDeployed", "Tripod deployed", initial.tripodDeployed)
           : ""}
         <input type="hidden" name="vehicleMounted" value="${initial.vehicleMounted}" />
-        ${this.checkbox("stablePlatform", "Other stable firing platform", initial.stablePlatform)}
+        ${this.checkbox("stablePlatform", "Firing from cover (stable platform)", initial.stablePlatform)}
 
         <div class="form-group">
           <label>Helpers / NPC group support</label>
@@ -152,8 +152,6 @@ export class AttackDialogRenderer {
       case "carbine":
       case "rifle":
       case "assault-rifle":
-      case "sniper-rifle":
-      case "hunting-rifle":
         return this.checkbox(
           "oneHanded",
           "One-handed shooting",

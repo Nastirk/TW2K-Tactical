@@ -1,4 +1,18 @@
 {
   "TW2K_TACTICAL.Ready": "TW2K Tactical Ready",
-  "TW2K_TACTICAL.Initializing": "TW2K Tactical initializing"
+  "TW2K_TACTICAL.Initializing": "TW2K Tactical initializing",
+  "TW2K_TACTICAL.TravelMap.OpenPoland": "Open the Poland Travel Map Scene before calibrating it.",
+  "TW2K_TACTICAL.TravelMap.CalibrationPrompt": "TW2K Tactical: click printed travel hex B1 to calibrate this Scene.",
+  "TW2K_TACTICAL.TravelMap.CalibrationD1Prompt": "Now click printed travel hex D1.",
+  "TW2K_TACTICAL.TravelMap.CalibrationA2Prompt": "Finally, click printed travel hex A2.",
+  "TW2K_TACTICAL.TravelMap.CalibrationA64Prompt": "Finally, click printed travel hex A64 at the bottom-left of the map.",
+  "TW2K_TACTICAL.TravelMap.CalibrationRestart": "Travel Map calibration was incomplete. Start calibration again.",
+  "TW2K_TACTICAL.TravelMap.CalibrateFirst": "Calibrate this Poland Travel Map Scene first.",
+  "TW2K_TACTICAL.TravelMap.SelectionPrompt": "TW2K Tactical: click a travel hex to inspect its extracted geography.",
+  "TW2K_TACTICAL.TravelMap.Calibrate": "Calibrate Poland Travel Map",
+  "TW2K_TACTICAL.TravelMap.Inspect": "Inspect Poland Travel Hex",
+  "TW2K_TACTICAL.TravelMap.OffsetUnavailable": "Unable to determine the selected location on the Travel Map.",
+  "TW2K_TACTICAL.TravelMap.Calibrated": "Poland Travel Map calibrated. Use Inspect Poland Travel Hex to select a hex.",
+  "TW2K_TACTICAL.TravelMap.OutsideDataset": "That location is outside the extracted Poland Travel Map data.",
+  "TW2K_TACTICAL.TravelMap.TerrainConfirmation": "terrain: GM confirmation required"
 }

@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"reference-weapons-and-ammunition-profiles",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108],"sections":["Melee Weapons","Bows & Thrown","Civilian Firearms","US Military Weapons","Soviet Military Weapons","Swedish Military Weapons","Polish Military Weapons"]},
+  "ambiguousPassages":["Kpist m/45 price is 300 in its detailed profile on page 106 and 350 in the page 107 summary table."],
+  "duplicateOrConflictingPassages":["The printed jury-rig notes for club and spiked bat, improvised bow, and pipe guns are already represented by reference.weapon.jury-rig.melee, reference.weapon.jury-rig.improvised-bow, and reference.weapon.jury-rig.pipe-gun. This profile batch references those records rather than duplicating them."],
+  "tableInterpretationConcerns":["Pages 93–96 repeat some detailed profile-card values in summary tables; each named item is retained once as a profile record. Pages 97–100 present individual profile cards; each named item is retained once as a profile record."],
+  "missingDataRequirements":[],
+  "excludedPrintedContent":["Descriptive weapon history and non-procedural narrative text."],
+  "classificationCounts":{"mechanic":8,"reference-data":97,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":104,"Verified":0,"NeedsVerification":1},
+  "needsVerification":["reference.weapon-profile.kpist-m45"],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":8,"referenceDataCount":97,"completeScope":true}
+}

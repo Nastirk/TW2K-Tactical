@@ -1,0 +1,15 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"combat-melee-grappling-and-damage",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[62,63,67,72,73,74,75,76,77,78],"sections":["Close Combat","Stance","Aimed Blows","Blocking","Diving Blow","Shoving","Disarming","Grappling","Retreat","NPC Melee Attacks","Suppression","Suffering Damage","Hit Location","Armor & Cover","Armor Modifier","Penetration","Armor Ablation","Incapacitated by Damage","Killing Blow","Critical Injuries","Severe Injuries","Death","Moving the Wounded","Stabilizing Crits","Head","Torso","Legs","Arms","Multiple Crits","Suffering Stress","Incapacitated by Stress","Stressful Situations"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Critical-injury table rows are retained as location-specific D10 table lookups. Their named effects are preserved as source text summaries rather than implementation assumptions."],
+  "missingDataRequirements":["Combat positions, stance, barriers, held items, grapple state, action history, weapon damage/crit/armor values, hit capacity, and stress capacity.","Referee-managed awareness, defenseless state, NPC grouping, and potential-stress value.","Line of sight to non-incapacitated friendly fighters for conditional unit-morale CUF die."],
+  "excludedPrintedContent":["Ranged-ammunition, explosions, fire, chemical warfare, disease, and long-term healing procedures are assigned to their dedicated batches."],
+  "crossBatchCompletion":{"pages":[68,69,70,71],"batch":"combat-heavy-weapons-mines-and-explosives-completion","result":"Heavy-weapon, mine, IED, grenade, deviation, and ammunition-type procedures are now covered in the dedicated completion batch."},
+  "statusCounts":{"Extracted":51,"Verified":0,"NeedsVerification":0},
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

@@ -1,0 +1,18 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"skills-and-actions-completion",
+  "status":"completed",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[49,50,51,61],"sections":["Specialties","Stamina Specialties","Driving Specialties","Mobility Specialties","Ranged Combat Specialties","Recon Specialties","Survival Specialties","Tech Specialties","Command Specialties","Medical Aid Specialties","Persuasion Specialties","Persuading a Group"]},
+  "completedScope":["Replaced the grouped skills.specialty.contextual-modifiers-remaining record with 49 independently testable specialty-outcome records.","Preserved distinct multi-outcome specialties as separate records where needed."],
+  "ambiguousPassages":[{"record":"skills.social.conflict.group-leader","printedPage":61,"reason":"The printed wording uses 'usually' for leader address and follower compliance, so it remains NeedsVerification in skills-and-actions.json."}],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":[],
+  "missingDataRequirements":[],
+  "excludedPrintedContent":["The optional specialty-requirement sidebar, which is explicitly optional rather than a required core procedure."],
+  "classificationCounts":{"mechanic":49,"reference-data":0,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":49,"Verified":0,"NeedsVerification":0},
+  "needsVerification":["skills.social.conflict.group-leader (retained in skills-and-actions.json)"],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":49,"referenceDataCount":0,"completeScope":true}
+}

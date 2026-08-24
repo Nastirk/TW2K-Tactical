@@ -1,0 +1,16 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"character-creation-and-advancement",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[14,16,17,18,19,20,31,32,35,38,39,40,41],"sections":["Archetypes vs Life Paths","Hit and Stress Capacity","Unit Morale","Moral Code","Big Dream","Your Buddy","Group Gear","Vehicle","Radiation","Character Creation: Archetypes","Character Generation: Life Paths","Childhood","Military Careers","Local Militia","At War","The Draft","Develop Your Character","Learn From Experience","Spending XP","Increasing Skill Level","Specialties","Gain Coolness Under Fire","Change Unit Morale"]},
+  "ambiguousPassages":[],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Career-profile entries are static reference data; the common life-path procedure is extracted separately.","Archetype sheets provide static choices and starting packages. Their selection rules are extracted; individual package lists are retained for reference-table completion."],
+  "missingDataRequirements":["Moral-code, big-dream, buddy, session-XP, unit-morale, and career-choice criteria require player, group, or Referee judgment.","Life-path career eligibility and table results require character-history tracking."],
+  "excludedPrintedContent":["Setting descriptions, appearance, name, and backstory prompts with no mechanical effect.","Universal dice and skill-resolution rules, combat action procedures, gear handling, travel, and injury outcomes already recorded in their dedicated batches."],
+  "classificationCounts":{"mechanic":33,"reference-data":4,"setting":0,"advice":0,"scenario":0},
+  "statusCounts":{"Extracted":37,"Verified":0,"NeedsVerification":0},
+  "needsVerification":[],
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0,"mechanicCount":33,"referenceDataCount":4}
+}

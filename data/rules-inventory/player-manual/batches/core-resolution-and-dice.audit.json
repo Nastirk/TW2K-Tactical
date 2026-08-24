@@ -1,0 +1,15 @@
+{
+  "$schema": "tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook": "Twilight: 2000 4th Edition Player's Manual",
+  "topic": "core-resolution-and-dice",
+  "authority": "printed Player's Manual only",
+  "pageCoverage": {"printedPages": [19, 44, 45, 46, 47], "sections": ["Measuring Time", "Roll the Dice", "Base Dice", "Success", "Multiple Successes", "Pushing Your Roll", "Group Rolls", "Modifiers", "Help From Others", "Opposed Rolls"]},
+  "ambiguousPassages": [],
+  "duplicateOrConflictingPassages": [],
+  "tableInterpretationConcerns": ["The chance-of-success tables on printed page 46 are derived probability references rather than a resolution procedure, so they are not duplicated as automation rules."],
+  "missingDataRequirements": ["The selected skill, whether a roll is active or passive, whether a helper is eligible, and whether contextual modifiers apply require player or Referee input.", "Pushing requires roll-result and push-history tracking.", "The exact duration and passage of a round, stretch, or shift are Referee determinations."],
+  "excludedPrintedContent": ["Roleplaying, failure-narration, difficulty examples, and NPC-roll guidance that do not establish executable procedures.", "Skill-specific, specialty-specific, combat, travel, injury, and gear outcomes; these remain in their dedicated topic batches.", "Optional specialty-requirement rule, because the printed text labels it optional and it is not a core procedure."],
+  "classificationCounts": {"mechanic": 20, "reference-data": 3, "setting": 0, "advice": 0, "scenario": 0},
+  "statusCounts": {"Extracted": 23, "Verified": 0, "NeedsVerification": 0},
+  "validation": {"printedSourceOnly": true, "customPolicyRecords": 0, "nonPlayersManualAuthorities": 0, "mechanicCount": 20, "referenceDataCount": 3}
+}

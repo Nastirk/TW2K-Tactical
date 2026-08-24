@@ -313,6 +313,24 @@ describe(
     );
 
     it(
+      "does not apply rifle-only one-handed rules to sniper or hunting rifles",
+      () => {
+        for (const weaponCategory of ["sniper-rifle", "hunting-rifle"] as const) {
+          const result = resolver.resolve({
+            weaponCategory,
+            oneHanded: true,
+            atShortRange: false,
+          });
+
+          expect(result.attackAllowed).toBe(true);
+          expect(result.modifiers).not.toContainEqual(
+            expect.objectContaining({ source: "one-handed" }),
+          );
+        }
+      },
+    );
+
+    it(
       "blocks one-handed machine-gun fire",
       () => {
         const result =

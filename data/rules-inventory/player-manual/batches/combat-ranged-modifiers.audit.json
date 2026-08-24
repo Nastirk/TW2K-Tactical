@@ -1,0 +1,28 @@
+{
+  "$schema": "tw2k-tactical/ranged-combat-source-audit/v2",
+  "mode": "strict-printed-source",
+  "authority": "Twilight: 2000 Player's Manual printed text",
+  "sourceAudit": [
+    {"source":{"manual":"players","page":65,"section":"Aiming"},"retained":["quick-shot compact -1","quick-shot non-compact -2","slow aim with telescopic sight +1","slow aim with telescopic sight from stable platform +2","slow aim prohibits ammunition dice","slow aim and firing cannot occur in the same round"],"printedStablePlatform":"cover, a bipod, or the ground while prone"},
+    {"source":{"manual":"players","page":65,"section":"Range"},"retained":["short/medium/long/extreme range outcomes","shotgun medium/long/extreme base-damage outcomes"]},
+    {"source":{"manual":"players","page":65,"section":"Firing in Close Combat"},"retained":["same-hex active-target compact and non-compact outcomes","same-hex defenseless-target outcome"]},
+    {"source":{"manual":"players","page":66,"section":"Stance through One-Handed Shooting"},"retained":["prone","full cover legality","called shot","moving target","firing from moving vehicle","target size","elevation","target terrain","light","weather","dense smoke","carried machine guns","one-handed pistol, SMG/carbine, rifle/assault-rifle, and machine-gun outcomes"]},
+    {"source":{"manual":"players","page":46,"section":"Help From Others"},"retained":["one, two, and three-or-more helper outcomes"]}
+  ],
+  "removedCustomPolicyRecords": [
+    "combat.ranged.stable-platform.prone-ground",
+    "combat.ranged.stable-platform.deployed-bipod",
+    "combat.ranged.stable-platform.deployed-tripod",
+    "combat.ranged.stable-platform.vehicle-mount",
+    "combat.ranged.bipod-deployment.invalid",
+    "combat.ranged.tripod-deployment.invalid",
+    "combat.ranged.cover-alone.not-stable-platform"
+  ],
+  "oneHandedScope": {
+    "includedPrintedCategories": ["pistol", "SMG", "carbine", "rifle", "assault rifle", "machine gun"],
+    "excludedUnstatedCategories": ["sniper rifle", "hunting rifle"],
+    "policy": "No rule is inferred for categories not explicitly named in the printed p.66 text."
+  },
+  "statusAudit": {"Extracted":44,"Verified":0,"NeedsVerification":0},
+  "summary": {"mechanicCount":44,"referenceDataCount":0,"customPolicyCount":0}
+}

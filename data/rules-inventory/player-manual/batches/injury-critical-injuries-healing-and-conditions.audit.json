@@ -1,0 +1,14 @@
+{
+  "$schema":"tw2k-tactical/rule-inventory-audit/v1",
+  "sourceBook":"Twilight: 2000 4th Edition Player's Manual",
+  "topic":"injury-critical-injuries-healing-and-conditions",
+  "authority":"printed Player's Manual only",
+  "pageCoverage":{"printedPages":[73,74,77,78,79,80,81],"sections":["Recovery","Further Recovery","Infected Wounds","Healing Crits","Mental","Suffering Stress","Recovery","Further Recovery","Mental Trauma","Healing Trauma","Conditions","Starving","Dehydrated","Sleep Deprived","Hypothermic","Falling","Drowning","Fire","Fire Crits","Chemical Warfare","Nerve Agents","Blistering Agents","Radiation","Rads","Hotspots","Effects","Decontamination","Permanent Rads","Disease","Medical Aid","Diseases"]},
+  "ambiguousPassages":["Hypothermia leaves adequacy of clothing/shelter, exposure interval, and protection bonus to Referee discretion; its exposure-roll record is NeedsVerification."],
+  "duplicateOrConflictingPassages":[],
+  "tableInterpretationConcerns":["Disease-table virulence for wound infection, typhus, and dysentery is printed as a dash and represented as 0 only as the neutral modifier value.","Critical-injury trigger and D10 location tables are in combat-melee-grappling-and-damage; this batch covers their ongoing and healing rules."],
+  "missingDataRequirements":["Time tracking for rounds, stretches, shifts, days, and weeks; consumption; rest/sleep; exposure; disease and critical-injury state; rads and permanent rads.","Referee inputs for cold severity, protection adequacy, hallucination details, and trauma roleplay effects."],
+  "excludedPrintedContent":["Vehicle exposure and combat procedures are reserved for vehicles-and-vehicle-combat.","Encumbrance procedures are reserved for survival-encumbrance-travel-and-camping."],
+  "statusCounts":{"Extracted":41,"Verified":0,"NeedsVerification":1},
+  "validation":{"printedSourceOnly":true,"customPolicyRecords":0,"nonPlayersManualAuthorities":0}
+}

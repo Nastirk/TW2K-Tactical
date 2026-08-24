@@ -26,85 +26,19 @@ export interface TerrainProfile {
   blocking: boolean;
 }
 
-const TERRAIN_PROFILES:
-  Record<TerrainType, TerrainProfile> = {
-    pavement: {
-      type: "pavement",
-      rangedAttackModifier: 0,
-      coverArmorLevel: null,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    field: {
-      type: "field",
-      rangedAttackModifier: 0,
-      coverArmorLevel: null,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    shrubland: {
-      type: "shrubland",
-      rangedAttackModifier: -1,
-      coverArmorLevel: null,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    debris: {
-      type: "debris",
-      rangedAttackModifier: -1,
-      coverArmorLevel: 3,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    forest: {
-      type: "forest",
-      rangedAttackModifier: -1,
-      coverArmorLevel: 2,
-      visibilityHexes: 3,
-      blocking: false,
-    },
-    foliage: {
-      type: "foliage",
-      rangedAttackModifier: -2,
-      coverArmorLevel: null,
-      visibilityHexes: 1,
-      blocking: false,
-    },
-    swamp: {
-      type: "swamp",
-      rangedAttackModifier: 0,
-      coverArmorLevel: null,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    shallows: {
-      type: "shallows",
-      rangedAttackModifier: 0,
-      coverArmorLevel: null,
-      visibilityHexes:
-        "unlimited",
-      blocking: false,
-    },
-    blocking: {
-      type: "blocking",
-      rangedAttackModifier: null,
-      coverArmorLevel: null,
-      visibilityHexes: "none",
-      blocking: true,
-    },
-    indoors: {
-      type: "indoors",
-      rangedAttackModifier: -1,
-      coverArmorLevel: 1,
-      visibilityHexes: 0,
-      blocking: false,
-    },
-  };
+const TERRAIN_PROFILES: Record<TerrainType, TerrainProfile> =
+  Object.fromEntries(
+    COMBAT_TERRAIN_DATA.map((terrain) => [
+      terrain.id,
+      {
+        type: terrain.id,
+        rangedAttackModifier: terrain.rangedAttackModifier,
+        coverArmorLevel: terrain.coverArmorLevel,
+        visibilityHexes: terrain.visibilityHexes,
+        blocking: terrain.blocksGroundMovement,
+      },
+    ]),
+  ) as Record<TerrainType, TerrainProfile>;
 
 export function getTerrainProfile(
   type: TerrainType,
@@ -149,3 +83,4 @@ export function parseTerrainType(
       return undefined;
   }
 }
+import { COMBAT_TERRAIN_DATA } from "../rule-data/terrain-and-travel";

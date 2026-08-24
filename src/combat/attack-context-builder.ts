@@ -59,7 +59,11 @@ export interface AttackContextDataSource {
   getLightLevel?(attackerId: string, targetId: string): LightLevel;
   getWeatherModifier?(): number;
   hasDenseSmoke?(attackerId: string, targetId: string): boolean;
-  hasNightVision?(attackerId: string, distanceHexes: number): boolean;
+  hasNightVision?(
+    attackerId: string,
+    distanceHexes: number,
+    lightLevel: LightLevel,
+  ): boolean;
   hasThermalOptics?(attackerId: string): boolean;
   getVisibilityLimitHexes?(): number | undefined;
   isLineOfSightBlocked?(attackerId: string, targetId: string): boolean;
@@ -223,6 +227,7 @@ export class AttackContextBuilder {
       this.dataSource.hasNightVision?.(
         request.attackerId,
         distanceHexes,
+        lightLevel,
       ) ??
       false;
     const visibilityLimitHexes =
